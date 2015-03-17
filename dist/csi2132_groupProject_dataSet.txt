@@ -1,4 +1,4 @@
-INSERT INTO restaurant_ratings.restaurant_type(
+﻿INSERT INTO restaurant_ratings.restaurant_type(
             type_id, _name)
     VALUES 
 	(0,'Afghan'),
@@ -100,8 +100,8 @@ INSERT INTO restaurant(
 
 
 INSERT INTO restaurant_ratings.locations(
-            location_id, first_open_date, manager_name, phone_number, street_address, 
-            opening_hours, restaurant_id)
+            location_id, first_open_date, manager_name, phone_number, opening_hours, 
+            street_address, restaurant_id)
     VALUES 
 	(0, '1995-02-12', 'Toby Henderson','(613)695-3533' ,  
 	'MON: CLOSED,TUE: 9:00 AM - 8:00 PM,WED: 9:00 AM - 8:00 PM,THU: 9:00 AM - 9:00 PM,FRI: 9:00 AM - 8:00 PM,SAT: 9:00 AM - 8:00 PM,SUN: 10:00 AM - 7:00 PM',
