@@ -26,7 +26,7 @@
     
     
     <?php
-        
+        // asdfasdf
         //session_start();
 
         //Retrieve student number from session object

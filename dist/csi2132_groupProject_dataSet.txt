@@ -1,4 +1,4 @@
-INSERT INTO restaurant_ratings.restaurant_type(
+﻿INSERT INTO restaurant_ratings.restaurant_type(
             type_id, _name)
     VALUES 
 	(0,'Afghan'),
@@ -100,8 +100,8 @@ INSERT INTO restaurant(
 
 
 INSERT INTO restaurant_ratings.locations(
-            location_id, first_open_date, manager_name, phone_number, street_address, 
-            opening_hours, restaurant_id)
+            location_id, first_open_date, manager_name, phone_number, opening_hours, 
+            street_address, restaurant_id)
     VALUES 
 	(0, '1995-02-12', 'Toby Henderson','(613)695-3533' ,  
 	'MON: CLOSED,TUE: 9:00 AM - 8:00 PM,WED: 9:00 AM - 8:00 PM,THU: 9:00 AM - 9:00 PM,FRI: 9:00 AM - 8:00 PM,SAT: 9:00 AM - 8:00 PM,SUN: 10:00 AM - 7:00 PM',
@@ -132,7 +132,7 @@ INSERT INTO restaurant_ratings.locations(
 	'NULL,300 Earl Grey Drive,Ottawa,ON,K2T1B8', 8),
     	(9, '1999-06-02', 'Elias Barber','(819)557-1661' ,  
 	'MON: 7:00 AM - 1:00 AM,TUE: 7:00 AM - 1:00 AM,WED: 7:00 AM - 1:00 AM,THU: 7:00 AM - 1:00 AM,FRI: 7:00 AM - 1:00 AM,SAT: 7:00 AM - 1:00 AM,SUN: 7:00 AM - 1:00 AM',
-	'NULL,61 Rue Principale,Gatineau,QC,J9H3L6', 9,
+	'NULL,61 Rue Principale,Gatineau,QC,J9H3L6', 9),
     	(10, '1998-11-14', 'Leslie Scott','(613)789-5432' ,  
 	'MON: 11:00 AM - 12:00 AM,TUE: 11:00 AM - 12:00 AM,WED: 11:00 AM - 12:00 AM,THU: 11:00 AM - 12:00 AM,FRI: 11:00 AM - 1:00 AM,SAT: 10:00 AM - 1:00 AM,SUN: 10:00 AM - 12:00 AM',
 	'NULL,700 Sussex Drive,Ottawa,ON,K1N1K4', 10),
@@ -278,45 +278,45 @@ INSERT INTO restaurant_ratings.menu_item(
 INSERT INTO restaurant_ratings.users(
             user_id, email, _name, pswd, join_date)
     VALUES 
-    (0, 'default_user@gmail.com', 'Default User', 'default', '2014-12-01'),
-    (1, 'chompcaviar@yahoo.ca', 'Rosemary Warner', 'chompcaviar$', '2013-11-02'),
-    (2, 'welcomemayonnaise@uottawa.ca', 'Meghan	Ford', 'welcomemayonnaise$', '2012-10-03'),
-    (3, 'abstractedcake@gmail.com', 'Raymond Garcia', 'abstractedcake$', '2013-09-04'),
-    (4, 'spencersvenison@yahoo.ca', 'Tim Harper', 'spencersvenison$', '2014-08-05'),
-    (5, 'mentionrelish@videotron.ca', 'Willard Owen', 'mentionrelish$', '2012-07-06'),
-    (6, 'abdomenclam@gmail.com', 'Allen	Cannon', 'abdomenclam$', '2013-06-07'),
-    (7, 'diskspaella@yahoo.com', 'Kristy Frazier', 'diskspaella$', '2014-05-08'),
-    (8, 'oatmealchowder@bell.ca', 'Larry Lewis', 'oatmealchowder$', '2013-04-09'),
-    (9, 'chimneyspolenta@gmail.com', 'Gilbert Bass', 'chimneyspolenta$', '2015-03-10'),
-    (10, 'partingorange@yahoo.ca', 'Lee	Graham', 'partingorange$', '2013-02-11'),
-    (11, 'catsalami@gmail.com', 'Don Beck', 'catsalami$', '2015-01-12'),
-    (12, 'trouncecrackers@yahoo.ca', 'Tommy Andrews', 'trouncecrackers$', '2013-12-13'),
-    (13, 'nestingpistachio@gmail.com', 'Marjorie James', 'nestingpistachio$', '2014-11-14'),
-    (14, 'trapdooroil@yahoo.ca', 'Sharon Baldwin', 'trapdooroil$', '2013-10-15'),
-    (15, 'bizarremilkshakes@gmail.com', 'Rafael	Smith', 'bizarremilkshakes$', '2015-09-16');
+    (0, 'deleted_user@gmail.com', 'Deleted User', 'default', '2014-12-01'),
+    (1, 'chompcaviar@yahoo.ca', 'chompcaviar', 'chompcaviar$', '2013-11-02'),
+    (2, 'welcomemayonnai@uottawa.ca', 'welcomemayonnai', 'welcomemayonnaise$', '2012-10-03'),
+    (3, 'abstractedcake@gmail.com', 'abstractedcake', 'abstractedcake$', '2013-09-04'),
+    (4, 'spencersvenison@yahoo.ca', 'spencersvenison', 'spencersvenison$', '2014-08-05'),
+    (5, 'mentionrelish@videotron.ca', 'mentionrelish', 'mentionrelish$', '2012-07-06'),
+    (6, 'abdomenclam@gmail.com', 'abdomenclam', 'abdomenclam$', '2013-06-07'),
+    (7, 'diskspaella@yahoo.com', 'diskspaella', 'diskspaella$', '2014-05-08'),
+    (8, 'oatmealchowder@bell.ca', 'oatmealchowder', 'oatmealchowder$', '2013-04-09'),
+    (9, 'chimneyspolenta@gmail.com', 'chimneyspolenta', 'chimneyspolenta$', '2015-03-10'),
+    (10, 'partingorange@yahoo.ca', 'partingorange', 'partingorange$', '2013-02-11'),
+    (11, 'catsalami@gmail.com', 'catsalami', 'catsalami$', '2015-01-12'),
+    (12, 'trouncecrackers@yahoo.ca', 'trouncecracker', 'trouncecrackers$', '2013-12-13'),
+    (13, 'nestingpistache@gmail.com', 'nestingpistache', 'nestingpistachio$', '2014-11-14'),
+    (14, 'trapdooroil@yahoo.ca', 'trapdooroil', 'trapdooroil$', '2013-10-15'),
+    (15, 'bizarremilk@gmail.com', 'bizarremilk', 'bizarremilkshakes$', '2015-09-16');
     
 
 
 
 INSERT INTO restaurant_ratings.rater(
-            user_id, rater_id, _type, reputation)
+            user_id, rater_id, _type)
     VALUES 
-	(0, 0, 'online', NULL),
-	(1, 1, 'online', NULL),
-	(2, 2, 'food critic', NULL),
-	(3, 3, 'online', NULL),
-	(4, 4, 'blog', NULL),
-	(5, 5, 'blog', NULL),
-	(6, 6, 'online', NULL),
-	(7, 7, 'online', NULL),
-	(8, 8, 'food critic', NULL),
-	(9, 9, 'blog', NULL),
-	(10, 10, 'online', NULL),
-	(11, 11, 'food critic', NULL),
-	(12, 12, 'online', NULL),
-	(13, 13, 'online', NULL),
-	(14, 14, 'blog', NULL),
-	(15, 15, 'online', NULL);
+	(0, 0, 'online'),
+	(1, 1, 'online'),
+	(2, 2, 'food critic'),
+	(3, 3, 'online'),
+	(4, 4, 'blog'),
+	(5, 5, 'blog'),
+	(6, 6, 'online'),
+	(7, 7, 'online'),
+	(8, 8, 'food critic'),
+	(9, 9, 'blog'),
+	(10, 10, 'online'),
+	(11, 11, 'food critic'),
+	(12, 12, 'online'),
+	(13, 13, 'online'),
+	(14, 14, 'blog'),
+	(15, 15, 'online');
 
 
 INSERT INTO rating VALUES (0, 1, 0, '2014-01-30', 5, 5, 5, 5, 'We discovered it and ate there three times in a week. Reasonable prices, fresh tasty food and a great location.
