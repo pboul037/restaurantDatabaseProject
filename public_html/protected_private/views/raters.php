@@ -12,10 +12,10 @@
     <title>Restaurant Ratings</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../framwork_dir/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="css/shop-homepage.css" rel="stylesheet">
+    <link href="../../../framwork_dir/bootstrap/css/homepage.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -35,28 +35,14 @@
         //    exit;
         //}
         
-        $dbh=pg_connect("host=localhost port=5432 dbname=postgres user=postgres password=G0d$1Lla");
-        if (!$dbh) {
-            die("Error in connection: " . pg_last_error());
-        }
+        // include configuration
+        require_once(dirname(dirname(__FILE__)) . '\etc\conf\config.php');
         
-        //$studentnum = $_SESSION['studentnum'];
-
-        // Select all the raters
-        $sql = "SELECT u._name, COUNT(*) FROM restaurant_ratings.users u, restaurant_ratings.rater r, restaurant_ratings.rating s
-                WHERE u.user_id=r.user_id AND r.rater_id = s.rater_id
-                GROUP BY u._name";
-        $stmt = pg_prepare($dbh, "ps", $sql);
-
-        $result = pg_execute($dbh, "ps", array());
-        if (!$result) {
-            die("Error in SQL query: " . pg_last_error());
-        }
+        // instantiate a data access layer
+        $dal =  new DAL();
         
-        //free memory
-        //pg_free_result($result);
-        //close connection
-        pg_close($dbh);
+        // query all locations by restaurant name and address
+        $results = $dal->get_review_count_by_rater();
         
     ?>
 </head>
@@ -147,17 +133,17 @@
                     <div class="col-sm-12 col-lg-12 col-md-12">
                         <div class="list-group">
                             
-                        <?php while($row=pg_fetch_array($result)) { ?>
+                        <?php foreach($results as $rater){ ?>
                           <a href="#" class="list-group-item">
                             <h4 class="pull-right"> <?php /*echo ($row[1]-$row[2])*($row[1]+$row[2])*/ ?> 
                                 <span class="glyphicon glyphicon-stats"</span></h4>
-                            <h4><?php echo $row[0]; ?></h4>
+                            <h4><?php echo $rater->name ?></h4>
                             </h4>
                             <!-- <img src="http://placehold.it/320x150" alt=""> -->
                             <p class="list-group-item-text">qqq
                             <!-- <a target="_blank" href="http://www.bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.--></p>
                             <div class="ratings">
-                                <p class="pull-right"><?php echo $row[1]; ?> reviews</p>
+                                <p class="pull-right"><?php echo $rater->count ?> reviews</p>
                                 <p>
                                     <span class="glyphicon glyphicon-star"></span>
                                     <span class="glyphicon glyphicon-star"></span>
