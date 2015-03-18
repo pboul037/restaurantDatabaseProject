@@ -10,13 +10,20 @@
     <meta name="author" content="">
 
     <title>Restaurant Ratings</title>
-
+    
+    <!-- controller -->
+    <?php include '../controllers/restaurants.php'; $ctrl = new Restaurants(); ?>
+    
     <!-- Bootstrap Core CSS -->
     <link href="../../../framwork_dir/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="../../../framwork_dir/bootstrap/css/homepage.css" rel="stylesheet">
-
+    
+    <!-- Bootrap JS and jQuery -->
+    <script src="../../../framwork_dir/bootstrap/js/jquery.js"></script>
+    <script src="../../../framwork_dir/bootstrap/js/bootstrap.js"></script>
+    
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -24,32 +31,6 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     
-    
-    <?php
-        // asdfasdf
-        //session_start();
-
-        //Retrieve student number from session object
-        //if(!isset($_SESSION['studentnum'])){
-        //    echo "Please" . "<a href='Login.php'>Login</a>";
-        //    exit;
-        //}
-        
-        // include configuration
-        require_once(dirname(dirname(__FILE__)) . '\etc\conf\config.php');
-        
-        // instantiate a data access layer
-        $dal =  new DAL();
-        
-        // query all locations by restaurant name and address
-        $results = $dal->get_all_restaurants();
-
-        //free memory
-        //pg_free_result($result);
-        //close connection
-        //pg_close($dbh);
-        
-    ?>
 </head>
 
 <body>
@@ -90,13 +71,32 @@
     <div class="container">
 
         <div class="row">
-
             <div class="col-md-3">
                 <p class="lead">Find a Restaurant</p>
-                <div class="list-group">
-                    <a href="#" class="list-group-item">Category 1</a>
-                    <a href="#" class="list-group-item">Category 2</a>
-                    <a href="#" class="list-group-item">Category 3</a>
+                <div class="row">
+                    <div class="list-group">
+                        <select class="btn btn-default dropdown-toggle" ONCHANGE=""> Sort by Type
+                            <?php foreach($ctrl->restaurant_types as $type) { ?>
+                            <option value='<?php echo $type->name; ?>'><?php echo $type->name; echo ' (' . $type->count . ')'; ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                   <div class="btn-group" role="group" aria-label="...">
+                      <button type="button" class="btn btn-default">1</button>
+                      <button type="button" class="btn btn-default">2</button>
+                      <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                          Dropdown
+                          <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Dropdown link</a></li>
+                          <li><a href="#">Dropdown link</a></li>
+                        </ul>
+                      </div>
+                    </div>
                 </div>
             </div>
 
@@ -138,7 +138,7 @@
                     <div class="col-sm-12 col-lg-12 col-md-12">
                         <div class="list-group">
                             
-                        <?php foreach($results as $location){ ?>
+                        <?php foreach($ctrl->restaurant_list_data as $location){ ?>
                           <a href="#" class="list-group-item">
                             <h4 class="pull-right">Tags</h4>
                             <h4><?php echo $location->name ?></h4>

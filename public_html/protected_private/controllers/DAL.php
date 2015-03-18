@@ -23,11 +23,26 @@ class DAL {
      * Gets every column of all the locations.
      */
     public function get_all_restaurants(){
-     $sql = "SELECT l.opening_hours AS address, r._name AS name 
+     $sql = "SELECT l.street_address AS address, r._name AS name 
                 FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r    
                 WHERE r.restaurant_id = l.restaurant_id";
         return $this->query($sql);
     }
+    
+    /*
+     * Get all the restaurant types for which there's at least one restaurant of this type
+     * and the count of restaurant of this type.
+     */
+    public function get_restaurant_types_with_count(){
+     $sql = "SELECT t._name AS name, COUNT(*) AS count
+                FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.isOfType o,           restaurant_ratings.restaurant_type t
+                WHERE l.restaurant_id = r.restaurant_id
+                    AND o.restaurant_id = r.restaurant_id
+                    AND o.type_id = t.type_id
+                GROUP BY t._name";
+        return $this->query($sql);
+    }
+    
     
     /*
      * Gets every column of all the raters.
@@ -78,6 +93,13 @@ class DAL {
             
             $results[] = $result;
         }
+        
+        
+        //free memory
+        pg_free_result($res);
+        //close connection
+        pg_close($dbh);
+        
         return $results;
     }
 }
