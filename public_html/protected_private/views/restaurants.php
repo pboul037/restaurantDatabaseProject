@@ -106,16 +106,7 @@
                                 url: '../controllers/RestaurantsController.php',
                                 data: 'type_selected=' + selected,
                                 success: function (data) {
-                                    //console.log(data);
-                                    var response = $.parseJSON(data);
-                                    //update restaurant list
-                                    $('#restaurant_list').html(response[2]);
-                                    // update types select dropdown options
-                                    $('#types_select').html(response[0]);
-                                    //update type tags cloud
-                                    $('#selected_types_tags').html(response[1]);
-                                    // enable the clear search options button
-                                    $('#clear_search_options_btn').prop('disabled', false);
+                                    updateHtmlElements(data, false);
                                 }
                             });
                         }
@@ -125,18 +116,20 @@
                                 url: '../controllers/RestaurantsController.php',
                                 data: 'clear_all_search_options=' + 'true',
                                 success: function (data) {
-                                    //console.log(data);
-                                    var response = $.parseJSON(data);
-                                    //update restaurant list
-                                    $('#restaurant_list').html(response[2]);
-                                    // update types select dropdown options
-                                    $('#types_select').html(response[0]);
-                                    //update type tags cloud
-                                    $('#selected_types_tags').html(response[1]);
-                                    // disable the clear search options button
-                                    $('#clear_search_options_btn').prop('disabled', true);
+                                    updateHtmlElements(data, true)
                                 }
                             });
+                        }
+                        function updateHtmlElements(response, disableClearSearchOptions){
+                            var response = $.parseJSON(response);
+                            //update restaurant list
+                            $('#restaurant_list').html(response[2]);
+                            // update types select dropdown options
+                            $('#types_select').html(response[0]);
+                            //update type tags cloud
+                            $('#selected_types_tags').html(response[1]);
+                            // disable the clear search options button
+                            $('#clear_search_options_btn').prop('disabled', disableClearSearchOptions);
                         }
                     </script>
                 </div>
