@@ -140,34 +140,9 @@
 
                     <div class="col-sm-12 col-lg-12 col-md-12">
                         <div id="restaurant_list" class="list-group">
-                            
-                        <?php foreach($locations_list as $location){ ?>
-                          <a href="#" class="list-group-item">
-                            <div class="pull-right">
-                                <?php foreach($_SESSION[$location->name . '-types'] as $cuisine_type) { ?>
-                                <span class="tagcloud tag label label-info"><?php echo $cuisine_type ?></span>
-                                <?php } ?>
-                            </div>
-                            <h4><?php echo $location->name ?></h4>
-                            </h4>
-                            <!-- <img src="http://placehold.it/320x150" alt=""> -->
-                            <p class="list-group-item-text"><?php echo $location->address ?>
-                            <!-- <a target="_blank" href="http://www.bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.--></p>
-                            <div class="ratings">
-                                <p class="pull-right">15 reviews</p>
-                                <p>
-                                    <span class="glyphicon glyphicon-star"></span>
-                                    <span class="glyphicon glyphicon-star"></span>
-                                    <span class="glyphicon glyphicon-star"></span>
-                                    <span class="glyphicon glyphicon-star"></span>
-                                    <span class="glyphicon glyphicon-star"></span>
-                                </p>
-                            </div>
-                          </a>
-                        <?php } ?>
+                        <?php echo get_location_html_items($locations_list) ?>
                         </div>
-                          </a>
-                        </div>
+                    </div>
                     </div>
                 </div>
 

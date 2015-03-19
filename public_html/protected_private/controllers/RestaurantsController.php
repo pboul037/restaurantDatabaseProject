@@ -16,7 +16,7 @@
         $restaurant_types;
         $each_location_types = array();    
         $selected_cuisine_types = array();
-
+        
         get_locations_list();
         get_locations_types();
 
@@ -118,11 +118,11 @@
                         foreach($_SESSION['restaurant_types_selected'] as $already_selected){
                             $type_tags .= get_cloud_cuisine_tag_html_item($already_selected);
                         }
-                        $new_locations_list .= get_location_html_item($restaurant_only_of_types);
+                        $new_locations_list .= get_location_html_items($restaurant_only_of_types);
                     }
                     
                     if($clear_search_options){
-                        $new_locations_list .= get_location_html_item($locations_list);
+                        $new_locations_list .= get_location_html_items($locations_list);
                     }
                     
                     if($type_selected || $clear_search_options){
@@ -147,7 +147,7 @@
          *
          * @author Patrice Boulet
          */
-        function get_location_html_item($locations_list){
+        function get_location_html_items($locations_list){
            $location_html_item = "";
             foreach($locations_list as $location){
                 $location_html_item .= '<a href="#" class="list-group-item">
@@ -156,19 +156,32 @@
                       $location_html_item .= '<span class="tagcloud tag label label-info">' . $cuisine_type . '</span>';
                 }
                 $location_html_item .= '</div>
-                        <h4>' . $location->name . '</h4>
+                        <div class="row">
+                            <h4 class="col-sm-3">' . $location->name . '</h4>';
+                
+                for( $i = 0; $i < $location->avg_price; $i++){
+                    $location_html_item .= '<h6 <span class="glyphicon glyphicon-usd" style="color:gold"></span></h6>';
+                }
+                for( $i = 0; $i < 5-$location->avg_price; $i++){
+                    $location_html_item .= '<h6 <span class="glyphicon glyphicon-usd" style="color:grey"></span></h6>';
+                }
+                
+                $location_html_item .= '</div>
                         <!-- <img src="http://placehold.it/320x150" alt=""> -->
                         <p class="list-group-item-text">' . $location->address . 
                         '<!-- <a target="_blank" href="http://www.bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.--></p>
-                        <div class="ratings">
-                            <p class="pull-right">15 reviews</p>
-                            <p>
-                                <span class="glyphicon glyphicon-star"></span>
-                                <span class="glyphicon glyphicon-star"></span>
-                                <span class="glyphicon glyphicon-star"></span>
-                                <span class="glyphicon glyphicon-star"></span>
-                                <span class="glyphicon glyphicon-star"></span>
-                            </p>
+                        <p class="list-group-item-text">
+                            <div class="row">
+                                <div class="col-sm-9">
+                                <span class="glyphicon glyphicon-star"></span><span> Food : ' . $location->avg_food . ' </span>
+                                <span class="glyphicon glyphicon-star"></span><span> Service : ' . $location->avg_service . ' </span>  
+                                <span class="glyphicon glyphicon-star"></span><span> Ambiance : ' . $location->avg_ambiance . ' </span>  
+                                </div>
+                                <div class="col-sm-3">
+                                                               <p class="pull-right">' . $location->total_num_ratings . ' ratings</p>   
+                                </div>
+                            </div>
+                        <div>
                         </div>
                       </a>
                       ';
