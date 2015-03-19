@@ -55,14 +55,22 @@
             $locations_list = $dal->get_all_restaurants();
             $restaurant_types = $dal->get_restaurant_types_with_count_as_RestaurantTypesWithCount();
             
+            $type_selected = isset($_POST['type_selected']);
+            $clear_search_options = isset($_POST['clear_all_search_options']);
+            
             // initial load - no user specified search options
             if (!isset($_SESSION['restaurant_types_selected']))
                     $_SESSION['restaurant_types_selected'] =  array();
             
-            if( !isset($_POST['type_selected']) && count($_SESSION['restaurant_types_selected']) == 0){
+            if( !$type_selected && count($_SESSION['restaurant_types_selected']) == 0){
                 return;
             }else{
-                if (isset($_POST['type_selected'])) {
+                if($clear_search_options){
+                    unset($_SESSION['restaurant_types_selected']);
+                    $_SESSION['restaurant_types_selected'] = array();
+                }
+                
+                if ($type_selected) {
                     $selectedvalue = $_POST['type_selected'];            
                     $type = explode('(', $selectedvalue)[0];
 
@@ -71,14 +79,18 @@
                         array_push($_SESSION['restaurant_types_selected'], $restaurant_types[$i]->name); 
                       }
                     }
+                }
+                
+                // initialize response
+                if($type_selected || $clear_search_options){
                     
                     $response = array();
-                    $new_options = ""; 
+                    $types_new_options = ""; 
                     $type_tags = "";
-                    $restaurants_only_of_type_list = "";
+                    $new_locations_list = "";
                 
                     // prepare the new options 
-                    $new_options .= '<select id="types_select" class="btn btn-default dropdown-toggle" onchange="updateSelectedTypes(this.value)">                                          <option value="" disabled selected>Show only type(s)...</option>'; 
+                    $types_new_options .= '<select id="types_select" class="btn btn-default dropdown-toggle"                                                                onchange="updateSelectedTypes(this.value)"><option value="" disabled selected>Show only type(s)...</option>'; 
                 }
                 
                 for ($i = 0; $i < count($restaurant_types); $i++) {
@@ -90,18 +102,19 @@
                             $found = true;
                         } 
                     } 
-                    if($found == false && isset($_POST['type_selected'])){
-                        $new_options .= "<option value='" . $restaurant_types[$i]->name . "'>" . $restaurant_types[$i]->name . ' (' .                                                           $restaurant_types[$i]->count . ')</option>';                                       
+                    if($found == false && $type_selected || $clear_search_options){
+                        $types_new_options .= "<option value='" . $restaurant_types[$i]->name . "'>" . $restaurant_types[$i]->name . ' (' .                                                           $restaurant_types[$i]->count . ')</option>';                                       
                     }
                 }
                 
-                if( isset($_POST['type_selected']))
-                    $new_options .= '</select>';
+                if($type_selected || $clear_search_options)
+                    $types_new_options .= '</select>';
                 
-                if( count($_SESSION['restaurant_types_selected']) !== 0){
-                    $restaurant_only_of_types = $dal->get_only_restaurants_of_types($_SESSION['restaurant_types_selected']);
+                if( count($_SESSION['restaurant_types_selected']) !== 0 || $clear_search_options){
+                    if(!$clear_search_options)
+                        $restaurant_only_of_types = $dal->get_only_restaurants_of_types($_SESSION['restaurant_types_selected']);
 
-                    if(isset($_POST['type_selected'])){
+                    if($type_selected){
 
                         // prepare new search types tags cloud
                         foreach($_SESSION['restaurant_types_selected'] as $already_selected){
@@ -110,20 +123,35 @@
                         
                         // prepare new locations list
                         foreach($restaurant_only_of_types as $location){
-                            $restaurants_only_of_type_list .= '<a href="#" class="list-group-item">
+                            $new_locations_list .= '<a href="#" class="list-group-item">
                                         <div class="pull-right">';
                             foreach($_SESSION[$location->name . '-types'] as $cuisine_type){
-                                  $restaurants_only_of_type_list .= '<span class="tagcloud tag label label-info">' . $cuisine_type . '</span>';
+                                  $new_locations_list .= '<span class="tagcloud tag label label-info">' . $cuisine_type . '</span>';
                             }
-                            $restaurants_only_of_type_list .= get_location_html_item($location);
+                            $new_locations_list .= get_location_html_item($location);
                         }
-
+                    }
+                    
+                    if($clear_search_options){
+                        // prepare new locations list
+                        foreach($locations_list as $location){
+                            $new_locations_list .= '<a href="#" class="list-group-item">
+                                        <div class="pull-right">';
+                            foreach($_SESSION[$location->name . '-types'] as $cuisine_type){
+                                  $new_locations_list .= '<span class="tagcloud tag label label-info">' . $cuisine_type . '</span>';
+                            }
+                            $new_locations_list .= get_location_html_item($location);
+                        }
+                    }
+                    
+                    if($type_selected || $clear_search_options){
                         //prepare array containing response
-                        array_push($response, $new_options, $type_tags, $restaurants_only_of_type_list);
+                        array_push($response, $types_new_options, $type_tags, $new_locations_list);
 
                         // send the response
                         echo json_encode($response); 
                     }
+                    
                     else{
                         $locations_list = $restaurant_only_of_types;
                     }

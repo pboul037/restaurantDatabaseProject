@@ -76,17 +76,27 @@
                 <p class="lead">Find a Restaurant</p>
                 <div class="row">
                     <div class="col-sm-12">
-                        <select id="types_select" class="btn btn-default dropdown-toggle" onchange="updateSelectedTypes(this.value)">
-                            <option value="" disabled selected>Show only type(s)...</option>
-                            <?php foreach($restaurant_types as $type) { ?>
-                            <option value='<?php echo $type->name; ?>'>
-                                <?php echo $type->name; echo ' (' . $type->count . ')'; ?></option><?php } ?>
-                        </select>
-                        <div id="selected_types_tags">
-                            <?php foreach($_SESSION['restaurant_types_selected'] as $already_selected){ ?>
-                                <span class="tagcloud tag label label-info"><?php echo $already_selected ?>
-                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></span>
-                            <?php } ?>  
+                        <div class="row">
+                            <select id="types_select" class="btn btn-default dropdown-toggle" onchange="updateSelectedTypes(this.value)">
+                                <option value="" disabled selected>Show only type(s)...</option>
+                                <?php foreach($restaurant_types as $type) { ?>
+                                <option value='<?php echo $type->name; ?>'>
+                                    <?php echo $type->name; echo ' (' . $type->count . ')'; ?></option><?php } ?>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div id="selected_types_tags">
+                                <?php foreach($_SESSION['restaurant_types_selected'] as $already_selected){ ?>
+                                    <span class="tagcloud tag label label-info"><?php echo $already_selected ?>
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></span>
+                                <?php } ?>  
+                            </div>
+                        </div>
+                        <div class="row">
+                            <button id="clear_search_options_btn" type="button" class="btn btn-default" 
+                                onclick="clearAllSearchOptions()" 
+                                    <?php if( count($_SESSION['restaurant_types_selected']) == 0) echo 'disabled'; ?>>
+                                        Clear search options</button>
                         </div>
                     </div>
                     <script type="text/javascript">
@@ -104,6 +114,27 @@
                                     $('#types_select').html(response[0]);
                                     //update type tags cloud
                                     $('#selected_types_tags').html(response[1]);
+                                    // enable the clear search options button
+                                    $('#clear_search_options_btn').prop('disabled', false);
+                                }
+                            });
+                        }
+                        function clearAllSearchOptions(){
+                            $.ajax({
+                                type: 'POST',
+                                url: '../controllers/RestaurantsController.php',
+                                data: 'clear_all_search_options=' + 'true',
+                                success: function (data) {
+                                    //console.log(data);
+                                    var response = $.parseJSON(data);
+                                    //update restaurant list
+                                    $('#restaurant_list').html(response[2]);
+                                    // update types select dropdown options
+                                    $('#types_select').html(response[0]);
+                                    //update type tags cloud
+                                    $('#selected_types_tags').html(response[1]);
+                                    // disable the clear search options button
+                                    $('#clear_search_options_btn').prop('disabled', true);
                                 }
                             });
                         }
