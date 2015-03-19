@@ -21,12 +21,12 @@ class DAL {
     }
     
     /*
-     * Gets address and name for all locations.
+     * Gets location id, address and name for all locations.
      * 
      * @author Patrice Boulet
      */
     public function get_all_restaurants(){
-     $sql = "SELECT l.street_address AS address, r._name AS name 
+     $sql = "SELECT l.street_address AS address, r._name AS name, l.location_id as location_id 
                 FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r    
                 WHERE r.restaurant_id = l.restaurant_id";
         return $this->query($sql);
@@ -46,13 +46,13 @@ class DAL {
     }
     
     /*
-     * Gets address and name for locations with types in $types.
+     * Gets location id, address and name for locations with types in $types.
      *
      * @author Patrice Boulet
      */
     public function get_only_restaurants_of_types($types_array){
         
-        $sql = "SELECT DISTINCT ON (l.location_id) r._name AS name, l.street_address AS address
+        $sql = "SELECT DISTINCT ON (l.location_id) r._name AS name, l.street_address AS address, l.location_id as location_id
                 FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.isOfType t    
                 WHERE r.restaurant_id = l.restaurant_id AND r.restaurant_id = t.restaurant_id AND t.type_id IN 	
 			(" . $this->get_user_specified_types_query($types_array) . ")";
@@ -93,6 +93,10 @@ class DAL {
                     AND o.type_id = t.type_id
                 GROUP BY t._name";
         return $this->query($sql);
+    }
+    
+    public function get_locations_statistics(){
+            
     }
     
     /*

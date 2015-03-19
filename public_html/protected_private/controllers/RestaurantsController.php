@@ -115,33 +115,14 @@
                         $restaurant_only_of_types = $dal->get_only_restaurants_of_types($_SESSION['restaurant_types_selected']);
 
                     if($type_selected){
-
-                        // prepare new search types tags cloud
                         foreach($_SESSION['restaurant_types_selected'] as $already_selected){
                             $type_tags .= get_cloud_cuisine_tag_html_item($already_selected);
                         }
-                        
-                        // prepare new locations list
-                        foreach($restaurant_only_of_types as $location){
-                            $new_locations_list .= '<a href="#" class="list-group-item">
-                                        <div class="pull-right">';
-                            foreach($_SESSION[$location->name . '-types'] as $cuisine_type){
-                                  $new_locations_list .= '<span class="tagcloud tag label label-info">' . $cuisine_type . '</span>';
-                            }
-                            $new_locations_list .= get_location_html_item($location);
-                        }
+                        $new_locations_list .= get_location_html_item($restaurant_only_of_types);
                     }
                     
                     if($clear_search_options){
-                        // prepare new locations list
-                        foreach($locations_list as $location){
-                            $new_locations_list .= '<a href="#" class="list-group-item">
-                                        <div class="pull-right">';
-                            foreach($_SESSION[$location->name . '-types'] as $cuisine_type){
-                                  $new_locations_list .= '<span class="tagcloud tag label label-info">' . $cuisine_type . '</span>';
-                            }
-                            $new_locations_list .= get_location_html_item($location);
-                        }
+                        $new_locations_list .= get_location_html_item($locations_list);
                     }
                     
                     if($type_selected || $clear_search_options){
@@ -166,8 +147,15 @@
          *
          * @author Patrice Boulet
          */
-        function get_location_html_item($location){
-            return '</div>
+        function get_location_html_item($locations_list){
+           $location_html_item = "";
+            foreach($locations_list as $location){
+                $location_html_item .= '<a href="#" class="list-group-item">
+                            <div class="pull-right">';
+                foreach($_SESSION[$location->name . '-types'] as $cuisine_type){
+                      $location_html_item .= '<span class="tagcloud tag label label-info">' . $cuisine_type . '</span>';
+                }
+                $location_html_item .= '</div>
                         <h4>' . $location->name . '</h4>
                         <!-- <img src="http://placehold.it/320x150" alt=""> -->
                         <p class="list-group-item-text">' . $location->address . 
@@ -184,6 +172,8 @@
                         </div>
                       </a>
                       ';
+            }
+            return $location_html_item;
         }
 
         /*
