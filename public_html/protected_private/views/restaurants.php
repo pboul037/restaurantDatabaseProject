@@ -82,16 +82,21 @@
                             <option value='<?php echo $type->name; ?>'>
                                 <?php echo $type->name; echo ' (' . $type->count . ')'; ?></option><?php } ?>
                         </select>
-                        <div id="selected_types_tags"></div>
+                        <div id="selected_types_tags">
+                            <?php foreach($_SESSION['restaurant_types_selected'] as $already_selected){ ?>
+                                <span class="tagcloud tag label label-info"><?php echo $already_selected ?>
+                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></span>
+                            <?php } ?>  
+                        </div>
                     </div>
                     <script type="text/javascript">
                         function updateSelectedTypes(selected) {
                             $.ajax({
                                 type: 'POST',
                                 url: '../controllers/RestaurantsController.php',
-                                data: 'types_selected=' + selected,
+                                data: 'type_selected=' + selected,
                                 success: function (data) {
-                                    console.log(data);
+                                    //console.log(data);
                                     var response = $.parseJSON(data);
                                     //update restaurant list
                                     $('#restaurant_list').html(response[2]);
@@ -112,9 +117,13 @@
                     <div class="col-sm-12 col-lg-12 col-md-12">
                         <div id="restaurant_list" class="list-group">
                             
-                        <?php foreach($restaurant_list_data as $location){ ?>
+                        <?php foreach($locations_list as $location){ ?>
                           <a href="#" class="list-group-item">
-                            <h4 class="pull-right">Tags</h4>
+                            <div class="pull-right">
+                                <?php foreach($_SESSION[$location->name . '-types'] as $cuisine_type) { ?>
+                                <span class="tagcloud tag label label-info"><?php echo $cuisine_type ?></span>
+                                <?php } ?>
+                            </div>
                             <h4><?php echo $location->name ?></h4>
                             </h4>
                             <!-- <img src="http://placehold.it/320x150" alt=""> -->

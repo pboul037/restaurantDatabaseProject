@@ -33,6 +33,19 @@ class DAL {
     }
     
     /*
+     * Gets the cuisine types of this $location.
+     *
+     * @author Patrice Boulet
+     */
+    public function get_cuisine_types($location){
+        
+        $sql = "SELECT t._name as name
+                FROM restaurant_ratings.restaurant_type t, restaurant_ratings.isOfType o, restaurant_ratings.locations l, restaurant_ratings.restaurant r
+                WHERE l.restaurant_id = r.restaurant_id AND o.restaurant_id = r.restaurant_id AND t.type_id = o.type_id AND r._name = '" . $location . "'";
+        return $this->query($sql);
+    }
+    
+    /*
      * Gets address and name for locations with types in $types.
      *
      * @author Patrice Boulet
