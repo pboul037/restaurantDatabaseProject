@@ -93,7 +93,11 @@
                                 success: function (data) {
                                     console.log(data);
                                     var response = $.parseJSON(data);
+                                    //update restaurant list
+                                    $('#restaurant_list').html(response[2]);
+                                    // update types select dropdown options
                                     $('#types_select').html(response[0]);
+                                    //update type tags cloud
                                     $('#selected_types_tags').html(response[1]);
                                 }
                             });
@@ -106,7 +110,7 @@
                 <div class="row">
 
                     <div class="col-sm-12 col-lg-12 col-md-12">
-                        <div class="list-group">
+                        <div id="restaurant_list" class="list-group">
                             
                         <?php foreach($restaurant_list_data as $location){ ?>
                           <a href="#" class="list-group-item">

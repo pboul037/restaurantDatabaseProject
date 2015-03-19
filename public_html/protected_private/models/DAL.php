@@ -10,6 +10,8 @@ class DAL {
     
     /* 
      * Connects to the database
+     *
+     * @author Patrice Boulet
      */
     private function dbconnect() {
         $conn = pg_connect("host=" . DB_HOST . " port=" . DB_PORT . " dbname=" . DB_NAME . " user=" . DB_USER . " password=" . DB_PASSWORD)
@@ -19,7 +21,9 @@ class DAL {
     }
     
     /*
-     * Gets every column of all the locations.
+     * Gets address and name for all locations.
+     * 
+     * @author Patrice Boulet
      */
     public function get_all_restaurants(){
      $sql = "SELECT l.street_address AS address, r._name AS name 
@@ -29,8 +33,44 @@ class DAL {
     }
     
     /*
+     * Gets address and name for locations with types in $types.
+     *
+     * @author Patrice Boulet
+     */
+    public function get_only_restaurants_of_types($types_array){
+        
+        $sql = "SELECT DISTINCT ON (l.location_id) r._name AS name, l.street_address AS address
+                FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.isOfType t    
+                WHERE r.restaurant_id = l.restaurant_id AND r.restaurant_id = t.restaurant_id AND t.type_id IN 	
+			(" . $this->get_user_specified_types_query($types_array) . ")";
+        return $this->query($sql);
+    }
+    
+    /*
+     * Returns a sql query that returns itself a type_id list
+     * for user specified types in $types_array.
+     *
+     * @author Patrice Boulet
+     */
+    public function get_user_specified_types_query($types_array){
+        // add escaped single quotes for sql syntax
+        $escaped_types = array();
+        foreach ($types_array as $t){
+            array_push($escaped_types, "'" . $t . "'");
+        }
+        $types = join(',', $escaped_types);
+        $sql = "SELECT t.type_id
+                FROM restaurant_ratings.restaurant_type t
+                WHERE t._name IN ($types)";
+        return $sql;
+    }
+    
+    
+    /*
      * Get all the restaurant types for which there's at least one restaurant of this type
      * and the count of restaurant of this type.
+     *
+     * @author Patrice Boulet
      */
     public function get_restaurant_types_with_count(){
      $sql = "SELECT t._name AS _name, COUNT(*) AS _count
@@ -45,6 +85,8 @@ class DAL {
     /*
      * Get all the restaurant types for which there's at least one restaurant of this type
      * and the count of restaurant of this type.
+     *
+     * @author Patrice Boulet
      */
     public function get_restaurant_types_with_count_as_RestaurantTypesWithCount(){
         // Reuse existing query
@@ -70,6 +112,8 @@ class DAL {
     
     /*
      * Gets every column of all the raters.
+     *
+     * @author Patrice Boulet
      */
     public function get_review_count_by_rater(){
      $sql = "SELECT u._name as _name, COUNT(*) as _count FROM restaurant_ratings.users u, restaurant_ratings.rater r, restaurant_ratings.rating s
@@ -81,6 +125,8 @@ class DAL {
     /* 
      * Prepares and executes a  generic query to the database
      * and then converts it to DALQueryResult object.
+     *
+     * @author Patrice Boulet
      * 
      * return
      *      If there are not any results, it returns null on a SELECT query, 
@@ -130,6 +176,8 @@ class DAL {
 
 /* 
  * Generic database query result.
+ *
+ * @author Patrice Boulet
  */
 class DALQueryResult {
     
@@ -149,6 +197,13 @@ class DALQueryResult {
         }
     }
 }
+
+/*
+ * Specific class object for restaurant types wit\
+ * their count of locations.
+ *
+ * @author Patrice Boulet
+ */
 
 class RestaurantTypeWithCount {
 

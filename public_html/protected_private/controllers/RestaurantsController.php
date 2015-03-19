@@ -14,7 +14,7 @@
         $restaurant_list_data = $dal->get_all_restaurants();
         $restaurant_types = $dal->get_restaurant_types_with_count_as_RestaurantTypesWithCount();
         $selected_types = array();
-
+        
         if (!isset($_SESSION['restaurant_types_selected']))
            $_SESSION['restaurant_types_selected'] =  array();
 
@@ -33,6 +33,7 @@
             $response = array();
             $new_options = ""; 
             $type_tags = "";
+            $restaurants_only_of_type_list = "";
             
             // prepare the new options to send in response
             $new_options .= '<select id="types_select" class="btn btn-default dropdown-toggle" onchange="updateSelectedTypes(this.value)">      <option value="" disabled selected>Show only type(s)...</option>';  
@@ -58,10 +59,31 @@
                 $type_tags .= '<span class="tagcloud tag label label-info">' . $already_selected .
                     '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span></span>';
             }      
-
-            array_push($response, $new_options, $type_tags);
+            $restaurant_only_of_types = $dal->get_only_restaurants_of_types($_SESSION['restaurant_types_selected']);
+            foreach($restaurant_only_of_types as $location){
+                $restaurants_only_of_type_list .= '<a href="#" class="list-group-item">
+                            <h4 class="pull-right">Tags</h4>
+                            <h4>' . $location->name . '</h4>
+                            <!-- <img src="http://placehold.it/320x150" alt=""> -->
+                            <p class="list-group-item-text">' . $location->address . 
+                            '<!-- <a target="_blank" href="http://www.bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.--></p>
+                            <div class="ratings">
+                                <p class="pull-right">15 reviews</p>
+                                <p>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                </p>
+                            </div>
+                          </a>
+                          ';
+            }
+            
+            array_push($response, $new_options, $type_tags, $restaurants_only_of_type_list);
             // send the response
 
-            echo json_encode($response);            
+            echo json_encode($response);   
         }
 ?>
