@@ -1,7 +1,7 @@
 <?php
 
 // include data access layer
-require_once(dirname(dirname(dirname(__FILE__))) . '\controllers\DAL.php');
+require_once(dirname(dirname(dirname(__FILE__))) . '\models\DAL.php');
 
 // database config
 define ( 'DB_HOST', 'localhost' );

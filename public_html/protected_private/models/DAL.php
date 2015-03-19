@@ -8,7 +8,6 @@ class DAL {
     
     public function __construct(){}
     
-    
     /* 
      * Connects to the database
      */
@@ -34,7 +33,7 @@ class DAL {
      * and the count of restaurant of this type.
      */
     public function get_restaurant_types_with_count(){
-     $sql = "SELECT t._name AS name, COUNT(*) AS count
+     $sql = "SELECT t._name AS _name, COUNT(*) AS _count
                 FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.isOfType o,           restaurant_ratings.restaurant_type t
                 WHERE l.restaurant_id = r.restaurant_id
                     AND o.restaurant_id = r.restaurant_id
@@ -43,12 +42,37 @@ class DAL {
         return $this->query($sql);
     }
     
+    /*
+     * Get all the restaurant types for which there's at least one restaurant of this type
+     * and the count of restaurant of this type.
+     */
+    public function get_restaurant_types_with_count_as_RestaurantTypesWithCount(){
+        // Reuse existing query
+          $results = $this->get_restaurant_types_with_count();
+
+          // check for results
+          if (!$results){
+            return $results;
+          }
+          else{
+            // array to hold CarModel objects
+            $object_results = array();
+            
+            for ($i = 0; $i < count($results); $i++) {
+              $object_results[$i] = new RestaurantTypeWithCount($results[$i]);
+            }
+              
+            // return array of CarModel objects
+            return $object_results;
+          }
+    }
+    
     
     /*
      * Gets every column of all the raters.
      */
     public function get_review_count_by_rater(){
-     $sql = "SELECT u._name as name, COUNT(*) as count FROM restaurant_ratings.users u, restaurant_ratings.rater r, restaurant_ratings.rating s
+     $sql = "SELECT u._name as _name, COUNT(*) as _count FROM restaurant_ratings.users u, restaurant_ratings.rater r, restaurant_ratings.rating s
                 WHERE u.user_id=r.user_id AND r.rater_id = s.rater_id
                 GROUP BY u._name";
         return $this->query($sql);
@@ -113,7 +137,7 @@ class DALQueryResult {
     
     public function __construct(){}
     
-    public function __set($var, $val) {
+    public function set($var, $val) {
         $this->_results[$var] = $val;
     }
     
@@ -123,6 +147,31 @@ class DALQueryResult {
         }else{
             return null;
         }
+    }
+}
+
+class RestaurantTypeWithCount {
+
+    private $_name;
+    private $_count;
+    
+    public function __construct (DALQueryResult $result){
+        $this->_name = $result->_name;
+        $this->_count = $result->_count;
+    }
+    public function __get($var){
+        switch ($var){
+          case 'name':
+            return $this->_name;
+            break;
+          case 'count':
+            return $this->_count;
+            break;
+        }
+    }
+
+    public function __toString(){
+        return $this->_name;
     }
 }
 
