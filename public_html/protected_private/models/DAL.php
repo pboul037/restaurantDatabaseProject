@@ -19,6 +19,49 @@ class DAL {
         
         return $conn;
     }
+     
+    /*
+     * Gets food menu items for this $location of type $type and category $category.
+     *
+     * @author Patrice Boulet
+     */
+    public function get_menu_items($location_id, $type, $category){
+        
+        $sql = "SELECT i._name, i.description, i.price
+                FROM restaurant_ratings.locations l, restaurant_ratings.menu_item i
+                WHERE l.location_id = i.location_id
+                        AND i.location_id =" . $location_id .
+                        "AND i._type ='" . $type . 
+                        "' AND i.category = '" . $category . "'";
+        return $this->query($sql);
+    }
+    
+    /*
+     * Gets food menu items for this $location of type $type and category $category.
+     *
+     * @author Patrice Boulet
+     */
+    public function get_beverages_categories($location_id){
+        
+        $sql = "SELECT i.category
+                FROM restaurant_ratings.locations l, restaurant_ratings.menu_item i
+                WHERE l.location_id = i.location_id AND i.location_id =" . $location_id . " AND i._type = 'drink'
+                GROUP BY i.category";
+        return $this->query($sql);
+    }
+    
+    /*
+     * Gets location and restaurant details for this $location.
+     *
+     * @author Patrice Boulet
+     */
+    public function get_location_details($location_id){
+        
+        $sql = "SELECT * 
+                FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r
+                WHERE l.restaurant_id = r.restaurant_id AND l.location_id =" . $location_id;
+        return $this->query($sql);
+    }
     
     /*
      * Gets location id, address and name for all locations.
@@ -132,19 +175,6 @@ class DAL {
             // return array of CarModel objects
             return $object_results;
           }
-    }
-    
-    
-    /*
-     * Gets every column of all the raters.
-     *
-     * @author Patrice Boulet
-     */
-    public function get_review_count_by_rater(){
-     $sql = "SELECT u._name as _name, COUNT(*) as _count FROM restaurant_ratings.users u, restaurant_ratings.rater r, restaurant_ratings.rating s
-                WHERE u.user_id=r.user_id AND r.rater_id = s.rater_id
-                GROUP BY u._name";
-        return $this->query($sql);
     }
     
     /* 

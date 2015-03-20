@@ -176,7 +176,8 @@
                 $location_html_item .= 
                 '<div class="list-group-item"><div class="row">
                     <div class="col-sm-5">
-                        <h4>' . $location->name . '</br>';
+                        <a href="Location.php?locationid=' . $location->location_id . '">
+                        <h4>' . $location->name . '</a></br>';
                 
                 $address_for_gmaps_splitted = explode( ",", $location->address );
                 $address_for_gmaps = join('+', $address_for_gmaps_splitted);
