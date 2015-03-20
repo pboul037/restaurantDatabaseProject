@@ -95,6 +95,8 @@
                         <div class="row">
                             <select id="types_select" class="btn btn-default dropdown-toggle" onchange="updateSorting(this.value)">
                                 <option value="" disabled selected>Sort by...</option>
+                                <option value='avg_rating ASC'>Global rating (ascending)</option>
+                                <option value='avg_rating DESC'>Global rating (descending)</option>
                                 <option value='avg_price ASC'>Price (ascending)</option>
                                 <option value='avg_price DESC'>Price (descending)</option>
                                 <option value='avg_food ASC'>Food (ascending)</option>

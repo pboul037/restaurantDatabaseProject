@@ -186,7 +186,7 @@
                     </div>
                     <div class="col-sm-4">
                     <div class="row"><span class="col-sm-12"><span style="font-size:16pt; font-weight:bold;">' . 
-                            number_format((($location->avg_food + $location->avg_service + $location->avg_ambiance)/3), 1) . '</span>
+                            $location->avg_rating . '</span>
                             <span style="font-size:10pt">out of 5 </span><a style="font-size:8pt" href="#">(' . $location->total_num_ratings .' ratings)</a></span>
                     </div>';
                 
@@ -235,6 +235,12 @@
         function get_selected_sorting_tag_html_item(){
             $tag_text = "";
             switch($_SESSION['locations_sorting_selected']){
+                case 'avg_rating ASC':
+                    $tag_text = 'Global Rating (ascending)';
+                    break;
+                case 'avg_rating DESC':
+                    $tag_text = 'Global Rating (descending)';
+                    break;
                 case 'avg_price ASC':
                     $tag_text = 'Price (ascending)';
                     break;
