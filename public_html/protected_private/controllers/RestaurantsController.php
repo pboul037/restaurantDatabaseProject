@@ -65,7 +65,7 @@
                 $_SESSION['locations_sorting_selected'] = $_POST['sorting_selected'];
             
             // send sorting criterias if any
-            if( isset($_SESSION['locations_sorting_selected']))
+            if( isset($_SESSION['locations_sorting_selected']) && !$clear_search_options)
                 $locations_list = $dal->get_all_restaurants($_SESSION['locations_sorting_selected']);
             else
                 $locations_list = $dal->get_all_restaurants(null);
