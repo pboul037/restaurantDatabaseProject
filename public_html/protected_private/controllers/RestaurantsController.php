@@ -150,32 +150,54 @@
         function get_location_html_items($locations_list){
            $location_html_item = "";
             foreach($locations_list as $location){
-                $location_html_item .= '<a href="#" class="list-group-item">
-                            <div class="pull-right">';
-                foreach($_SESSION[$location->name . '-types'] as $cuisine_type){
+                $location_html_item .= 
+                '<div class="list-group-item"><div class="row">
+                    <div class="col-sm-5">
+                        <h4>' . $location->name . '</br>';
+                
+                $address_for_gmaps_splitted = explode( ",", $location->address );
+                $address_for_gmaps = join('+', $address_for_gmaps_splitted);
+                
+                $location_html_item .= '<a href="https://www.google.com/maps/dir/Current+Location/' . $address_for_gmaps . '"><small class="list-group-item-text">' . $location->address .'</small></a>
+                        </h4>
+                    </div>
+                    <div class="col-sm-4">
+                    <div class="row"><span class="col-sm-12"><span style="font-size:16pt; font-weight:bold;">' . 
+                            number_format((($location->avg_food + $location->avg_service + $location->avg_ambiance)/3), 1) . '</span>
+                            <span style="font-size:10pt">out of 5 </span><a style="font-size:8pt" href="#">(' . $location->total_num_ratings .' ratings)</a></span>
+                    </div>';
+                
+                    // add gold $ for actual price avg
+                    for( $i = 0; $i < $location->avg_price; $i++){
+                        $location_html_item .= '<h6 <span class="glyphicon glyphicon-usd" style="color:black"></span></h6>';
+                    }
+
+                    // add the subtraction of 5 by avg price of grey $
+                    for( $i = 0; $i < 5-$location->avg_price; $i++){
+                        $location_html_item .= '<h6 <span class="glyphicon glyphicon-usd" style="color:#DCDCDC"></span></h6>';
+                    }
+                   $location_html_item .= 
+                        //<div class="row"><span style="font-size:9pt">' . $location->avg_food . ' Food </span></div>
+                        //<div class="row"><span style="font-size:9pt">' . $location->avg_service . ' Service </span></div>  
+                        //<div class="row"><span style="font-size:9pt">' . $location->avg_ambiance . ' Ambiance</span></div> 
+                        '</div>
+                    <div class="col-sm-3">';
+                    
+                    foreach($_SESSION[$location->name . '-types'] as $cuisine_type){
                       $location_html_item .= '<span class="tagcloud tag label label-info">' . $cuisine_type . '</span>';
-                }
-                $location_html_item .= '</div>
-                        <div class="row">
-                            <h4 class="col-sm-3">' . $location->name . '</h4>';
+                    }
                 
-                for( $i = 0; $i < $location->avg_price; $i++){
-                    $location_html_item .= '<h6 <span class="glyphicon glyphicon-usd" style="color:gold"></span></h6>';
-                }
-                for( $i = 0; $i < 5-$location->avg_price; $i++){
-                    $location_html_item .= '<h6 <span class="glyphicon glyphicon-usd" style="color:grey"></span></h6>';
-                }
+                $location_html_item .= '</div></div></div>';
                 
-                $location_html_item .= '</div>
-                        <!-- <img src="http://placehold.it/320x150" alt=""> -->
-                        <p class="list-group-item-text">' . $location->address . 
+                
+                
+               /* $location_html_item .= '</div>
+                         
                         '<!-- <a target="_blank" href="http://www.bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.--></p>
                         <p class="list-group-item-text">
                             <div class="row">
                                 <div class="col-sm-9">
-                                <span class="glyphicon glyphicon-star"></span><span> Food : ' . $location->avg_food . ' </span>
-                                <span class="glyphicon glyphicon-star"></span><span> Service : ' . $location->avg_service . ' </span>  
-                                <span class="glyphicon glyphicon-star"></span><span> Ambiance : ' . $location->avg_ambiance . ' </span>  
+ 
                                 </div>
                                 <div class="col-sm-3">
                                                                <p class="pull-right">' . $location->total_num_ratings . ' ratings</p>   
@@ -184,7 +206,7 @@
                         <div>
                         </div>
                       </a>
-                      ';
+                      '; */
             }
             return $location_html_item;
         }

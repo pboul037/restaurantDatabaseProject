@@ -99,7 +99,7 @@
                                         Clear search options</button>
                         </div>
                     </div>
-                    <script type="text/javascript">
+                    <script type="text/javascript">        
                         function updateSelectedTypes(selected) {
                             $.ajax({
                                 type: 'POST',
@@ -110,6 +110,7 @@
                                 }
                             });
                         }
+                        
                         function clearAllSearchOptions(){
                             $.ajax({
                                 type: 'POST',
@@ -120,6 +121,7 @@
                                 }
                             });
                         }
+                        
                         function updateHtmlElements(response, disableClearSearchOptions){
                             var response = $.parseJSON(response);
                             //update restaurant list
