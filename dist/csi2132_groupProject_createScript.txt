@@ -30,7 +30,7 @@ CREATE TABLE restaurant
 
 CREATE TABLE restaurant_type(
     type_id INTEGER,
-    _name VARCHAR(20),
+    _name VARCHAR(30),
     PRIMARY KEY (type_id)
 );
 
@@ -78,7 +78,7 @@ CREATE TABLE rating
 	_comments TEXT,
     found_helpful INTEGER DEFAULT 0 CHECK (found_helpful > -1),
 	wasnt_helpful INTEGER DEFAULT 0 CHECK (wasnt_helpful > -1),
-    avg_rating REAL NOT NULL
+    avg_rating REAL NOT NULL,
 	PRIMARY KEY(rating_id),
 	FOREIGN KEY(rater_id)
         REFERENCES rater(rater_id)

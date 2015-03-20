@@ -1,4 +1,4 @@
-INSERT INTO restaurant_ratings.restaurant_type(
+﻿INSERT INTO restaurant_ratings.restaurant_type(
             type_id, _name)
     VALUES 
 	(0,'Afghan'),
