@@ -183,7 +183,6 @@
 
             <div class="col-md-9">
                 <div class="row">
-
                     <div class="col-sm-12 col-lg-12 col-md-12">
                         <div id="restaurant_list" class="list-group">
                         <?php echo get_location_html_items($locations_list) ?>

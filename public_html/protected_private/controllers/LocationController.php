@@ -28,9 +28,8 @@
         $mains_html = get_menu_items('food', 'main');
         $desserts_html = get_menu_items('food', 'dessert');
         
-        // get beverage menu items html
         foreach($beverage_categories as $category){
-            $beverages_menu_items_by_category[$category] = get_menu_items('drink', $category);
+            $beverages_menu_items_by_category[$category->category] = get_menu_items('drink', $category->category);
         }
         
         /* 
@@ -44,10 +43,21 @@
             
             $menu_items_html = "";
             $menu_items = $dal->get_menu_items($details->location_id, $type, $category);
+            $menu_items_html .= '<div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" data-parent="#accordion" 
+                    href="#collapse' . $category . '">' . $category . '</a><span class="pull-right badge">' . count($menu_items) . '</span>
+            </h4>
+          </div>
+          <div id="collapse1" class="panel-collapse collapse in">
+            <ul class="list-group">
+                <?php echo $appetizers_html; ?>
+            </ul>
+          </div>';
             
             foreach($menu_items as $menu_item){
                 $menu_items_html .= '<li class="list-group-item"><div class="pull-right"><h5>$ ' . $menu_item->price . '</h5></div><h5>' .                              $menu_item->_name . '</br>
-                                        <small>' . $menu_item->description . '</small></h5></li>
+                                        <small>' . $menu_item->description . '</small></h5><span class="badge"></span></li>
                 ';
             }
             

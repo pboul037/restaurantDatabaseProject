@@ -94,7 +94,7 @@
     <!-------->
     <div id="content">
         <h3><?php echo $details->_name; ?></h3>
-        <h6><small style="font-size:10pt"><a href="https://www.google.com/maps/dir/Current+Location/<?php echo $address_for_gmaps; ?>"><?php echo $details->street_address; ?></small></h6></h6></a>                <div class="row">
+        <h6><small style="font-size:10pt"><a href="https://www.google.com/maps/dir/Current+Location/<?php echo $address_for_gmaps; ?>"><?php echo $details->street_address; ?></small></h6></h6></a><div class="row">
         <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
             <li class="active"><a href="#details" data-toggle="tab">Details</a></li>
             <li><a href="#ratings" data-toggle="tab">Ratings</a></li>
@@ -131,60 +131,24 @@
                         <h3>Eat</h3>
                           <div class="panel-group" id="accordion">
                             <div class="panel panel-default">
-                              <div class="panel-heading">
-                                <h4 class="panel-title">
-                                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">Appetizers</a>
-                                </h4>
-                              </div>
-                              <div id="collapse1" class="panel-collapse collapse in">
-                                <ul class="list-group">
-                                    <?php echo $appetizers_html; ?>
-                                </ul>
-                              </div>
+                                <?php echo $appetizers_html; ?>
                             </div>
                             <div class="panel panel-default">
-                              <div class="panel-heading">
-                                <h4 class="panel-title">
-                                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">Main Dishes</a>
-                                </h4>
-                              </div>
-                              <div id="collapse2" class="panel-collapse collapse">
-                                <ul class="list-group">
-                                    <?php echo $mains_html; ?>
-                                </ul>
-                              </div>
+                                <?php echo $mains_html; ?>
                             </div>
                             <div class="panel panel-default">
-                              <div class="panel-heading">
-                                <h4 class="panel-title">
-                                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">Desserts</a>
-                                </h4>
-                              </div>
-                              <div id="collapse3" class="panel-collapse collapse">
-                                <ul class="list-group">
-                                   <?php echo $desserts_html; ?>
-                                </ul>
-                              </div>
+                                <?php echo $desserts_html; ?>
                             </div>
                           </div> 
                     </div>
                     <div class="col-sm-4">
                         <h3>Drink</h3>
                           <div class="panel-group" id="accordion">
+                            <?php foreach( $beverages_menu_items_by_category as $category=>$menu_items_html){ ?>
                             <div class="panel panel-default">
-                                <?php foreach( $beverages_menu_items_by_category as $menu_items_html){ ?>
-                                <div class="panel-heading">
-                                <h4 class="panel-title">
-                                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse4"></a>
-                                </h4>
-                              </div>
-                              <div id="collapse4" class="panel-collapse collapse in">
-                                <ul class="list-group">
-                                    <?php echo $menu_items_html; ?>
-                                </ul>
-                              </div>
-                                <?php } ?>
+                                <?php echo $menu_items_html; ?>
                             </div>
+                            <?php } ?>
                             </div>
                           </div>
                     </div>
