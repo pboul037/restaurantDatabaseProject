@@ -93,10 +93,29 @@
                             </div>
                         </div>
                         <div class="row">
+                            <select id="types_select" class="btn btn-default dropdown-toggle" onchange="updateSorting(this.value)">
+                                <option value="" disabled selected>Sort by...</option>
+                                <option value='avg_price ASC'>Price (ascending)</option>
+                                <option value='avg_price DESC'>Price (descending)</option>
+                                <option value='avg_food ASC'>Food (ascending)</option>
+                                <option value='avg_food DESC'>Food (descending)</option>
+                                <option value='avg_service ASC'>Service rating (ascending)</option>
+                                <option value='avg_service DESC'>Service rating (descending)</option>
+                                <option value='avg_ambiance ASC'>Ambiance rating (ascending)</option>
+                                <option value='avg_ambiance DESC'>Ambiance rating (descending)</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div id="selected_sorting_tag">
+                                <?php if( isset($_SESSION['locations_sorting_selected'])){ 
+                                    echo $sorting_tag;
+                                } ?>
+                            </div>
+                        </div>
+                        <div class="row">
                             <button id="clear_search_options_btn" type="button" class="btn btn-default" 
                                 onclick="clearAllSearchOptions()" 
-                                    <?php if( count($_SESSION['restaurant_types_selected']) == 0) echo 'disabled'; ?>>
-                                        Clear search options</button>
+                                    <?php if( count($_SESSION['restaurant_types_selected']) == 0 && !isset($_SESSION['locations_sorting_selected']))                                            echo 'disabled'; ?>> Clear search options</button>
                         </div>
                     </div>
                     <script type="text/javascript">        
@@ -106,7 +125,19 @@
                                 url: '../controllers/RestaurantsController.php',
                                 data: 'type_selected=' + selected,
                                 success: function (data) {
-                                    updateHtmlElements(data, false);
+                                    updateLocationListHtmlElements(data, false, true, false);
+                                }
+                            });
+                        }
+                        
+                        function updateSorting(selected){
+                            $.ajax({
+                                type: 'POST',
+                                url: '../controllers/RestaurantsController.php',
+                                data: 'sorting_selected=' + selected,
+                                success: function (data) {
+                                    console.log(data);
+                                    updateLocationListHtmlElements(data, false, false, true);
                                 }
                             });
                         }
@@ -117,21 +148,32 @@
                                 url: '../controllers/RestaurantsController.php',
                                 data: 'clear_all_search_options=' + 'true',
                                 success: function (data) {
-                                    updateHtmlElements(data, true)
+                                    updateLocationListHtmlElements(data, true, true, true)
                                 }
                             });
                         }
                         
-                        function updateHtmlElements(response, disableClearSearchOptions){
+                        function updateLocationListHtmlElements(response, disableClearSearchOptions, updateTypesMenuAndTags, updateSortingTag){
                             var response = $.parseJSON(response);
                             //update restaurant list
                             $('#restaurant_list').html(response[2]);
+                            // disable the clear search options button
+                            $('#clear_search_options_btn').prop('disabled', disableClearSearchOptions);
+                            if( updateTypesMenuAndTags )
+                                updateMenuAndTagsHtmlElements(response);
+                            if( updateSortingTag )
+                                updateSelectedSortingTag(response);
+                        }
+                        
+                        function updateMenuAndTagsHtmlElements(response){
                             // update types select dropdown options
                             $('#types_select').html(response[0]);
                             //update type tags cloud
                             $('#selected_types_tags').html(response[1]);
-                            // disable the clear search options button
-                            $('#clear_search_options_btn').prop('disabled', disableClearSearchOptions);
+                        }
+                        
+                        function updateSelectedSortingTag(response){
+                            $('#selected_sorting_tag').html(response[3]);
                         }
                     </script>
                 </div>

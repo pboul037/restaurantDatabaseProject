@@ -16,6 +16,11 @@
         $restaurant_types;
         $each_location_types = array();    
         $selected_cuisine_types = array();
+
+        $types_new_options = ""; 
+        $type_tags = "";
+        $sorting_tag = "";
+        $new_locations_list = "";
         
         get_locations_list();
         get_locations_types();
@@ -50,23 +55,33 @@
          */
         function get_locations_list(){
             
-            global $dal, $locations_list, $restaurant_types;
+            global $dal, $locations_list, $restaurant_types, $types_new_options, $type_tags, $sorting_tag, $new_locations_list;
            
-            $locations_list = $dal->get_all_restaurants();
-            $restaurant_types = $dal->get_restaurant_types_with_count_as_RestaurantTypesWithCount();
-            
             $type_selected = isset($_POST['type_selected']);
+            $sorting_selected = isset($_POST['sorting_selected']);
             $clear_search_options = isset($_POST['clear_all_search_options']);
+            
+            if($sorting_selected)
+                $_SESSION['locations_sorting_selected'] = $_POST['sorting_selected'];
+            
+            // send sorting criterias if any
+            if( isset($_SESSION['locations_sorting_selected']))
+                $locations_list = $dal->get_all_restaurants($_SESSION['locations_sorting_selected']);
+            else
+                $locations_list = $dal->get_all_restaurants(null);
+            
+            $restaurant_types = $dal->get_restaurant_types_with_count_as_RestaurantTypesWithCount();
             
             // initial load - no user specified search options
             if (!isset($_SESSION['restaurant_types_selected']))
-                    $_SESSION['restaurant_types_selected'] =  array();
+                    $_SESSION['restaurant_types_selected'] =  array();        
             
-            if( !$type_selected && count($_SESSION['restaurant_types_selected']) == 0){
+            if( !$type_selected && !isset($_SESSION['locations_sorting_selected']) && count($_SESSION['restaurant_types_selected']) == 0){
                 return;
             }else{
                 if($clear_search_options){
                     unset($_SESSION['restaurant_types_selected']);
+                    unset($_SESSION['locations_sorting_selected']);
                     $_SESSION['restaurant_types_selected'] = array();
                 }
                 
@@ -82,59 +97,67 @@
                 }
                 
                 // initialize response
-                if($type_selected || $clear_search_options){
+                if($type_selected || $clear_search_options || $sorting_selected){
                     
                     $response = array();
-                    $types_new_options = ""; 
-                    $type_tags = "";
-                    $new_locations_list = "";
                 
-                    // prepare the new options 
-                    $types_new_options .= '<select id="types_select" class="btn btn-default dropdown-toggle"                                                                onchange="updateSelectedTypes(this.value)"><option value="" disabled selected>Show only type(s)...</option>'; 
+                    if(!$sorting_selected){
+                        // prepare the new options 
+                        $types_new_options .= '<select id="types_select" class="btn btn-default dropdown-toggle"                                                                onchange="updateSelectedTypes(this.value)"><option value="" disabled selected>Show only type(s)...</option>'; 
+                    }
                 }
                 
-                for ($i = 0; $i < count($restaurant_types); $i++) {
-                    $found = false;
-                    foreach($_SESSION['restaurant_types_selected'] as $already_selected){ 
-                        if ( $restaurant_types[$i]->name == $already_selected ){
-                            unset($restaurant_types[$i]);
-                            $restaurant_types = array_values($restaurant_types);
-                            $found = true;
+                if(!$sorting_selected){
+                    for ($i = 0; $i < count($restaurant_types); $i++) {
+                        $found = false;
+                        foreach($_SESSION['restaurant_types_selected'] as $already_selected){ 
+                            if ( $restaurant_types[$i]->name == $already_selected ){
+                                unset($restaurant_types[$i]);
+                                $restaurant_types = array_values($restaurant_types);
+                                $found = true;
+                            } 
                         } 
-                    } 
-                    if($found == false && $type_selected || $clear_search_options){
-                        $types_new_options .= "<option value='" . $restaurant_types[$i]->name . "'>" . $restaurant_types[$i]->name . ' (' .                                                           $restaurant_types[$i]->count . ')</option>';                                       
+                        if($found == false && $type_selected || $clear_search_options){
+                            $types_new_options .= "<option value='" . $restaurant_types[$i]->name . "'>" . $restaurant_types[$i]->name . ' (' .                                                           $restaurant_types[$i]->count . ')</option>';                                       
+                        }
                     }
                 }
                 
                 if($type_selected || $clear_search_options)
                     $types_new_options .= '</select>';
                 
-                if( count($_SESSION['restaurant_types_selected']) !== 0 || $clear_search_options){
-                    if(!$clear_search_options)
-                        $restaurant_only_of_types = $dal->get_only_restaurants_of_types($_SESSION['restaurant_types_selected']);
-
-                    if($type_selected){
+                if( count($_SESSION['restaurant_types_selected']) !== 0 || $clear_search_options || isset($_SESSION['locations_sorting_selected'])){
+                    
+                    if(!$clear_search_options && count($_SESSION['restaurant_types_selected']) !== 0 ){
+                        $sorting_param = isset($_SESSION['locations_sorting_selected']) ? $_SESSION['locations_sorting_selected'] : null;
+                        $restaurant_only_of_types = $dal->get_only_restaurants_of_types($_SESSION['restaurant_types_selected'], $sorting_param);
+                    }
+                    
+                    if( isset($_SESSION['locations_sorting_selected'])){
+                        $sorting_tag .= get_selected_sorting_tag_html_item();
+                    }
+                    
+                    if($type_selected || count($_SESSION['restaurant_types_selected']) !== 0 && $sorting_selected){
                         foreach($_SESSION['restaurant_types_selected'] as $already_selected){
-                            $type_tags .= get_cloud_cuisine_tag_html_item($already_selected);
-                        }
+                                $type_tags .= get_cloud_cuisine_tag_html_item($already_selected);
+                            }
                         $new_locations_list .= get_location_html_items($restaurant_only_of_types);
                     }
                     
-                    if($clear_search_options){
+                    if($clear_search_options || count($_SESSION['restaurant_types_selected']) == 0){
                         $new_locations_list .= get_location_html_items($locations_list);
                     }
                     
-                    if($type_selected || $clear_search_options){
+                    if($type_selected || $clear_search_options || $sorting_selected){
                         //prepare array containing response
-                        array_push($response, $types_new_options, $type_tags, $new_locations_list);
+                        array_push($response, $types_new_options, $type_tags, $new_locations_list, $sorting_tag);
 
                         // send the response
                         echo json_encode($response); 
-                    }
-                    
+                    }                    
                     else{
-                        $locations_list = $restaurant_only_of_types;
+                        if(count($_SESSION['restaurant_types_selected']) != 0 )
+                            $locations_list = $restaurant_only_of_types;
                     }
                 }
             }
@@ -188,25 +211,6 @@
                     }
                 
                 $location_html_item .= '</div></div></div>';
-                
-                
-                
-               /* $location_html_item .= '</div>
-                         
-                        '<!-- <a target="_blank" href="http://www.bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.--></p>
-                        <p class="list-group-item-text">
-                            <div class="row">
-                                <div class="col-sm-9">
- 
-                                </div>
-                                <div class="col-sm-3">
-                                                               <p class="pull-right">' . $location->total_num_ratings . ' ratings</p>   
-                                </div>
-                            </div>
-                        <div>
-                        </div>
-                      </a>
-                      '; */
             }
             return $location_html_item;
         }
@@ -221,4 +225,44 @@
             return '<span class="tagcloud tag label label-info">' . $cuisine_type .
                                 '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span></span>';
         }
+
+        /*
+         * Returns a sorting tag html item as 
+         * a string.
+         *
+         * @author Patrice Boulet
+         */
+        function get_selected_sorting_tag_html_item(){
+            $tag_text = "";
+            switch($_SESSION['locations_sorting_selected']){
+                case 'avg_price ASC':
+                    $tag_text = 'Price (ascending)';
+                    break;
+                case 'avg_price DESC':
+                    $tag_text = 'Price (descending)';
+                    break;
+                case 'avg_service ASC':
+                    $tag_text = 'Service (ascending)';
+                    break;
+                case 'avg_service DESC':
+                    $tag_text = 'Service (descending)';
+                    break;
+                case 'avg_food ASC':
+                    $tag_text = 'Food (ascending)';
+                    break;
+                case 'avg_food DESC':
+                    $tag_text = 'Food (descending)';
+                    break;
+                case 'avg_ambiance ASC':
+                    $tag_text = 'Ambiance (ascending)';
+                    break;
+                case 'avg_ambiance DESC':
+                    $tag_text = 'Ambiance (descending)';
+                    break;
+            }
+            
+            return '<span class="tagcloud tag label label-info">' . $tag_text .
+                            '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span></span>';
+        }
+
 ?>
