@@ -52,6 +52,17 @@
         $dal =  new DAL();
         
     ?>
+    <script type="text/javascript"> 
+        $(function () {
+            $('#tabs').tab();
+            
+              var hash = window.location.hash;
+console.log(hash);  
+                // do some validation on the hash here
+
+                hash && $('ul.nav a[href="' + hash + '"]').tab('show');
+        });   
+    </script>
 </head>
 
 <body>
@@ -155,14 +166,7 @@
                 </div>
             </div>
         </div>
-    </div>
-
-
-    <script type="text/javascript">
-        $(function () {
-            $('#tabs').tab();
-        });
-    </script>    
+    </div>   
     </div> <!-- container -->
 </body>
 

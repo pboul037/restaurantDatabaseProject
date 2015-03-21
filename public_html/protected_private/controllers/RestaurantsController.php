@@ -188,7 +188,7 @@
                     <div class="col-sm-4">
                     <div class="row"><span class="col-sm-12"><span style="font-size:16pt; font-weight:bold;">' . 
                             $location->avg_rating . '</span>
-                            <span style="font-size:10pt">out of 5 </span><a style="font-size:8pt" href="#">(' . $location->total_num_ratings .' ratings)</a></span>
+                            <span style="font-size:10pt">out of 5 </span><a style="font-size:8pt" href="Location.php?locationid=' . $location->location_id . '#ratings">(' . $location->total_num_ratings .' ratings)</a></span>
                     </div>';
                 
                     // add gold $ for actual price avg
