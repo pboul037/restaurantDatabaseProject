@@ -72,7 +72,8 @@ class DAL {
      $sql = "SELECT l.location_id AS location_id, r._name AS name, l.street_address AS address, COUNT(*) as total_num_ratings, 
                     ROUND(AVG(g.price)::INTEGER) AS avg_price, ROUND(AVG(g.ambiance)::NUMERIC, 1) as avg_ambiance, 
                     ROUND(AVG(g.food)::NUMERIC, 1) as avg_food, ROUND(AVG(g.service)::NUMERIC, 1) as avg_service,
-                    ROUND(AVG(g.avg_rating)::NUMERIC, 1) as avg_rating
+                    ROUND(AVG(g.avg_rating)::NUMERIC, 1) as avg_rating, MIN(date_part('days', now() - g.date_written)) as days_written_to_now,
+                    ROUND((SUM((extract('epoch' from g.date_written)/100000000)*g.avg_rating)/COUNT(*))::NUMERIC, 1) as popularity
                 FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating g
                 WHERE r.restaurant_id = l.restaurant_id AND g.location_id = l.location_id
                 GROUP BY l.location_id, l.street_address, r._name";
@@ -104,7 +105,8 @@ class DAL {
         $sql = "SELECT l.location_id AS location_id, r._name AS name, l.street_address AS address, COUNT(*) as total_num_ratings, 
                     ROUND(AVG(g.price)::INTEGER) AS avg_price, ROUND(AVG(g.ambiance)::NUMERIC, 1) as avg_ambiance, 
                     ROUND(AVG(g.food)::NUMERIC, 1) as avg_food, ROUND(AVG(g.service)::NUMERIC, 1) as avg_service,
-                    ROUND(AVG(g.avg_rating)::NUMERIC, 1) as avg_rating
+                    ROUND(AVG(g.avg_rating)::NUMERIC, 1) as avg_rating, MIN(date_part('days', now() - g.date_written)) as days_written_to_now,
+                    ROUND((SUM((extract('epoch' from g.date_written)/100000000)*g.avg_rating)/COUNT(*))::NUMERIC, 1) as popularity
                 FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating g, restaurant_ratings.isOfType t  
                 WHERE r.restaurant_id = l.restaurant_id AND r.restaurant_id = t.restaurant_id 
                         AND g.location_id = l.location_id AND t.type_id IN (" . $this->get_user_specified_types_query($types_array) . ")

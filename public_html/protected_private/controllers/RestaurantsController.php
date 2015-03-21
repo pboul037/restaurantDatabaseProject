@@ -249,22 +249,28 @@
                     $tag_text = 'Price (descending)';
                     break;
                 case 'avg_service ASC':
-                    $tag_text = 'Service (ascending)';
+                    $tag_text = 'Service Rating (ascending)';
                     break;
                 case 'avg_service DESC':
-                    $tag_text = 'Service (descending)';
+                    $tag_text = 'Service Rating (descending)';
                     break;
                 case 'avg_food ASC':
-                    $tag_text = 'Food (ascending)';
+                    $tag_text = 'Food Rating (ascending)';
                     break;
                 case 'avg_food DESC':
-                    $tag_text = 'Food (descending)';
+                    $tag_text = 'Food Rating (descending)';
                     break;
                 case 'avg_ambiance ASC':
-                    $tag_text = 'Ambiance (ascending)';
+                    $tag_text = 'Ambiance Rating (ascending)';
                     break;
                 case 'avg_ambiance DESC':
-                    $tag_text = 'Ambiance (descending)';
+                    $tag_text = 'Ambiance Rating (descending)';
+                    break;
+                case 'popularity ASC':
+                    $tag_text = 'Popularity (ascending)';
+                    break;
+                case 'popularity DESC':
+                    $tag_text = 'Popularity (descending)';
                     break;
             }
             

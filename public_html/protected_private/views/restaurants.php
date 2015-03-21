@@ -95,16 +95,18 @@
                         <div class="row">
                             <select id="types_select" class="btn btn-default dropdown-toggle" onchange="updateSorting(this.value)">
                                 <option value="" disabled selected>Sort by...</option>
-                                <option value='avg_rating ASC'>Global rating (ascending)</option>
-                                <option value='avg_rating DESC'>Global rating (descending)</option>
+                                <option value='avg_rating ASC'>Global Rating (ascending)</option>
+                                <option value='avg_rating DESC'>Global Rating (descending)</option>
                                 <option value='avg_price ASC'>Price (ascending)</option>
                                 <option value='avg_price DESC'>Price (descending)</option>
-                                <option value='avg_food ASC'>Food (ascending)</option>
-                                <option value='avg_food DESC'>Food (descending)</option>
-                                <option value='avg_service ASC'>Service rating (ascending)</option>
-                                <option value='avg_service DESC'>Service rating (descending)</option>
-                                <option value='avg_ambiance ASC'>Ambiance rating (ascending)</option>
-                                <option value='avg_ambiance DESC'>Ambiance rating (descending)</option>
+                                <option value='avg_food ASC'>Food Rating(ascending)</option>
+                                <option value='avg_food DESC'>Food Rating(descending)</option>
+                                <option value='avg_service ASC'>Service Rating (ascending)</option>
+                                <option value='avg_service DESC'>Service Rating (descending)</option>
+                                <option value='avg_ambiance ASC'>Ambiance Rating (ascending)</option>
+                                <option value='avg_ambiance DESC'>Ambiance Rating (descending)</option>
+                                <option value='popularity ASC'>Popularity (ascending)</option>
+                                <option value='popularity DESC'>Popularity (descending)</option>
                             </select>
                         </div>
                         <div class="row">
@@ -182,6 +184,7 @@
             </div>
 
             <div class="col-md-9">
+                <div class="row">
                 <div class="row">
                     <div class="col-sm-12 col-lg-12 col-md-12">
                         <div id="restaurant_list" class="list-group">
