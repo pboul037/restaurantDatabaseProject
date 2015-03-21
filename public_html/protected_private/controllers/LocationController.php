@@ -49,17 +49,17 @@
                     href="#collapse' . $category . '">' . $category . '</a><span class="pull-right badge">' . count($menu_items) . '</span>
             </h4>
           </div>
-          <div id="collapse1" class="panel-collapse collapse in">
+          <div id="collapse' . $category . '" class="panel-collapse collapse">
             <ul class="list-group">
-                <?php echo $appetizers_html; ?>
-            </ul>
-          </div>';
+                <?php echo $appetizers_html; ?>';
             
             foreach($menu_items as $menu_item){
                 $menu_items_html .= '<li class="list-group-item"><div class="pull-right"><h5>$ ' . $menu_item->price . '</h5></div><h5>' .                              $menu_item->_name . '</br>
                                         <small>' . $menu_item->description . '</small></h5><span class="badge"></span></li>
                 ';
             }
+            
+            $menu_items_html .= '</ul></div>';
             
             return $menu_items_html;
         }
