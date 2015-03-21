@@ -53,13 +53,10 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="home.php">Home</a>
-                    </li>
-                    <li>
                         <a href="restaurants.php">Restaurants</a>
                     </li>
                     <li>
-                        <a href="raters.php">Raters</a>
+                        <a href="raters.php">Ratings</a>
                     </li>
                 </ul>
             </div>
