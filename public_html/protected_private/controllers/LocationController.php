@@ -15,6 +15,8 @@
         $details = $dal->get_location_details($_GET['locationid']);
         $details = $details[0];
 
+        $location_ratings_list = $dal->get_location_ratings($_GET['locationid']);
+
         $address_for_gmaps_splitted = explode( ",", $details->street_address );
         $address_for_gmaps = join('+', $address_for_gmaps_splitted);
 
@@ -32,6 +34,43 @@
             $beverages_menu_items_by_category[$category->category] = get_menu_items('drink', $category->category);
         }
         
+
+        /*
+         * Returns a $location_rating list html item as 
+         * a string.
+         *
+         * @author Junyi Dai
+         */
+        function get_location_rating_html_items($location_ratings_list){
+           $location_rating_html_item = "";
+            foreach($location_ratings_list as $location_rating){
+                $location_rating_html_item .= 
+                '<div class="list-group-item"><div class="row">
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <span class="col-sm-12">
+                                <span style="font-size:16pt; font-weight:bold;">' . $location_rating->avg_rating . '</span>
+                                <span style="font-size:10pt">out of 5 </span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <span style="font-size:10pt">By </span>
+                        <a style="font-size:10pt" href="Location.php?locationid=' . $location_rating->location_id . '#ratings">' 
+                            . $location_rating->_name .'</a>
+                        <span style="font-size:10pt">on </span>
+                        <span style="font-size:10pt;">' . $location_rating->date_written . '</span>
+                    </div>
+                    <div class="col-sm-12
+                        <span style="font-size:10pt;">' . $location_rating->_comments . '</span>
+                    </div>
+                </div>
+            </div>';
+            }
+            return $location_rating_html_item;
+        }
+
+
         /* 
          * Returns a list of html list element for 
          * menu items that are of $type type and $category category.

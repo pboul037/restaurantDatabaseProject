@@ -64,6 +64,21 @@ class DAL {
     }
     
     /*
+     * Gets rating, location, and restaurant details for this $location.
+     *
+     * @author Junyi Dai
+     */
+    public function get_location_ratings($location_id){
+        
+        $sql = "SELECT *
+                FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating ra,        restaurant_ratings.rater rat, restaurant_ratings.users u
+                WHERE r.restaurant_id = l.restaurant_id AND l.location_id = ra.location_id 
+                        AND ra.rater_id = rat.rater_id AND rat.user_id = u.user_id 
+                        AND l.location_id =" . $location_id;
+        return $this->query($sql);
+    }
+    
+    /*
      * Gets location id, address and name for all locations.
      * 
      * @author Patrice Boulet

@@ -128,7 +128,7 @@ console.log(hash);
             </div>
             <div class="tab-pane" id="ratings">
                 <h1>Ratings</h1>
-                <p>Location ratings</p>
+                <?php echo get_location_rating_html_items($location_ratings_list) ?>
             </div>
             <div class="tab-pane" id="menu">
                 <div class="row">

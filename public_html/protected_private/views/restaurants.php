@@ -205,7 +205,7 @@
         <footer>
             <div class="row">
                 <div class="col-lg-12">
-                    <p>Copyright &copy; Patrice Boulet, Ahmed Quasim & Junyi Dai 2015</p>
+                    <p>Copyright &copy; Patrice Boulet, Qasim Ahmed, & Junyi Dai 2015</p>
                 </div>
             </div>
         </footer>
