@@ -14,6 +14,9 @@
     <!-- controller -->
     <?php require_once(dirname(dirname(__FILE__)) . '\controllers\RestaurantsController.php');?>
     
+    <!-- modal dialogs -->
+    <?php include('/SignupModal.html'); ?>
+    
     <!-- Bootstrap Core CSS -->
     <link href="../../../framwork_dir/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -24,6 +27,9 @@
     <!-- Bootrap JS and jQuery -->
     <script src="../../../framwork_dir/bootstrap/js/jquery.js"></script>
     <script src="../../../framwork_dir/bootstrap/js/bootstrap.js"></script>
+    
+    <!-- Form validation -->
+    <script src="../../../public_html/protected_private/js/jQueryFormValidator.js"></script>
     
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -57,6 +63,15 @@
                     </li>
                     <li>
                         <a href="raters.php">Ratings</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav pull-right">
+                    <li>
+                        <a>Login</a>
+                    </li>
+                    <li>
+                        <!-- Button trigger modal -->
+                        <a href="#myModal" class="btn btn-default btn-sm" onclick="showSignupModal()">Sign up</a>
                     </li>
                 </ul>
             </div>
@@ -119,7 +134,13 @@
                                     <?php if( count($_SESSION['restaurant_types_selected']) == 0 && !isset($_SESSION['locations_sorting_selected']))                                            echo 'disabled'; ?>> Clear search options</button>
                         </div>
                     </div>
-                    <script type="text/javascript">        
+                    <script type="text/javascript">     
+                        /*
+                         * Updates the GUI when a type filter selection is
+                         * made from the dropdown.
+                         *
+                         * @author Patrice Boulet
+                         */
                         function updateSelectedTypes(selected) {
                             $.ajax({
                                 type: 'POST',
@@ -131,18 +152,28 @@
                             });
                         }
                         
+                        /*
+                         * Updates GUI when a sorting options is selected from 
+                         * the dropdown menu.
+                         *
+                         * @author Patrice Boulet
+                         */
                         function updateSorting(selected){
                             $.ajax({
                                 type: 'POST',
                                 url: '../controllers/RestaurantsController.php',
                                 data: 'sorting_selected=' + selected,
                                 success: function (data) {
-                                    console.log(data);
                                     updateLocationListHtmlElements(data, false, false, true);
                                 }
                             });
                         }
                         
+                        /*
+                         * Updates the GUI when clear all search options is selected. 
+                         *
+                         * @author Patrice Boulet
+                         */
                         function clearAllSearchOptions(){
                             $.ajax({
                                 type: 'POST',
@@ -154,6 +185,11 @@
                             });
                         }
                         
+                        /*
+                         * Updates the locations list element in the GUI.
+                         *
+                         * @author Patrice Boulet
+                         */
                         function updateLocationListHtmlElements(response, disableClearSearchOptions, updateTypesMenuAndTags, updateSortingTag){
                             var response = $.parseJSON(response);
                             //update restaurant list
@@ -166,6 +202,11 @@
                                 updateSelectedSortingTag(response);
                         }
                         
+                        /*
+                         * Updates the restaurant type select options and tags cloud in GUI.
+                         *
+                         * @author Patrice Boulet
+                         */
                         function updateMenuAndTagsHtmlElements(response){
                             // update types select dropdown options
                             $('#types_select').html(response[0]);
@@ -173,9 +214,57 @@
                             $('#selected_types_tags').html(response[1]);
                         }
                         
+                        /*
+                         * Updates the sorting tag for the sorting dropdown.
+                         *
+                         * @author Patrice Boulet
+                         */
                         function updateSelectedSortingTag(response){
                             $('#selected_sorting_tag').html(response[3]);
                         }
+                        
+                        /*
+                         * Shows the signup form.
+                         *
+                         * @author Patrice Boulet
+                         */
+                        function showSignupModal(){
+                            $.ajax({
+                                  type: "POST",
+                                  url: "../controllers/SignupModalController.php",
+                                  data: {rater_types:true},
+                                  success: function(html_rater_types){
+                                        $('#signupRaterType').html(html_rater_types);
+                                        $('#signupModal').modal('show');// this triggers your modal to display
+                                   }
+                            });
+                        }
+                        
+                        // executed on the document ready event
+                        $( function() {
+                            $('#signupModal').on('shown.bs.modal', function () {
+                              $('#inputEmail').focus()
+                            });
+                            /*
+                             * Handles submission and validation of the signup form.
+                             *
+                             * @author Patrice Boulet
+                             */
+                            $('#signUpFormSubmit').on('click', function(){
+                                console.log($('#signupForm').serialize());
+                                var validationJSONresult = validateForm("signupForm");
+                                if(validationJSONresult != false){
+                                    $.ajax({
+                                      type: "POST",
+                                      url: "../controllers/SignupModalController.php",
+                                      data: "signup_form_data=" + validationJSONresult,
+                                      success: function(html_rater_types){
+                                            $('#signupModal').modal('hide');// this triggers your modal to display
+                                       }
+                                    });
+                                }
+                            });
+                        });
                     </script>
                 </div>
             </div>
