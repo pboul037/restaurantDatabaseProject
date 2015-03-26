@@ -55,11 +55,9 @@
     <script type="text/javascript"> 
         $(function () {
             $('#tabs').tab();
-            
-              var hash = window.location.hash;
-console.log(hash);  
+                var hash = window.location.hash;
+                console.log(hash);  
                 // do some validation on the hash here
-
                 hash && $('ul.nav a[href="' + hash + '"]').tab('show');
         });   
     </script>
@@ -88,6 +86,14 @@ console.log(hash);
                     </li>
                     <li>
                         <a href="raters.php">Ratings</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav pull-right">
+                    <li>
+                        <a>Login</a>
+                    </li>
+                    <li>
+                        <a>Signup</a>
                     </li>
                 </ul>
             </div>

@@ -19,7 +19,20 @@ class DAL {
         
         return $conn;
     }
-     
+    
+    
+    /*
+     * Gets all rater types.
+     *
+     * @author Patrice Boulet
+     */
+    public function get_all_rater_types(){ 
+        $sql = "SELECT r._type as type
+                FROM restaurant_ratings.rater r
+                GROUP BY _type";
+        return $this->query($sql);
+    }
+    
     /*
      * Gets food menu items for this $location of type $type and category $category.
      *
