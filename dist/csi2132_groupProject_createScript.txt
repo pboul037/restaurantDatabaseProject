@@ -1,5 +1,7 @@
+set search_path="restaurant_ratings";
+
 CREATE TABLE users(
-    user_id INTEGER,
+    user_id SERIAL,
     email VARCHAR(200) NOT NULL,
     _name VARCHAR(15) NOT NULL,
     pswd VARCHAR(32) CHECK (length(pswd) > 4),
@@ -10,8 +12,8 @@ CREATE TABLE users(
 
 CREATE TABLE rater
 (
-    user_id INTEGER,
-	rater_id INTEGER,
+    rater_id SERIAL,
+    user_id BIGSERIAL,
 	_type VARCHAR(30) NOT NULL,
     found_helpful INTEGER DEFAULT 0 CHECK ( found_helpful > -1),
 	wasnt_helpful INTEGER DEFAULT 0 CHECK ( wasnt_helpful > -1),
@@ -22,17 +24,18 @@ CREATE TABLE rater
 
 CREATE TABLE restaurant
 (
-	restaurant_id INTEGER,
+	restaurant_id SERIAL,
 	_name VARCHAR(30) NOT NULL,
 	url VARCHAR(500),
 	PRIMARY KEY(restaurant_id)
 );
 
 CREATE TABLE restaurant_type(
-    type_id INTEGER,
+    type_id SERIAL,
     _name VARCHAR(30),
     PRIMARY KEY (type_id)
 );
+
 
 CREATE TABLE isOfType(
     type_id INTEGER,
@@ -48,7 +51,7 @@ CREATE TABLE isOfType(
 
 CREATE TABLE locations
 (
-	location_id INTEGER,
+	location_id SERIAL,
 	first_open_date DATE,
 	manager_name VARCHAR(50),
 	phone_number VARCHAR(30),
@@ -63,9 +66,9 @@ CREATE TABLE locations
 
 CREATE TABLE rating
 (
+	rating_id SERIAL,
     location_id INTEGER,
     rater_id INTEGER DEFAULT 0,
-	rating_id INTEGER,
 	date_written DATE NOT NULL,
 	price REAL NOT NULL 
         CHECK(price >= 1 AND price <= 5),
@@ -88,9 +91,10 @@ CREATE TABLE rating
         ON DELETE CASCADE
 );
 
+
 CREATE TABLE menu_item
 (
-	item_id INTEGER,
+	item_id SERIAL,
 	_name VARCHAR(75) NOT NULL,
 	_type VARCHAR(30) NOT NULL,
 	category VARCHAR(30) NOT NULL,
@@ -103,9 +107,11 @@ CREATE TABLE menu_item
         ON DELETE CASCADE
 );
 
+
+
 CREATE TABLE rating_item
 (
-	rating_item_id INTEGER,
+	rating_item_id SERIAL,
 	rating REAL NOT NULL 
         CHECK(rating >= 1 AND rating <= 5),
     item_id INTEGER,
@@ -128,3 +134,12 @@ CREATE TABLE refers(
         REFERENCES menu_item(item_id)
         ON DELETE RESTRICT
 );
+
+ALTER SEQUENCE users_user_id_seq RESTART WITH 1;
+ALTER SEQUENCE rater_rater_id_seq RESTART WITH 1;
+ALTER SEQUENCE restaurant_restaurant_id_seq RESTART WITH 1;
+ALTER SEQUENCE restaurant_type_type_id_seq RESTART WITH 1;
+ALTER SEQUENCE locations_location_id_seq RESTART WITH 1;
+ALTER SEQUENCE rating_rating_id_seq RESTART WITH 1;
+ALTER SEQUENCE menu_item_item_id_seq RESTART WITH 1;
+ALTER SEQUENCE rating_item_rating_item_id_seq RESTART WITH 1;
