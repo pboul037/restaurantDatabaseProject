@@ -259,7 +259,8 @@
                                       url: "../controllers/SignupModalController.php",
                                       data: "signup_form_data=" + validationJSONresult,
                                       success: function(html_rater_types){
-                                            $('#signupModal').modal('hide');// this triggers your modal to display
+                                          console.log(html_rater_types);
+                                        $('#signupModal').modal('hide');// this triggers your modal to display
                                        }
                                     });
                                 }

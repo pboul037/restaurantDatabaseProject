@@ -20,6 +20,21 @@ class DAL {
         return $conn;
     }
     
+    /*
+     * Signup a new rater (also creates a new user associated with it).
+     *
+     * @author Patrice Boulet
+     */
+    public function signup_new_rater($email, $username, $pswd, $rater_type){ 
+        $sql = "WITH user_insert AS (
+                    INSERT INTO restaurant_ratings.users(email, _name, pswd, join_date)
+                    VALUES ('" . $email . "', '" . $username . "', '" . $pswd . "', NOW()::DATE)
+                    RETURNING user_id 
+                )
+                INSERT INTO restaurant_ratings.rater(user_id, _type)
+                VALUES (  (SELECT i.user_id FROM user_insert i), '" . $rater_type . "');";
+        return $this->query($sql);
+    }     
     
     /*
      * Gets all rater types.

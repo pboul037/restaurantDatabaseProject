@@ -26,6 +26,6 @@
       */
     if(isset($_POST['signup_form_data'])){
         $signup_form_data = json_decode($_POST['signup_form_data']);
-        
+        $dal->signup_new_rater($signup_form_data[0], $signup_form_data[1], $signup_form_data[2], $signup_form_data[4]);
     }
 ?>
