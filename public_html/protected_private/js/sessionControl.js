@@ -23,6 +23,19 @@
     function showLoginModal(){
         $('#loginModal').modal('show');// triggers login modal to display
     }
+    
+    /*
+     * Check if logged in.
+     *
+     * @author Patrice Boulet
+     */
+    function checkLoggedIn(){
+        return $.ajax({
+              type: "POST",
+              url: "../controllers/SessionController.php",
+              data: {check_logged_in:true}
+        });
+    }
 
     /*
      * Logs out a user.

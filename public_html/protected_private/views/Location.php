@@ -18,7 +18,8 @@
         
         // modal dialogs 
         include('/SignupModal.html'); 
-        include('/LoginModal.html'); 
+        include('/LoginModal.html');
+        include('/AddRatingModal.html');
     ?>
     
     <!-- Bootstrap Core CSS -->
@@ -26,6 +27,7 @@
 
     <!-- Custom CSS -->
     <link href="../../../framwork_dir/bootstrap/css/homepage.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
     
     <!-- jQuery -->
@@ -36,6 +38,9 @@
     
     <!-- Notify -->
     <script src="../../../framwork_dir/notify/notify.min.js"></script>
+    
+    <!-- Bootstrap rating input (stars) -->
+    <script src="../../../framwork_dir/bootstrap-rating-input/bootstrap-rating-input.min.js"></script>
     
     <!-- Form validation and session control -->
     <script src="../../../public_html/protected_private/js/jQueryFormValidator.js"></script>
@@ -158,7 +163,12 @@
                 <?php } ?></div>
             </div>
             <div class="tab-pane" id="ratings">
-                <h1>Ratings</h1>
+                <div class="row">
+                    <div class="col-sm-4"><h1>Ratings</h1></div>
+                    <div class="col-sm-8" style="padding-top:18px">
+                        <button class="btn btn-primary pull-right" onclick="addRating()">Add a rating</button>
+                    </div>
+                </div>
                 <?php echo get_location_rating_html_items($location_ratings_list) ?>
             </div>
             <div class="tab-pane" id="menu">
@@ -196,6 +206,17 @@
         </div>
     </div>   
     </div> <!-- container -->
+    <script type="text/javascript">  
+        function addRating(){
+            checkLoggedIn().success(function(logged_in){
+                if(logged_in){
+                    $('#addLocationRatingModal').modal('show');// triggers login modal to display
+                }else{
+                    showLoginModal();
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>
