@@ -21,6 +21,18 @@ class DAL {
     }
     
     /*
+     * Checks login credentials.
+     *
+     * @author Patrice Boulet
+     */
+    public function check_credentials($username, $pswd){ 
+        $sql = "SELECT u._name as name, u.pswd as pswd
+                FROM restaurant_ratings.users u
+                WHERE u._name = '" . $username . "' AND u.pswd = '" . $pswd . "';";
+        return $this->query($sql);
+    } 
+    
+    /*
      * Signup a new rater (also creates a new user associated with it).
      *
      * @author Patrice Boulet
@@ -226,7 +238,6 @@ class DAL {
      * Prepares and executes a  generic query to the database
      * and then converts it to DALQueryResult object.
      *
-     * @author Patrice Boulet
      * 
      * return
      *      If there are not any results, it returns null on a SELECT query, 
@@ -277,7 +288,6 @@ class DAL {
 /* 
  * Generic database query result.
  *
- * @author Patrice Boulet
  */
 class DALQueryResult {
     

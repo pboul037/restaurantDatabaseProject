@@ -1,5 +1,6 @@
 <?php
         session_start();
+        // set session to expire in 30 minutes
 
         //Retrieve login id from session object
         //if(!isset($_SESSION['loginid'])){

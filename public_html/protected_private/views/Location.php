@@ -12,7 +12,14 @@
     <title>Restaurant Ratings</title>
     
     <!-- controller -->
-    <?php require_once(dirname(dirname(__FILE__)) . '\controllers\LocationController.php');?>
+    <?php 
+        // controller
+        require_once(dirname(dirname(__FILE__)) . '\controllers\LocationController.php');
+        
+        // modal dialogs 
+        include('/SignupModal.html'); 
+        include('/LoginModal.html'); 
+    ?>
     
     <!-- Bootstrap Core CSS -->
     <link href="../../../framwork_dir/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -26,6 +33,13 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="../../../framwork_dir/bootstrap/js/bootstrap.min.js"></script>
+    
+    <!-- Notify -->
+    <script src="../../../framwork_dir/notify/notify.min.js"></script>
+    
+    <!-- Form validation and session control -->
+    <script src="../../../public_html/protected_private/js/jQueryFormValidator.js"></script>
+    <script src="../../../public_html/protected_private/js/sessionControl.js"</script>
     
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -88,13 +102,24 @@
                         <a href="raters.php">Ratings</a>
                     </li>
                 </ul>
-                <ul class="nav navbar-nav pull-right">
-                    <li>
-                        <a>Login</a>
-                    </li>
-                    <li>
-                        <a>Signup</a>
-                    </li>
+                <ul id ="sessionButtons" class="nav navbar-nav pull-right">
+                    <?php 
+                    if (!isset($_SESSION['username'])) { 
+                        echo '<li>
+                            <a style="cursor: pointer" onclick="showLoginModal()">Login</a>
+                        </li>
+                        <li>
+                            <!-- Button trigger modal -->
+                            <a style="cursor: pointer" onclick="showSignupModal()">Sign up</a>
+                        </li>';
+                    }else{
+                        echo '<li>
+                            <a style="cursor: pointer" onclick="">' . $_SESSION['username'] . '</a>
+                        </li>
+                        <li>
+                            <a style="cursor: pointer" onclick="logout()">Log out</a>
+                        </li>';
+                    } ?>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->

@@ -10,12 +10,15 @@
     <meta name="author" content="">
 
     <title>Restaurant Ratings</title>
-    
-    <!-- controller -->
-    <?php require_once(dirname(dirname(__FILE__)) . '\controllers\RestaurantsController.php');?>
-    
-    <!-- modal dialogs -->
-    <?php include('/SignupModal.html'); ?>
+
+    <?php 
+        // controller 
+        require_once(dirname(dirname(__FILE__)) . '\controllers\RestaurantsController.php');
+        
+        // modal dialogs 
+        include('/SignupModal.html'); 
+        include('/LoginModal.html'); 
+    ?>
     
     <!-- Bootstrap Core CSS -->
     <link href="../../../framwork_dir/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -24,12 +27,14 @@
     <link href="../../../framwork_dir/bootstrap/css/homepage.css" rel="stylesheet">
     <link href="../../css/default.css" rel="stylesheet">
     
-    <!-- Bootrap JS and jQuery -->
+    <!-- Bootrap JS, jQuery and toastr-->
     <script src="../../../framwork_dir/bootstrap/js/jquery.js"></script>
     <script src="../../../framwork_dir/bootstrap/js/bootstrap.js"></script>
+    <script src="../../../framwork_dir/notify/notify.min.js"></script>
     
-    <!-- Form validation -->
+    <!-- Form validation & session control -->
     <script src="../../../public_html/protected_private/js/jQueryFormValidator.js"></script>
+    <script src="../../../public_html/protected_private/js/sessionControl.js"></script>
     
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -65,14 +70,24 @@
                         <a href="raters.php">Ratings</a>
                     </li>
                 </ul>
-                <ul class="nav navbar-nav pull-right">
-                    <li>
-                        <a>Login</a>
-                    </li>
-                    <li>
-                        <!-- Button trigger modal -->
-                        <a href="#myModal" class="btn btn-default btn-sm" onclick="showSignupModal()">Sign up</a>
-                    </li>
+                <ul id="sessionButtons" class="nav navbar-nav pull-right">
+                    <?php 
+                    if (!isset($_SESSION['username'])) { 
+                        echo '<li>
+                            <a style="cursor: pointer" onclick="showLoginModal()">Login</a>
+                        </li>
+                        <li>
+                            <!-- Button trigger modal -->
+                            <a style="cursor: pointer" onclick="showSignupModal()">Sign up</a>
+                        </li>';
+                    }else{
+                        echo '<li>
+                            <a style="cursor: pointer" onclick="">' . $_SESSION['username'] . '</a>
+                        </li>
+                        <li>
+                            <a style="cursor: pointer" onclick="logout()">Log out</a>
+                        </li>';
+                    } ?>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -222,50 +237,6 @@
                         function updateSelectedSortingTag(response){
                             $('#selected_sorting_tag').html(response[3]);
                         }
-                        
-                        /*
-                         * Shows the signup form.
-                         *
-                         * @author Patrice Boulet
-                         */
-                        function showSignupModal(){
-                            $.ajax({
-                                  type: "POST",
-                                  url: "../controllers/SignupModalController.php",
-                                  data: {rater_types:true},
-                                  success: function(html_rater_types){
-                                        $('#signupRaterType').html(html_rater_types);
-                                        $('#signupModal').modal('show');// this triggers your modal to display
-                                   }
-                            });
-                        }
-                        
-                        // executed on the document ready event
-                        $( function() {
-                            $('#signupModal').on('shown.bs.modal', function () {
-                              $('#inputEmail').focus()
-                            });
-                            /*
-                             * Handles submission and validation of the signup form.
-                             *
-                             * @author Patrice Boulet
-                             */
-                            $('#signUpFormSubmit').on('click', function(){
-                                console.log($('#signupForm').serialize());
-                                var validationJSONresult = validateForm("signupForm");
-                                if(validationJSONresult != false){
-                                    $.ajax({
-                                      type: "POST",
-                                      url: "../controllers/SignupModalController.php",
-                                      data: "signup_form_data=" + validationJSONresult,
-                                      success: function(html_rater_types){
-                                          console.log(html_rater_types);
-                                        $('#signupModal').modal('hide');// this triggers your modal to display
-                                       }
-                                    });
-                                }
-                            });
-                        });
                     </script>
                 </div>
             </div>
