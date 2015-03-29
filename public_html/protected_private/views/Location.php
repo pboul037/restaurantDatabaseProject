@@ -191,6 +191,53 @@
                                 onclick="clearAllSearchOptions()" 
                                     <?php if( count($_SESSION['restaurant_types_selected']) == 0 && !isset($_SESSION['locations_sorting_selected']))                                            echo 'disabled'; ?>> Clear search options</button>
                     </div>
+                    <script type="text/javascript">
+                        /*
+                         * Updates GUI when a sorting option is selected from 
+                         * the dropdown menu.
+                         *
+                         * @author Junyi Dai
+                         */
+                        function updateSorting(selected){
+                            $.ajax({
+                                type: 'POST',
+                                url: '../controllers/LocationController.php',
+                                data: 'sorting_selected=' + selected,
+                                success: function (data) {
+                                    updateRatingsListHtmlElements(data, false);
+                                }
+                            });
+                        }
+                        
+                        /*
+                         * Updates the GUI when clear all search options is selected. 
+                         *
+                         * @author Junyi Dai
+                         */
+                        function clearAllSearchOptions(){
+                            $.ajax({
+                                type: 'POST',
+                                url: '../controllers/LocationController.php',
+                                data: 'clear_all_search_options=' + 'true',
+                                success: function (data) {
+                                    updateRatingsListHtmlElements(data, true)
+                                }
+                            });
+                        }
+                        
+                        /*
+                         * Updates the ratings list element in the GUI.
+                         *
+                         * @author Junyi Dai
+                         */
+                        function updateRatingsListHtmlElements(response, disableClearSearchOptions){
+                            var response = $.parseJSON(response);
+                            //update ratings list
+                            $('#ratings_list').html(response[2]);
+                            // disable the clear search options button
+                            $('#clear_search_options_btn').prop('disabled', disableClearSearchOptions);
+                        }
+                    </script>
                 </div>
                 <?php echo get_location_rating_html_items($location_ratings_list) ?>
             </div>
