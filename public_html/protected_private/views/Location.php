@@ -159,7 +159,7 @@
                     <p>Opening Hours:</p>
                 </div>
                 <div><?php for($i = 0; $i < 7; $i++){ ?>
-                    <span style="font-size:6pt"><?php echo $opening_hours[$i]; ?></span></br>
+                    <span style="font-size:10pt"><?php echo $opening_hours[$i]; ?></span></br>
                 <?php } ?></div>
             </div>
             <div class="tab-pane" id="ratings">
@@ -167,6 +167,29 @@
                     <div class="col-sm-4"><h1>Ratings</h1></div>
                     <div class="col-sm-8" style="padding-top:18px">
                         <button class="btn btn-primary pull-right" onclick="addRating()">Add a rating</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <select id="types_select" class="btn btn-default dropdown-toggle" onchange="updateSorting(this.value)">
+                                <option value="" disabled selected>Sort by...</option>
+                                <option value='date_written ASC'>Date Written (ascending)</option>
+                                <option value='date_written DESC'>Date Written (descending)</option>
+                                <option value='avg_food ASC'>Food Rating (ascending)</option>
+                                <option value='avg_food DESC'>Food Rating (descending)</option>
+                                <option value='avg_ambiance ASC'>Ambiance Rating(ascending)</option>
+                                <option value='avg_ambiance DESC'>Ambiance Rating(descending)</option>
+                                <option value='rater_reputation ASC'>Rater Reputation (ascending)</option>
+                                <option value='rater_reputation DESC'>Rater Reputation (descending)</option>
+                                <option value='avg_service ASC'>Service Rating (ascending)</option>
+                                <option value='avg_service DESC'>Service Rating (descending)</option>
+                                <option value='price ASC'>Price (ascending)</option>
+                                <option value='price DESC'>Price (descending)</option>
+                        </select>
+                        
+                        <button id="clear_search_options_btn" type="button" class="btn btn-default" 
+                                onclick="clearAllSearchOptions()" 
+                                    <?php if( count($_SESSION['restaurant_types_selected']) == 0 && !isset($_SESSION['locations_sorting_selected']))                                            echo 'disabled'; ?>> Clear search options</button>
                     </div>
                 </div>
                 <?php echo get_location_rating_html_items($location_ratings_list) ?>
