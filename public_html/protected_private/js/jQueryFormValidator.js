@@ -11,7 +11,7 @@ function validateForm(formId){
     $('span.validationError').remove();
     $('span.validationSuccess').remove();
         
-    if(formId == "signUpForm"){
+    if(formId == "signupForm"){
     
         var usernameReg = /^[A-Za-z0-9]+$/;
         var numberReg =  /^[0-9]+$/;
