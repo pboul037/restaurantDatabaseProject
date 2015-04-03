@@ -26,12 +26,12 @@ class DAL {
      * @author Patrice Boulet
      */
     public function check_credentials($username, $pswd){ 
-        $sql = "SELECT u._name as name, u.pswd as pswd
-                FROM restaurant_ratings.users u
-                WHERE u._name = '" . $username . "' AND u.pswd = '" . $pswd . "';";
+        $sql = "SELECT u._name as name, u.pswd as pswd, r.rater_id as rater_id
+                FROM restaurant_ratings.users u, restaurant_ratings.rater r
+                WHERE u.user_id = r.user_id AND u._name = '" . $username . "' AND u.pswd = '" . $pswd . "';";
         return $this->query($sql);
     } 
-    
+
     /*
      * Signup a new rater (also creates a new user associated with it).
      *
@@ -46,7 +46,22 @@ class DAL {
                 INSERT INTO restaurant_ratings.rater(user_id, _type)
                 VALUES (  (SELECT i.user_id FROM user_insert i), '" . $rater_type . "');";
         return $this->query($sql);
-    }     
+    }   
+    
+    
+    /*
+     * Add a rating for a location.
+     *
+     * @author Patrice Boulet
+     */
+    public function add_new_location_rating($location_id, $rater_id, $price, $food, $ambiance, $service, $comments, $avg_rating){ 
+        $sql = "INSERT INTO restaurant_ratings.rating(location_id, rater_id, date_written, price, food, 
+                        ambiance, service, _comments, avg_rating)
+                VALUES (" . $location_id . ", " .$rater_id . ", NOW()::DATE, " . $price . ", " .
+                            $food . ", " . $ambiance . ", " . $service . ", '" . $comments . "', " .
+                                $avg_rating . ");";
+        return $this->query($sql);
+    }   
     
     /*
      * Gets all rater types.

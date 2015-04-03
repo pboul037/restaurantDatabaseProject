@@ -43,8 +43,10 @@
     <script src="../../../framwork_dir/bootstrap-rating-input/bootstrap-rating-input.min.js"></script>
     
     <!-- Form validation and session control -->
-    <script src="../../../public_html/protected_private/js/jQueryFormValidator.js"></script>
-    <script src="../../../public_html/protected_private/js/sessionControl.js"</script>
+    <script src="../../../public_html/protected_private/js/jQueryFormValidator.js" type="text/javascript"></script>
+    <script src="../../../public_html/protected_private/js/sessionControl.js" type="text/javascript"></script>
+    <script src="../../../public_html/protected_private/js/AddRatings.js" type="text/javascript"></script>
+
     
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -74,8 +76,7 @@
     <script type="text/javascript"> 
         $(function () {
             $('#tabs').tab();
-                var hash = window.location.hash;
-                console.log(hash);  
+                var hash = window.location.hash; 
                 // do some validation on the hash here
                 hash && $('ul.nav a[href="' + hash + '"]').tab('show');
         });   
@@ -237,6 +238,22 @@
                             // disable the clear search options button
                             $('#clear_search_options_btn').prop('disabled', disableClearSearchOptions);
                         }
+                        
+                        /*
+                         * Sends add location rating form for validation. 
+                         *
+                         * @author Patrice Boulet
+                         */
+                        function submitAddLocationRatingForm(){
+                            $.ajax({
+                                type: 'POST',
+                                url: '../controllers/LocationController.php',
+                                data: 'clear_all_search_options=' + 'true',
+                                success: function (data) {
+                                    updateRatingsListHtmlElements(data, true)
+                                }
+                            });
+                        }
                     </script>
                 </div>
                 <?php echo get_location_rating_html_items($location_ratings_list) ?>
@@ -276,17 +293,6 @@
         </div>
     </div>   
     </div> <!-- container -->
-    <script type="text/javascript">  
-        function addRating(){
-            checkLoggedIn().success(function(logged_in){
-                if(logged_in){
-                    $('#addLocationRatingModal').modal('show');// triggers login modal to display
-                }else{
-                    showLoginModal();
-                }
-            });
-        }
-    </script>
 </body>
 
 </html>
