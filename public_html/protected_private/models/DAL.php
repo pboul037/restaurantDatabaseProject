@@ -21,6 +21,17 @@ class DAL {
     }
     
     /*
+     * Deletes a location and all the ratings related to it.
+     *
+     * @author Patrice Boulet
+     */
+    public function delete_location($location_id){ 
+        //$sql = "";
+        //return $this->query($sql);
+    } 
+    
+    
+    /*
      * Checks login credentials.
      *
      * @author Patrice Boulet

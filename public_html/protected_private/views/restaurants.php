@@ -237,6 +237,23 @@
                         function updateSelectedSortingTag(response){
                             $('#selected_sorting_tag').html(response[3]);
                         }
+                        
+                        /*
+                         * Deletes a location and updates GUI after it's done.
+                         *
+                         * @author Patrice Boulet
+                         */
+                        function deleteLocation(locationId){
+                            $.ajax({
+                                type: 'POST',
+                                url: '../controllers/RestaurantsController.php',
+                                data: 'delete_location=' + locationId,
+                                success: function (data) {
+                                    console.log("deleteLocation success data :" + data);
+                                    //updateLocationListHtmlElements(data, false, false, true);
+                                }
+                            });
+                        }
                     </script>
                 </div>
             </div>

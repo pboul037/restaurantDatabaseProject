@@ -103,9 +103,13 @@ function validateForm(formId){
               type: "POST",
               url: "../controllers/LoginModalController.php",
               data: "login_form_data=" + JSON.stringify(inputVal),
-              success: function(matchedCredentials){
-                if(matchedCredentials > 0){ // login was successful
-                    
+              success: function(response){
+                var responseArray = JSON.parse(response);  
+                var matchingCredentialsFound = responseArray[0] > 0;
+                var userIsAdmin = responseArray[1];
+
+                if(matchingCredentialsFound){ // login was successful
+                    console.log("user is admin: " + userIsAdmin);
                     // update user feedback
                     $('#loginUsernameGroup').addClass("has-success has-feedback");
                     $('#loginUsername').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
@@ -117,7 +121,14 @@ function validateForm(formId){
                                               '<li><a id="logoutBtn" style="cursor: pointer">Log out</a></li>');
                     
                     $('#loginModal').modal('hide');
-                    $.notify("Logged in", "success");
+                    if( !userIsAdmin ){
+                        $.notify("Logged in", "success");
+                    }else{
+                        $.notify("Logged in... The page will reload in 3 seconds with your administrator privileges activated...",                                              "success");
+                        setTimeout(function(){ 
+                            location.reload();},3000
+                        );
+                    }
                 }else{ // login failed
                     
                     // update user feedback

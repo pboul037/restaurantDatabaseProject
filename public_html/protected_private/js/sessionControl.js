@@ -46,10 +46,11 @@
         $.ajax({
             type: "POST",
             url: "../controllers/SessionController.php",
-            data: {logout:true}//,
-            //success: function() {
-            //    $.notify("Logged out", "error");
-            //}
+            data: {logout:true},
+            success: function() {
+                $.notify("Logged out", "error");
+                $('.adminControl').remove();
+            }
         });
         $('#sessionButtons').html('<li><a id="loginBtn" style="cursor: pointer">Login</a>' +
                                     '</li>' + 

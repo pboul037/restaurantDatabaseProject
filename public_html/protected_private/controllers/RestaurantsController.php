@@ -23,6 +23,10 @@
         $sorting_tag = "";
         $new_locations_list = "";
         
+
+        if (isset($_POST['deleteLocation']))
+            $dal->delete_location($_POST['deleteLocation']);
+            
         get_locations_list();
         get_locations_types();
 
@@ -175,7 +179,7 @@
            $location_html_item = "";
             foreach($locations_list as $location){
                 $location_html_item .= 
-                '<div class="list-group-item"><div class="row">
+                '<div class="list-group-item" data-locationid="' . $location->location_id . '"><div class="row">
                     <div class="col-sm-5">
                         <a href="Location.php?locationid=' . $location->location_id . '">
                         <h4>' . $location->name . '</a></br>';
@@ -186,13 +190,13 @@
                 $location_html_item .= '<a href="https://www.google.com/maps/dir/Current+Location/' . $address_for_gmaps . '"><small class="list-group-item-text">' . $location->address .'</small></a>
                         </h4>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                     <div class="row"><span class="col-sm-12"><span style="font-size:16pt; font-weight:bold;">' . 
                             $location->avg_rating . '</span>
                             <span style="font-size:10pt">out of 5 </span><a style="font-size:8pt" href="Location.php?locationid=' . $location->location_id . '#ratings">(' . $location->total_num_ratings .' ratings)</a></span>
                     </div>';
                 
-                    // add gold $ for actual price avg
+                    // add black $ for actual price avg
                     for( $i = 0; $i < $location->avg_price; $i++){
                         $location_html_item .= '<h6 <span class="glyphicon glyphicon-usd" style="color:black"></span></h6>';
                     }
@@ -202,9 +206,6 @@
                         $location_html_item .= '<h6 <span class="glyphicon glyphicon-usd" style="color:#DCDCDC"></span></h6>';
                     }
                    $location_html_item .= 
-                        //<div class="row"><span style="font-size:9pt">' . $location->avg_food . ' Food </span></div>
-                        //<div class="row"><span style="font-size:9pt">' . $location->avg_service . ' Service </span></div>  
-                        //<div class="row"><span style="font-size:9pt">' . $location->avg_ambiance . ' Ambiance</span></div> 
                         '</div>
                     <div class="col-sm-3">';
                     
@@ -212,7 +213,18 @@
                       $location_html_item .= '<span class="tagcloud tag label label-info">' . $cuisine_type . '</span>';
                     }
                 
-                $location_html_item .= '</div></div></div>';
+                $location_html_item .= '</div>';
+                
+                // if the admin is logged in, give the privileges to delete a location
+                if( isset($_SESSION['username']) ){
+                    if( $_SESSION['username'] == 'admin'){
+                        $location_html_item .= '<div class="col-sm-1 adminControl"><button class="btn btn-danger" onclick="deleteLocation(parseInt(this.parentNode.parentNode.parentNode.dataset.locationid))">
+                                                    <span class="glyphicon glyphicon-trash" style="color:black"> </span>
+                                                </button></div>';
+                    }
+                }
+                
+                $location_html_item .= '</div></div>';
             }
             return $location_html_item;
         }
