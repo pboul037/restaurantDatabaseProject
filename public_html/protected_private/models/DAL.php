@@ -21,13 +21,27 @@ class DAL {
     }
     
     /*
-     * Deletes a location and all the ratings related to it.
+     * Deletes a location, all the ratings related to it and its restaurant if there is no more 
+     * location of this restaurant in the db.
      *
      * @author Patrice Boulet
      */
     public function delete_location($location_id){ 
-        //$sql = "";
-        //return $this->query($sql);
+        $sql = "WITH deleted AS (DELETE FROM restaurant_ratings.locations l
+                    USING restaurant_ratings.restaurant r
+                    WHERE r.restaurant_id = l.restaurant_id AND l.location_id = " . $location_id . "
+                    RETURNING r.restaurant_id)
+                    
+                DELETE FROM restaurant_ratings.restaurant r2
+                USING deleted, (SELECT r3.restaurant_id
+                        FROM restaurant_ratings.restaurant r3, restaurant_ratings.locations l2
+                        WHERE r3.restaurant_id = l2.restaurant_id
+                        GROUP BY r3.restaurant_id
+                        HAVING COUNT(*) < 2) AS locations_count
+                WHERE r2.restaurant_id = deleted.restaurant_id AND 
+                    r2.restaurant_id =  locations_count.restaurant_id AND 
+                        r2.restaurant_id IN (locations_count.restaurant_id)";
+        return $this->query($sql);
     } 
     
     

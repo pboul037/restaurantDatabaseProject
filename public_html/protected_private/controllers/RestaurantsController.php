@@ -24,8 +24,8 @@
         $new_locations_list = "";
         
 
-        if (isset($_POST['deleteLocation']))
-            $dal->delete_location($_POST['deleteLocation']);
+        if (isset($_POST['delete_location']))
+            $dal->delete_location($_POST['delete_location']);
             
         get_locations_list();
         get_locations_types();
@@ -65,6 +65,7 @@
             $type_selected = isset($_POST['type_selected']);
             $sorting_selected = isset($_POST['sorting_selected']);
             $clear_search_options = isset($_POST['clear_all_search_options']);
+            $delete_selected = isset($_POST['delete_location']);
             
             if($sorting_selected)
                 $_SESSION['locations_sorting_selected'] = $_POST['sorting_selected'];
@@ -81,8 +82,15 @@
             if (!isset($_SESSION['restaurant_types_selected']))
                     $_SESSION['restaurant_types_selected'] =  array();        
             
-            if( !$type_selected && !isset($_SESSION['locations_sorting_selected']) && count($_SESSION['restaurant_types_selected']) == 0){
+            if( !$type_selected && !isset($_SESSION['locations_sorting_selected']) && count($_SESSION['restaurant_types_selected']) == 0 ){
+                if( $delete_selected){
+                    $response = array();
+                    $disableClearSearchButton = true;
+                    array_push($response, null, null, get_location_html_items($locations_list), null, true);
+                    echo json_encode($response);
+                }
                 return;
+                
             }else{
                 if($clear_search_options){
                     unset($_SESSION['restaurant_types_selected']);
@@ -153,7 +161,7 @@
                         $new_locations_list .= get_location_html_items($locations_list);
                     }
                     
-                    if($type_selected || $clear_search_options || $sorting_selected){
+                    if($type_selected || $clear_search_options || $sorting_selected || $delete_selected){
                         //prepare array containing response
                         array_push($response, $types_new_options, $type_tags, $new_locations_list, $sorting_tag);
 

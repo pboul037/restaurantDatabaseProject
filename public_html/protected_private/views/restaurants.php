@@ -248,9 +248,9 @@
                                 type: 'POST',
                                 url: '../controllers/RestaurantsController.php',
                                 data: 'delete_location=' + locationId,
-                                success: function (data) {
-                                    console.log("deleteLocation success data :" + data);
-                                    //updateLocationListHtmlElements(data, false, false, true);
+                                success: function (response) {
+                                    var responseArray = $.parseJSON(response);
+                                    updateLocationListHtmlElements(response, responseArray[4], false, false);
                                 }
                             });
                         }
