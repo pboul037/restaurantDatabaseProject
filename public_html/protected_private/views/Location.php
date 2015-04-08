@@ -112,18 +112,18 @@
                     <?php 
                     if (!isset($_SESSION['username'])) { 
                         echo '<li>
-                            <a style="cursor: pointer" onclick="showLoginModal()">Login</a>
+                            <a id="loginBtn" style="cursor: pointer">Login</a>
                         </li>
                         <li>
                             <!-- Button trigger modal -->
-                            <a style="cursor: pointer" onclick="showSignupModal()">Sign up</a>
+                            <a id="signUpBtn" style="cursor: pointer">Sign up</a>
                         </li>';
                     }else{
                         echo '<li>
-                            <a style="cursor: pointer" onclick="">' . $_SESSION['username'] . '</a>
+                            <a id="usernameBtn" style="cursor: pointer">' . $_SESSION['username'] . '</a>
                         </li>
                         <li>
-                            <a style="cursor: pointer" onclick="logout()">Log out</a>
+                            <a id="logoutBtn" style="cursor: pointer">Log out</a>
                         </li>';
                     } ?>
                 </ul>

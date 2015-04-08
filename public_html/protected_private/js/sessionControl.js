@@ -51,10 +51,10 @@
             //    $.notify("Logged out", "error");
             //}
         });
-        $('#sessionButtons').html('<li><a style="cursor: pointer" onclick="showLoginModal">Login</a>' +
+        $('#sessionButtons').html('<li><a id="loginBtn" style="cursor: pointer">Login</a>' +
                                     '</li>' + 
                                   '<li><!-- Button trigger modal --> ' +
-                                  '<a style="cursor: pointer" onclick="showSignupModal">Sign up</a></li>');
+                                  '<a id="signUpBtn" style="cursor: pointer">Sign up</a></li>');
     }
 
     // executed on the document ready event
@@ -66,6 +66,12 @@
         $('#loginModal').on('shown.bs.modal', function () {
           $('#loginUsername').focus()
         });
+        
+        // activates the session button actions on the top right
+        $(document).on('click', '#loginBtn', showLoginModal);
+        $(document).on('click', '#signUpBtn', showSignupModal);
+        $(document).on('click', '#logoutBtn', logout);
+        //$('#usernameBtn'),on('click' showUserProfile);
 
         /*
          * Handles submission and validation of the signup form.

@@ -112,9 +112,9 @@ function validateForm(formId){
                     $('#loginPasswordGroup').addClass("has-success has-feedback");
                     $('#loginPassword').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
                     
-                    $('#sessionButtons').html('<li><a style="cursor: pointer" onclick="">' +
+                    $('#sessionButtons').html('<li><a id="usernameBtn" style="cursor: pointer">' +
                                               $('#loginUsername').val() + '</a></li>' +
-                                              '<li><a style="cursor: pointer" onclick="logout()">Log out</a></li>');
+                                              '<li><a id="logoutBtn" style="cursor: pointer">Log out</a></li>');
                     
                     $('#loginModal').modal('hide');
                     $.notify("Logged in", "success");
