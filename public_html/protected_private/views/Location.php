@@ -251,8 +251,7 @@
                             console.log(html_response[0]);
                             $('#location_ratings_list').html(html_response[0]);
                             // disable the clear search options button
-                            if(!disableClearSearchOptions)
-                                $('#clear_search_options_btn').prop('disabled', disableClearSearchOptions);
+                            $('#clear_search_options_btn').prop('disabled', disableClearSearchOptions);
                         }
                         
                         /*
