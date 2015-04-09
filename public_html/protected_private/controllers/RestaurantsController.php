@@ -15,6 +15,7 @@
          * response[1] = types tag cloud (html)
          * response[2] = locations list (html)
          * response[3] = sorting tag (html)
+         * response[4] = rating filters checkbox inputs (html)
          */
         $response = array();   
         /*
@@ -24,6 +25,7 @@
         $type_tags = "";                            // types tag cloud 
         $sorting_tag = "";                          // sorting tag 
         $new_locations_list = "";                   // list of locations
+        $rating_filters_inputs = "";                // rating filters inputs 
         
         /*******STEP 1 :    Setup conditions to control the fetching of the data model and html elements to inject into the DOM
          *                  based on the status of the SESSION and POST arrays state. *******************************************/
@@ -31,7 +33,8 @@
         $types_filter_sel = false;                  // true if one or more restaurant type filter is applied
         $sorting_sel = false;                       // true if a sorting is applied
         $clear_sel= false;                          // true if clear search options is selected
-        $location_delete_sel = false;               // true if a location's deletion has been requested by admin         
+        $location_delete_sel = false;               // true if a location's deletion has been requested by admin    
+        $rating_filter_sel = false;                 // true if a rating filter is selected
             
         // check the POST array for selections and update control conditions variables accordingly
         $clear_sel = isset($_POST['clear_all_search_options']);             // clear all search options has been selected
@@ -42,6 +45,20 @@
         if( !isset( $_SESSION['restaurant_types_selected'])){
             $_SESSION['restaurant_types_selected'] =  array(); 
         }
+        if( !isset( $_SESSION['global_r_filter_sel'])){
+            $_SESSION['global_r_filter_sel'] =  array(); 
+        }
+        if( !isset( $_SESSION['food_r_filter_sel'])){
+            $_SESSION['food_r_filter_sel'] =  array(); 
+        }
+        if( !isset( $_SESSION['service_r_filter_sel'])){
+            $_SESSION['service_r_sel'] =  array(); 
+        }
+        if( !isset( $_SESSION['ambiance_r_filter_sel'])){
+            $_SESSION['ambiance_r_filter_sel'] =  array(); 
+        }
+
+
         // get all restaurant types with # of locations in the db of this type
         $restaurant_types = $dal->get_restaurant_types_with_count_as_RestaurantTypesWithCount(); 
         // a restaurant type filter has been selected, add it to the SESSION array of types selected
@@ -78,29 +95,29 @@
             unset($_SESSION['restaurant_types_selected']);
             unset($_SESSION['locations_sorting_selected']);
             $_SESSION['restaurant_types_selected'] = array();
-            $locations_list = $dal->get_locations_list(null, null);
+            $locations_list = $dal->get_locations_list(null, null, null, null, null, null);
             $type_new_options = get_restaurant_types_dropdown_options_html($restaurant_types, $types_filter_sel, $clear_sel);
             
         // sort locations list
         }else if($sorting_sel && !$types_filter_sel ){ 
-            $locations_list = $dal->get_locations_list(null, $_SESSION['locations_sorting_selected']);
+            $locations_list = $dal->get_locations_list(null, $_SESSION['locations_sorting_selected'], null, null, null, null);
             $sorting_tag .= get_selected_sorting_tag_html_item();
             
          // filter locations list by type
         }else if(!$sorting_sel && $types_filter_sel){
-            $locations_list = $dal->get_locations_list($_SESSION['restaurant_types_selected'], null);
+            $locations_list = $dal->get_locations_list($_SESSION['restaurant_types_selected'], null, null, null, null, null);
             $type_new_options = get_restaurant_types_dropdown_options_html($restaurant_types, $types_filter_sel, $clear_sel);
             $type_tags .= get_cloud_cuisine_tag_html_item($_SESSION['restaurant_types_selected']);
             
         // sort & filter by type locations list
         }else if($sorting_sel && $types_filter_sel){ 
-            $locations_list = $dal->get_locations_list($_SESSION['restaurant_types_selected'], $_SESSION['locations_sorting_selected']);
+            $locations_list = $dal->get_locations_list($_SESSION['restaurant_types_selected'], $_SESSION['locations_sorting_selected'],                                                                 null, null, null, null);
             $type_new_options = get_restaurant_types_dropdown_options_html($restaurant_types, $types_filter_sel, $clear_sel);
             $sorting_tag .= get_selected_sorting_tag_html_item();
             
         // basic locations list
         }else{
-            $locations_list = $dal->get_locations_list(null, null);
+            $locations_list = $dal->get_locations_list(null, null, null, null, null, null);
         }        
         // get the html elements for the locations list
         get_locations_types($locations_list);

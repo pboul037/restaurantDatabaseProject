@@ -143,6 +143,58 @@
                                 } ?>
                             </div>
                         </div>
+                         <div class="row">
+                            <div class="input-group">
+                                <div style="text-align:center"><span class="lbl">Global rating of:</span></br>
+                                    <input type="checkbox" id="filterGlobal1" name="filterGlobal1" value="avg_global=1">
+                                        <label for="filterGlobal1">1</label>
+                                    <input type="checkbox" id="filterGlobal2" name="filterGlobal2" value="avg_global=2">
+                                        <label for="filterGlobal2">2</label>
+                                    <input type="checkbox" id="filterGlobal3" name="filterGlobal3" value="avg_global=3">
+                                        <label for="filterGlobal3">3</label>
+                                    <input type="checkbox" id="filterGlobal4" name="filterGlobal4" value="avg_global=4">
+                                        <label for="filterGlobal4">4</label>
+                                    <input type="checkbox" id="filterGlobal5" name="filterGlobal5" value="avg_global=5">
+                                        <label for="filterGlobal5">5</label>
+                                </div>
+                                <div style="text-align:center"><span class="lbl">Food rating of:</span></br>
+                                    <input type="checkbox" id="filterFood1" name="filterFood1" value="avg_food=1">
+                                        <label for="filterFood1">1</label>
+                                    <input type="checkbox" id="filterFood2" name="filterFood2" value="avg_food=2">
+                                        <label for="filterFood2">2</label>
+                                    <input type="checkbox" id="filterFood3" name="filterFood3" value="avg_food=3">
+                                        <label for="filterFood3">3</label>
+                                    <input type="checkbox" id="filterFood4" name="filterFood4" value="avg_food=4">
+                                        <label for="filterFood4">4</label>
+                                    <input type="checkbox" id="filterFood5" name="filterFood5" value="avg_food=5">
+                                        <label for="filterFood5">5</label>
+                                </div>
+                                <div style="text-align:center"><span class="lbl">Service rating of:</span></br>
+                                    <input type="checkbox" id="filterService1" name="filterService1" value="avg_service=1">
+                                        <label for="filterService1">1</label>
+                                    <input type="checkbox" id="filterService2" name="filterService2" value="avg_service=2">
+                                        <label for="filterService2">2</label>
+                                    <input type="checkbox" id="filterService3" name="filterService3" value="avg_service=3">
+                                        <label for="filterService3">3</label>
+                                    <input type="checkbox" id="filterService4" name="filterService4" value="avg_service=4">
+                                        <label for="filterService4">4</label>
+                                    <input type="checkbox" id="filterService5" name="filterService5" value="avg_service=5">
+                                        <label for="filterService5">5</label>
+                                </div>
+                                <div style="text-align:center"><span class="lbl">Ambiance rating of:</span></br>
+                                    <input type="checkbox" id="filterAmbiance1" name="filterAmbiance1" value="avg_ambiance=1">
+                                        <label for="filterAmbiance1">1</label>
+                                    <input type="checkbox" id="filterAmbiance2" name="filterAmbiance2" value="avg_ambiance=2">
+                                        <label for="filterAmbiance2">2</label>
+                                    <input type="checkbox" id="filterAmbiance3" name="filterAmbiance3" value="avg_ambiance=3">
+                                        <label for="filterAmbiance3">3</label>
+                                    <input type="checkbox" id="filterAmbiance4" name="filterAmbiance4" value="avg_ambiance=4">
+                                        <label for="filterAmbiance4">4</label>
+                                    <input type="checkbox" id="filterAmbiance5" name="filterAmbiance5" value="avg_ambiance=5">
+                                        <label for="filterAmbiance5">5</label>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
                             <button id="clear_search_options_btn" type="button" class="btn btn-default" 
                                 onclick="clearAllSearchOptions()" 
@@ -150,6 +202,31 @@
                         </div>
                     </div>
                     <script type="text/javascript">     
+                        $(function(){
+                            $( "input[id*='filter']").on('click', updateRatingFilters);
+                        });
+                        
+                        /*
+                         * Updates the GUI when a rating filter selection is
+                         * made from any of the checkboxes.
+                         *
+                         * @author Patrice Boulet
+                         */
+                        function updateRatingFilters(event) {
+                            var filter_sel_array =  event.target.value.split("=");
+                            var filter_sel_type = filter_sel_array[0];
+                            var filter_sel_value =  parseInt(filter_sel_array[1]);
+
+                            $.ajax({
+                                type: 'POST',
+                                url: '../controllers/RestaurantsController.php',
+                                data: {rating_filter: filter_sel_type, rating_filter_value: filter_sel_value},
+                                success: function (data) {
+                                    //updateLocationListHtmlElements(data, false, true, false);
+                                }
+                            });
+                        }
+                        
                         /*
                          * Updates the GUI when a type filter selection is
                          * made from the dropdown.

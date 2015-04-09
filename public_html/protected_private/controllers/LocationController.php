@@ -62,7 +62,8 @@ session_start();
     $beverages_menu_items_by_category = array();
     
     //QA
-    //QUESTION what are we doing here? why is beverages treated specially compared to other menu items
+    //QUESTION what are we doing here? why is beverages treated specially compared to other menu items 
+    //ANSWER: b/c its like in a restaurant menu, the drink and food menus are separated -PB
     foreach($beverage_categories as $category){
     $beverages_menu_items_by_category[$category->category] = get_menu_items('drink', $category->category);
     }

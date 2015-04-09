@@ -180,9 +180,15 @@ class DAL {
      *
      * @author Patrice Boulet
      */
-    public function get_locations_list($types_array, $sorting){
+    public function get_locations_list($types_array, $sorting, $global_r_filters, $food_r_filters, $service_r_filters, $ambiance_r_filters){
+        $sql = "";
         
-        $sql = "SELECT l.location_id AS location_id, r._name AS name, l.street_address AS address, COUNT(*) as total_num_ratings, 
+        if ( $global_r_filters !== null || $food_r_filters !== null ||
+                    $service_r_filters !== null || $ambiance_r_filters !== null){
+            $sql .= "WITH location_tbl AS (";
+        }
+        
+        $sql .= "SELECT l.location_id AS location_id, r._name AS name, l.street_address AS address, COUNT(*) as total_num_ratings, 
                     ROUND(AVG(g.price)::INTEGER) AS avg_price, ROUND(AVG(g.ambiance)::NUMERIC, 1) as avg_ambiance, 
                     ROUND(AVG(g.food)::NUMERIC, 1) as avg_food, ROUND(AVG(g.service)::NUMERIC, 1) as avg_service,
                     ROUND(AVG(g.avg_rating)::NUMERIC, 1) as avg_rating, MIN(date_part('days', now() - g.date_written)) as                                       days_written_to_now,
@@ -196,6 +202,41 @@ class DAL {
         }
         
         $sql.= " GROUP BY l.location_id, l.street_address, r._name";
+        
+        if ( $global_r_filters !== null || $food_r_filters !== null ||
+                    $service_r_filters !== null || $ambiance_r_filters !== null){
+            $first_filter = true;
+            
+            $sql.= ")   SELECT * 
+                        FROM location_tbl
+                        WHERE ";
+            
+            if( $global_r_filters !== null){
+                $sql.= "floor(avg_rating) IN (" . join(',', $global_r_filters) . ")";
+                $first_filter = false;
+            }
+            
+            if( $food_r_filters !== null){
+                if( !$first_filter )
+                    $sql.= " AND ";
+                $sql.= "floor(avg_food) IN (" . join(',', $food_r_filters) . ")";
+                $first_filter = false;
+            }
+            
+            if( $service_r_filters !== null){
+                if( !$first_filter )
+                    $sql.= " AND ";
+                $sql.= "floor(avg_service) IN (" . join(',', $service_r_filters) . ")";
+                $first_filter = false;
+            }
+            
+            if( $ambiance_r_filters !== null){
+                if( !$first_filter )
+                    $sql.= " AND ";
+                $sql.= "floor(avg_ambiance) IN (" . join(',', $ambiance_r_filters) . ")";
+                $first_filter = false;
+            }
+        }
         
         if($sorting !== null)
             $sql .= ' ORDER BY ' . $sorting;
