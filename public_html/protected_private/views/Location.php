@@ -175,21 +175,21 @@
                                 <option value="" disabled selected>Sort by...</option>
                                 <option value='date_written ASC'>Date Written (ascending)</option>
                                 <option value='date_written DESC'>Date Written (descending)</option>
-                                <option value='avg_food ASC'>Food Rating (ascending)</option>
-                                <option value='avg_food DESC'>Food Rating (descending)</option>
-                                <option value='avg_ambiance ASC'>Ambiance Rating(ascending)</option>
-                                <option value='avg_ambiance DESC'>Ambiance Rating(descending)</option>
+                                <option value='food ASC'>Food Rating (ascending)</option>
+                                <option value='food DESC'>Food Rating (descending)</option>
+                                <option value='ambiance ASC'>Ambiance Rating(ascending)</option>
+                                <option value='ambiance DESC'>Ambiance Rating(descending)</option>
                                 <option value='rater_reputation ASC'>Rater Reputation (ascending)</option>
                                 <option value='rater_reputation DESC'>Rater Reputation (descending)</option>
-                                <option value='avg_service ASC'>Service Rating (ascending)</option>
-                                <option value='avg_service DESC'>Service Rating (descending)</option>
+                                <option value='service ASC'>Service Rating (ascending)</option>
+                                <option value='service DESC'>Service Rating (descending)</option>
                                 <option value='price ASC'>Price (ascending)</option>
                                 <option value='price DESC'>Price (descending)</option>
                         </select>
                         
                         <button id="clear_search_options_btn" type="button" class="btn btn-default" 
                                 onclick="clearAllSearchOptions()" 
-                                    <?php if( count($_SESSION['restaurant_types_selected']) == 0 && !isset($_SESSION['locations_sorting_selected']))                                            echo 'disabled'; ?>> Clear search options</button>
+                                    <?php if(!isset($_SESSION['locations_ratings_sorting_selected']))        echo 'disabled'; ?>> Clear search options</button>
                     </div>
                     <script type="text/javascript">
                         /*
@@ -199,12 +199,18 @@
                          * @author Junyi Dai
                          */
                         function updateSorting(selected){
+                            var location_id = ((window.location.search).split('='))[1];
                             $.ajax({
                                 type: 'POST',
                                 url: '../controllers/LocationController.php',
-                                data: 'sorting_selected=' + selected,
+                                data: {locations_ratings_sorting_selected: selected, location_id: location_id},
                                 success: function (data) {
+                                    console.log(data);
+                                    console.log(JSON.parse(data));
                                     updateRatingsListHtmlElements(data, false);
+                                },
+                                error: function(data){
+                                	alert("Error ");
                                 }
                             });
                         }
@@ -215,12 +221,19 @@
                          * @author Junyi Dai
                          */
                         function clearAllSearchOptions(){
+                        	var location_id = ((window.location.search).split('='))[1];
                             $.ajax({
                                 type: 'POST',
                                 url: '../controllers/LocationController.php',
-                                data: 'clear_all_search_options=' + 'true',
+                               // data: 'clear_all_search_options=' + 'true',
+                                data: {locations_ratings_sorting_selected: true, clear_all_search_options : true, location_id: location_id},
                                 success: function (data) {
+                                	console.log(data);
+                                    console.log(JSON.parse(data));
                                     updateRatingsListHtmlElements(data, true)
+                                },
+                                error: function(data){
+                                	alert("error");
                                 }
                             });
                         }
@@ -231,15 +244,22 @@
                          * @author Junyi Dai
                          */
                         function updateRatingsListHtmlElements(response, disableClearSearchOptions){
-                            var response = $.parseJSON(response);
-                            //update ratings list
-                            $('#ratings_list').html(response[2]);
+                            var html_response = $.parseJSON(response);
+                            //var response = response;
+                            //update ratings lists
+                            console.log(html_response[0]);
+                            $('#location_ratings_list').html(html_response[0]);
                             // disable the clear search options button
-                            $('#clear_search_options_btn').prop('disabled', disableClearSearchOptions);
+                            if(!disableClearSearchOptions)
+                                $('#clear_search_options_btn').prop('disabled', disableClearSearchOptions);
                         }
                     </script>
                 </div>
-                <?php echo get_location_rating_html_items($location_ratings_list) ?>
+                
+                 <div id="location_ratings_list" class="list-group">
+                        <?php echo get_location_rating_html_items($location_ratings_list) ?>
+                        </div>
+
             </div>
             <div class="tab-pane" id="menu">
                 <div class="row">

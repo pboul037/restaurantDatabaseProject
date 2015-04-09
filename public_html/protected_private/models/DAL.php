@@ -15,7 +15,7 @@ class DAL {
      */
     private function dbconnect() {
         $conn = pg_connect("host=" . DB_HOST . " port=" . DB_PORT . " dbname=" . DB_NAME . " user=" . DB_USER . " password=" . DB_PASSWORD)
-            or die ("Error in connection: " . pg_last_error());
+        or die ("Error in connection: " . pg_last_error());
         
         return $conn;
     }
@@ -27,8 +27,8 @@ class DAL {
      */
     public function check_credentials($username, $pswd){ 
         $sql = "SELECT u._name as name, u.pswd as pswd
-                FROM restaurant_ratings.users u
-                WHERE u._name = '" . $username . "' AND u.pswd = '" . $pswd . "';";
+        FROM restaurant_ratings.users u
+        WHERE u._name = '" . $username . "' AND u.pswd = '" . $pswd . "';";
         return $this->query($sql);
     } 
     
@@ -39,15 +39,15 @@ class DAL {
      */
     public function signup_new_rater($email, $username, $pswd, $rater_type){ 
         $sql = "WITH user_insert AS (
-                    INSERT INTO restaurant_ratings.users(email, _name, pswd, join_date)
-                    VALUES ('" . $email . "', '" . $username . "', '" . $pswd . "', NOW()::DATE)
-                    RETURNING user_id 
-                )
-                INSERT INTO restaurant_ratings.rater(user_id, _type)
-                VALUES (  (SELECT i.user_id FROM user_insert i), '" . $rater_type . "');";
-        return $this->query($sql);
-    }     
-    
+            INSERT INTO restaurant_ratings.users(email, _name, pswd, join_date)
+            VALUES ('" . $email . "', '" . $username . "', '" . $pswd . "', NOW()::DATE)
+            RETURNING user_id 
+            )
+INSERT INTO restaurant_ratings.rater(user_id, _type)
+VALUES (  (SELECT i.user_id FROM user_insert i), '" . $rater_type . "');";
+return $this->query($sql);
+}     
+
     /*
      * Gets all rater types.
      *
@@ -55,8 +55,8 @@ class DAL {
      */
     public function get_all_rater_types(){ 
         $sql = "SELECT r._type as type
-                FROM restaurant_ratings.rater r
-                GROUP BY _type";
+        FROM restaurant_ratings.rater r
+        GROUP BY _type";
         return $this->query($sql);
     }
     
@@ -68,11 +68,11 @@ class DAL {
     public function get_menu_items($location_id, $type, $category){
         
         $sql = "SELECT i._name, i.description, i.price
-                FROM restaurant_ratings.locations l, restaurant_ratings.menu_item i
-                WHERE l.location_id = i.location_id
-                        AND i.location_id =" . $location_id .
-                        "AND i._type ='" . $type . 
-                        "' AND i.category = '" . $category . "'";
+        FROM restaurant_ratings.locations l, restaurant_ratings.menu_item i
+        WHERE l.location_id = i.location_id
+        AND i.location_id =" . $location_id .
+        "AND i._type ='" . $type . 
+        "' AND i.category = '" . $category . "'";
         return $this->query($sql);
     }
     
@@ -84,9 +84,9 @@ class DAL {
     public function get_beverages_categories($location_id){
         
         $sql = "SELECT i.category
-                FROM restaurant_ratings.locations l, restaurant_ratings.menu_item i
-                WHERE l.location_id = i.location_id AND i.location_id =" . $location_id . " AND i._type = 'drink'
-                GROUP BY i.category";
+        FROM restaurant_ratings.locations l, restaurant_ratings.menu_item i
+        WHERE l.location_id = i.location_id AND i.location_id =" . $location_id . " AND i._type = 'drink'
+        GROUP BY i.category";
         return $this->query($sql);
     }
     
@@ -98,25 +98,35 @@ class DAL {
     public function get_location_details($location_id){
         
         $sql = "SELECT * 
-                FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r
-                WHERE l.restaurant_id = r.restaurant_id AND l.location_id =" . $location_id;
+        FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r
+        WHERE l.restaurant_id = r.restaurant_id AND l.location_id =" . $location_id;
         return $this->query($sql);
     }
     
     /*
-     * Gets rating, location, and restaurant details for this $location.
+     * Takes a location Id as a parameter. 
+     * For that location Id this method will return the location that corresponds to that ID.
+     * This method will also return the ratings associated to that location, and the details associated with that location,
+     * such as hours and ect.
+     * 
      *
-     * @author Junyi Dai
+     * @author Junyi Dai, Qasim Ahmed
      */
-    public function get_location_ratings($location_id){
+    public function get_location_ratings($location_id, $sorting){
         
-        $sql = "SELECT *
-                FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating ra,        restaurant_ratings.rater rat, restaurant_ratings.users u
-                WHERE r.restaurant_id = l.restaurant_id AND l.location_id = ra.location_id 
-                        AND ra.rater_id = rat.rater_id AND rat.user_id = u.user_id 
-                        AND l.location_id =" . $location_id;
+        $sql = "SELECT *, ((rat.found_helpful - rat.wasnt_helpful) * 10) AS rater_reputation
+        FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating ra, restaurant_ratings.rater rat, restaurant_ratings.users u
+        WHERE r.restaurant_id = l.restaurant_id AND l.location_id = ra.location_id 
+        AND ra.rater_id = rat.rater_id AND rat.user_id = u.user_id 
+        AND l.location_id = " . $location_id;
+        if($sorting !== null)
+            $sql .= ' ORDER BY ' .$sorting;
+
         return $this->query($sql);
     }
+
+
+
     
     /*
      * Gets location id, address and name for all locations.
@@ -124,19 +134,19 @@ class DAL {
      * @author Patrice Boulet
      */
     public function get_all_restaurants($sorting){
-     $sql = "SELECT l.location_id AS location_id, r._name AS name, l.street_address AS address, COUNT(*) as total_num_ratings, 
-                    ROUND(AVG(g.price)::INTEGER) AS avg_price, ROUND(AVG(g.ambiance)::NUMERIC, 1) as avg_ambiance, 
-                    ROUND(AVG(g.food)::NUMERIC, 1) as avg_food, ROUND(AVG(g.service)::NUMERIC, 1) as avg_service,
-                    ROUND(AVG(g.avg_rating)::NUMERIC, 1) as avg_rating, MIN(date_part('days', now() - g.date_written)) as days_written_to_now,
-                    ROUND((SUM((extract('epoch' from g.date_written)/100000000)*g.avg_rating)/COUNT(*))::NUMERIC, 1) as popularity
-                FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating g
-                WHERE r.restaurant_id = l.restaurant_id AND g.location_id = l.location_id
-                GROUP BY l.location_id, l.street_address, r._name";
-    if($sorting !== null)
+       $sql = "SELECT l.location_id AS location_id, r._name AS name, l.street_address AS address, COUNT(*) as total_num_ratings, 
+       ROUND(AVG(g.price)::INTEGER) AS avg_price, ROUND(AVG(g.ambiance)::NUMERIC, 1) as avg_ambiance, 
+       ROUND(AVG(g.food)::NUMERIC, 1) as avg_food, ROUND(AVG(g.service)::NUMERIC, 1) as avg_service,
+       ROUND(AVG(g.avg_rating)::NUMERIC, 1) as avg_rating, MIN(date_part('days', now() - g.date_written)) as days_written_to_now,
+       ROUND((SUM((extract('epoch' from g.date_written)/100000000)*g.avg_rating)/COUNT(*))::NUMERIC, 1) as popularity
+       FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating g
+       WHERE r.restaurant_id = l.restaurant_id AND g.location_id = l.location_id
+       GROUP BY l.location_id, l.street_address, r._name";
+       if($sorting !== null)
         $sql .= ' ORDER BY ' . $sorting;
-        return $this->query($sql);
-    }
-    
+    return $this->query($sql);
+}
+
     /*
      * Gets the cuisine types of this $location.
      *
@@ -145,8 +155,8 @@ class DAL {
     public function get_cuisine_types($location){
         
         $sql = "SELECT t._name as name
-                FROM restaurant_ratings.restaurant_type t, restaurant_ratings.isOfType o, restaurant_ratings.locations l, restaurant_ratings.restaurant r
-                WHERE l.restaurant_id = r.restaurant_id AND o.restaurant_id = r.restaurant_id AND t.type_id = o.type_id AND r._name = '" . $location . "'";
+        FROM restaurant_ratings.restaurant_type t, restaurant_ratings.isOfType o, restaurant_ratings.locations l, restaurant_ratings.restaurant r
+        WHERE l.restaurant_id = r.restaurant_id AND o.restaurant_id = r.restaurant_id AND t.type_id = o.type_id AND r._name = '" . $location . "'";
         return $this->query($sql);
     }
     
@@ -158,14 +168,14 @@ class DAL {
     public function get_only_restaurants_of_types($types_array, $sorting){
         
         $sql = "SELECT l.location_id AS location_id, r._name AS name, l.street_address AS address, COUNT(*) as total_num_ratings, 
-                    ROUND(AVG(g.price)::INTEGER) AS avg_price, ROUND(AVG(g.ambiance)::NUMERIC, 1) as avg_ambiance, 
-                    ROUND(AVG(g.food)::NUMERIC, 1) as avg_food, ROUND(AVG(g.service)::NUMERIC, 1) as avg_service,
-                    ROUND(AVG(g.avg_rating)::NUMERIC, 1) as avg_rating, MIN(date_part('days', now() - g.date_written)) as days_written_to_now,
-                    ROUND((SUM((extract('epoch' from g.date_written)/100000000)*g.avg_rating)/COUNT(*))::NUMERIC, 1) as popularity
-                FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating g, restaurant_ratings.isOfType t  
-                WHERE r.restaurant_id = l.restaurant_id AND r.restaurant_id = t.restaurant_id 
-                        AND g.location_id = l.location_id AND t.type_id IN (" . $this->get_user_specified_types_query($types_array) . ")
-                GROUP BY l.location_id, l.street_address, r._name";
+        ROUND(AVG(g.price)::INTEGER) AS avg_price, ROUND(AVG(g.ambiance)::NUMERIC, 1) as avg_ambiance, 
+        ROUND(AVG(g.food)::NUMERIC, 1) as avg_food, ROUND(AVG(g.service)::NUMERIC, 1) as avg_service,
+        ROUND(AVG(g.avg_rating)::NUMERIC, 1) as avg_rating, MIN(date_part('days', now() - g.date_written)) as days_written_to_now,
+        ROUND((SUM((extract('epoch' from g.date_written)/100000000)*g.avg_rating)/COUNT(*))::NUMERIC, 1) as popularity
+        FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating g, restaurant_ratings.isOfType t  
+        WHERE r.restaurant_id = l.restaurant_id AND r.restaurant_id = t.restaurant_id 
+        AND g.location_id = l.location_id AND t.type_id IN (" . $this->get_user_specified_types_query($types_array) . ")
+        GROUP BY l.location_id, l.street_address, r._name";
         if($sorting !== null)
             $sql .= ' ORDER BY ' . $sorting;
         return $this->query($sql);
@@ -185,8 +195,8 @@ class DAL {
         }
         $types = join(',', $escaped_types);
         $sql = "SELECT t.type_id
-                FROM restaurant_ratings.restaurant_type t
-                WHERE t._name IN ($types)";
+        FROM restaurant_ratings.restaurant_type t
+        WHERE t._name IN ($types)";
         return $sql;
     }
     
@@ -198,15 +208,15 @@ class DAL {
      * @author Patrice Boulet
      */
     public function get_restaurant_types_with_count(){
-     $sql = "SELECT t._name AS _name, COUNT(*) AS _count
-                FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.isOfType o,           restaurant_ratings.restaurant_type t
-                WHERE l.restaurant_id = r.restaurant_id
-                    AND o.restaurant_id = r.restaurant_id
-                    AND o.type_id = t.type_id
-                GROUP BY t._name";
-        return $this->query($sql);
-    }
-    
+       $sql = "SELECT t._name AS _name, COUNT(*) AS _count
+       FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.isOfType o,           restaurant_ratings.restaurant_type t
+       WHERE l.restaurant_id = r.restaurant_id
+       AND o.restaurant_id = r.restaurant_id
+       AND o.type_id = t.type_id
+       GROUP BY t._name";
+       return $this->query($sql);
+   }
+   
     /*
      * Get all the restaurant types for which there's at least one restaurant of this type
      * and the count of restaurant of this type.
@@ -215,25 +225,25 @@ class DAL {
      */
     public function get_restaurant_types_with_count_as_RestaurantTypesWithCount(){
         // Reuse existing query
-          $results = $this->get_restaurant_types_with_count();
+      $results = $this->get_restaurant_types_with_count();
 
           // check for results
-          if (!$results){
-            return $results;
-          }
-          else{
-            // array to hold CarModel objects
-            $object_results = array();
-            
-            for ($i = 0; $i < count($results); $i++) {
-              $object_results[$i] = new RestaurantTypeWithCount($results[$i]);
-            }
-              
-            // return array of CarModel objects
-            return $object_results;
-          }
+      if (!$results){
+        return $results;
     }
-    
+    else{
+            // array to hold CarModel objects
+        $object_results = array();
+        
+        for ($i = 0; $i < count($results); $i++) {
+          $object_results[$i] = new RestaurantTypeWithCount($results[$i]);
+      }
+      
+            // return array of CarModel objects
+      return $object_results;
+  }
+}
+
     /* 
      * Prepares and executes a  generic query to the database
      * and then converts it to DALQueryResult object.
@@ -327,17 +337,17 @@ class RestaurantTypeWithCount {
     public function __get($var){
         switch ($var){
           case 'name':
-            return $this->_name;
-            break;
+          return $this->_name;
+          break;
           case 'count':
-            return $this->_count;
-            break;
-        }
-    }
+          return $this->_count;
+          break;
+      }
+  }
 
-    public function __toString(){
-        return $this->_name;
-    }
+  public function __toString(){
+    return $this->_name;
+}
 }
 
 ?>

@@ -143,13 +143,51 @@
                                 } ?>
                             </div>
                         </div>
+
+                          <div class="row">
+                        <! Qasim
+                        Here is where I filter ratings
+                        >
+                        <b>Filter by: <br></b>
+                        <b>Ratings</b>
+
+                        <input type="checkbox" value="1" name="ratings[]" onclick='updateAVGRatingFilter(this.value, this.checked)'/>
+                        <input type="checkbox" value="2" name="ratings[]" onclick='updateAVGRatingFilter(this.value, this.checked)'/>
+                        <input type="checkbox" value="3" name="ratings[]" onclick='updateAVGRatingFilter(this.value, this.checked)'/>
+                        <input type="checkbox" value="4" name="ratings[]" onclick='updateAVGRatingFilter(this.value, this.checked)'/>
+                        <input type="checkbox" value="5" name="ratings[]" onclick='updateAVGRatingFilter(this.value, this.checked)'/>
+
+                        </div>
+
                         <div class="row">
                             <button id="clear_search_options_btn" type="button" class="btn btn-default" 
                                 onclick="clearAllSearchOptions()" 
                                     <?php if( count($_SESSION['restaurant_types_selected']) == 0 && !isset($_SESSION['locations_sorting_selected']))                                            echo 'disabled'; ?>> Clear search options</button>
                         </div>
                     </div>
-                    <script type="text/javascript">     
+                    <script type="text/javascript">   
+
+
+
+                     function updateAVGRatingFilter(selected, checked) {
+                        var ratingBox = {
+                            value: selected,
+                            check: checked
+                        };
+
+                        var toSend = JSON.stringify(ratingBox);
+                            $.ajax({
+                                type: 'POST',
+                                url: '../controllers/RestaurantsController.php',
+                                data: 'filter_AVGRating=' + toSend,
+                                success: function (data) {
+                                    console.log(data);
+                                   // updateLocationListHtmlElements(data, false, false, false);
+                                }
+                            });
+                        }
+
+
                         /*
                          * Updates the GUI when a type filter selection is
                          * made from the dropdown.

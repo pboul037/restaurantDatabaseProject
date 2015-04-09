@@ -61,7 +61,20 @@
             $type_selected = isset($_POST['type_selected']);
             $sorting_selected = isset($_POST['sorting_selected']);
             $clear_search_options = isset($_POST['clear_all_search_options']);
-            
+            $filter_AVGRating_selected = isset($_POST['filter_AVGRating']);
+
+            if($filter_AVGRating_selected){
+                echo('hi');
+            }
+            if(!isset($_SESSION['filter_AVGRating']))
+                $_SESSION['filter_AVGRating'] = array();
+
+            if($filter_AVGRating_selected){
+                
+                $tmpArray = json_decode($_POST['filter_AVGRating']);
+                echo $tmpArray->value;
+                array_push($_SESSION['filter_AVGRating'], $tmpArray->value);
+            }
             if($sorting_selected)
                 $_SESSION['locations_sorting_selected'] = $_POST['sorting_selected'];
             
@@ -154,7 +167,7 @@
                         array_push($response, $types_new_options, $type_tags, $new_locations_list, $sorting_tag);
 
                         // send the response
-                        echo json_encode($response); 
+                       echo json_encode($response); 
                     }                    
                     else{
                         if(count($_SESSION['restaurant_types_selected']) != 0 )
