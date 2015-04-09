@@ -115,7 +115,7 @@
                         <ul class="list-group">
                             <li style="border-style:none" class="list-group-item">
                         <div class="row">
-                            <select id="types_select" class="btn btn-default dropdown-toggle" onchange="updateSorting(this.value)">
+                            <select id="sorting_select" class="btn btn-default dropdown-toggle" onchange="updateSorting(this.value)">
                                 <option value="" disabled selected>Sort by...</option>
                                 <option value='avg_rating ASC'>Global Rating (ascending)</option>
                                 <option value='avg_rating DESC'>Global Rating (descending)</option>

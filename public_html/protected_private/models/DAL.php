@@ -192,20 +192,29 @@ class DAL {
             $sql .= "WITH location_tbl AS (";
         }
         
-        $sql .= "SELECT l.location_id AS location_id, r._name AS name, l.street_address AS address, COUNT(*) as total_num_ratings, 
-                    ROUND(AVG(g.price)::INTEGER) AS avg_price, ROUND(AVG(g.ambiance)::NUMERIC, 1) as avg_ambiance, 
-                    ROUND(AVG(g.food)::NUMERIC, 1) as avg_food, ROUND(AVG(g.service)::NUMERIC, 1) as avg_service,
-                    ROUND(AVG(g.avg_rating)::NUMERIC, 1) as avg_rating, MIN(date_part('days', now() - g.date_written)) as                                       days_written_to_now,
-                    ROUND((SUM((extract('epoch' from g.date_written)/100000000)*g.avg_rating)/COUNT(*))::NUMERIC, 1) as popularity
-                    FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating g,                                                  restaurant_ratings.isOfType t  
-                    WHERE r.restaurant_id = l.restaurant_id AND r.restaurant_id = t.restaurant_id 
+        $sql .= "SELECT second_tbl.location_id, second_tbl.name, second_tbl.address , COUNT(*) as total_num_ratings, 
+                    ROUND(AVG(second_tbl.price)::INTEGER) AS avg_price, ROUND(AVG(second_tbl.ambiance)::NUMERIC, 1) as avg_ambiance, 
+                    ROUND(AVG(second_tbl.food)::NUMERIC, 1) as avg_food, ROUND(AVG(second_tbl.service)::NUMERIC, 1) as avg_service,
+                    ROUND(AVG(second_tbl.avg_rating)::NUMERIC, 1) as avg_rating, MIN(date_part('days', now() - second_tbl.date_written)) as                     days_written_to_now,
+                    ROUND((SUM((extract('epoch' from second_tbl.date_written)/100000000)*second_tbl.avg_rating)/COUNT(*))::NUMERIC, 1) as                       popularity
+                FROM (
+                    SELECT DISTINCT ON (first_tbl.rating_id) first_tbl.* 
+                    FROM
+                        (SELECT l.location_id AS location_id, r._name AS name, l.street_address AS address,
+                            g.price, g.food, g.service, g.ambiance, g.avg_rating, g.date_written, g.rating_id
+                        FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating g,                                              restaurant_ratings.isOfType t  
+                        WHERE r.restaurant_id = l.restaurant_id AND r.restaurant_id = t.restaurant_id 
                             AND g.location_id = l.location_id";
-        
+                        
         if($types_array !== null){            
             $sql .= " AND t.type_id IN (" . $this->get_user_specified_types_query($types_array) . ")";
         }
         
-        $sql.= " GROUP BY l.location_id, l.street_address, r._name";
+        $sql .= "
+                        ) AS first_tbl
+                    ) AS second_tbl
+
+                GROUP BY second_tbl.location_id, second_tbl.address, second_tbl.name";
         
         if ( $global_r_filters !== null || $food_r_filters !== null ||
                     $service_r_filters !== null || $ambiance_r_filters !== null){
