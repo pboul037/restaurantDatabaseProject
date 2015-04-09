@@ -1,4 +1,4 @@
-    /*
+ /*
      * Shows the signup form.
      *
      * @author Patrice Boulet
@@ -46,15 +46,16 @@
         $.ajax({
             type: "POST",
             url: "../controllers/SessionController.php",
-            data: {logout:true}//,
-            //success: function() {
-            //    $.notify("Logged out", "error");
-            //}
+            data: {logout:true},
+            success: function() {
+                $.notify("Logged out", "error");
+                $('.adminControl').remove();
+            }
         });
-        $('#sessionButtons').html('<li><a style="cursor: pointer" onclick="showLoginModal">Login</a>' +
+        $('#sessionButtons').html('<li><a id="loginBtn" style="cursor: pointer">Login</a>' +
                                     '</li>' + 
                                   '<li><!-- Button trigger modal --> ' +
-                                  '<a style="cursor: pointer" onclick="showSignupModal">Sign up</a></li>');
+                                  '<a id="signUpBtn" style="cursor: pointer">Sign up</a></li>');
     }
 
     // executed on the document ready event
@@ -66,6 +67,12 @@
         $('#loginModal').on('shown.bs.modal', function () {
           $('#loginUsername').focus()
         });
+        
+        // activates the session button actions on the top right
+        $(document).on('click', '#loginBtn', showLoginModal);
+        $(document).on('click', '#signUpBtn', showSignupModal);
+        $(document).on('click', '#logoutBtn', logout);
+        //$('#usernameBtn'),on('click' showUserProfile);
 
         /*
          * Handles submission and validation of the signup form.

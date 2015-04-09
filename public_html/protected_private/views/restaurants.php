@@ -74,18 +74,18 @@
                     <?php 
                     if (!isset($_SESSION['username'])) { 
                         echo '<li>
-                            <a style="cursor: pointer" onclick="showLoginModal()">Login</a>
+                            <a id="loginBtn" style="cursor: pointer">Login</a>
                         </li>
                         <li>
                             <!-- Button trigger modal -->
-                            <a style="cursor: pointer" onclick="showSignupModal()">Sign up</a>
+                            <a id="signUpBtn" style="cursor: pointer">Sign up</a>
                         </li>';
                     }else{
                         echo '<li>
-                            <a style="cursor: pointer" onclick="">' . $_SESSION['username'] . '</a>
+                            <a id="usernameBtn" style="cursor: pointer">' . $_SESSION['username'] . '</a>
                         </li>
                         <li>
-                            <a style="cursor: pointer" onclick="logout()">Log out</a>
+                            <a id="logoutBtn" style="cursor: pointer">Log out</a>
                         </li>';
                     } ?>
                 </ul>
@@ -143,51 +143,13 @@
                                 } ?>
                             </div>
                         </div>
-
-                          <div class="row">
-                        <! Qasim
-                        Here is where I filter ratings
-                        >
-                        <b>Filter by: <br></b>
-                        <b>Ratings</b>
-
-                        <input type="checkbox" value="1" name="ratings[]" onclick='updateAVGRatingFilter(this.value, this.checked)'/>
-                        <input type="checkbox" value="2" name="ratings[]" onclick='updateAVGRatingFilter(this.value, this.checked)'/>
-                        <input type="checkbox" value="3" name="ratings[]" onclick='updateAVGRatingFilter(this.value, this.checked)'/>
-                        <input type="checkbox" value="4" name="ratings[]" onclick='updateAVGRatingFilter(this.value, this.checked)'/>
-                        <input type="checkbox" value="5" name="ratings[]" onclick='updateAVGRatingFilter(this.value, this.checked)'/>
-
-                        </div>
-
                         <div class="row">
                             <button id="clear_search_options_btn" type="button" class="btn btn-default" 
                                 onclick="clearAllSearchOptions()" 
                                     <?php if( count($_SESSION['restaurant_types_selected']) == 0 && !isset($_SESSION['locations_sorting_selected']))                                            echo 'disabled'; ?>> Clear search options</button>
                         </div>
                     </div>
-                    <script type="text/javascript">   
-
-
-
-                     function updateAVGRatingFilter(selected, checked) {
-                        var ratingBox = {
-                            value: selected,
-                            check: checked
-                        };
-
-                        var toSend = JSON.stringify(ratingBox);
-                            $.ajax({
-                                type: 'POST',
-                                url: '../controllers/RestaurantsController.php',
-                                data: 'filter_AVGRating=' + toSend,
-                                success: function (data) {
-                                    console.log(data);
-                                   // updateLocationListHtmlElements(data, false, false, false);
-                                }
-                            });
-                        }
-
-
+                    <script type="text/javascript">     
                         /*
                          * Updates the GUI when a type filter selection is
                          * made from the dropdown.
@@ -274,6 +236,23 @@
                          */
                         function updateSelectedSortingTag(response){
                             $('#selected_sorting_tag').html(response[3]);
+                        }
+                        
+                        /*
+                         * Deletes a location and updates GUI after it's done.
+                         *
+                         * @author Patrice Boulet
+                         */
+                        function deleteLocation(locationId){
+                            $.ajax({
+                                type: 'POST',
+                                url: '../controllers/RestaurantsController.php',
+                                data: 'delete_location=' + locationId,
+                                success: function (response) {
+                                    var responseArray = $.parseJSON(response);
+                                    updateLocationListHtmlElements(response, responseArray[4], false, false);
+                                }
+                            });
                         }
                     </script>
                 </div>

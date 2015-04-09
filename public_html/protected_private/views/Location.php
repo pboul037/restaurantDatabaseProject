@@ -44,7 +44,8 @@
     
     <!-- Form validation and session control -->
     <script src="../../../public_html/protected_private/js/jQueryFormValidator.js"></script>
-    <script src="../../../public_html/protected_private/js/sessionControl.js"</script>
+    <script src="../../../public_html/protected_private/js/sessionControl.js"></script>
+    <script src="../../../public_html/protected_private/js/AddRatings.js"></script>
     
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -111,18 +112,18 @@
                     <?php 
                     if (!isset($_SESSION['username'])) { 
                         echo '<li>
-                            <a style="cursor: pointer" onclick="showLoginModal()">Login</a>
+                            <a id="loginBtn" style="cursor: pointer">Login</a>
                         </li>
                         <li>
                             <!-- Button trigger modal -->
-                            <a style="cursor: pointer" onclick="showSignupModal()">Sign up</a>
+                            <a id="signUpBtn" style="cursor: pointer">Sign up</a>
                         </li>';
                     }else{
                         echo '<li>
-                            <a style="cursor: pointer" onclick="">' . $_SESSION['username'] . '</a>
+                            <a id="usernameBtn" style="cursor: pointer">' . $_SESSION['username'] . '</a>
                         </li>
                         <li>
-                            <a style="cursor: pointer" onclick="logout()">Log out</a>
+                            <a id="logoutBtn" style="cursor: pointer">Log out</a>
                         </li>';
                     } ?>
                 </ul>
@@ -253,6 +254,22 @@
                             if(!disableClearSearchOptions)
                                 $('#clear_search_options_btn').prop('disabled', disableClearSearchOptions);
                         }
+                        
+                        /*
+                         * Sends add location rating form for validation. 
+                         *
+                         * @author Patrice Boulet
+                         */
+                        function submitAddLocationRatingForm(){
+                            $.ajax({
+                                type: 'POST',
+                                url: '../controllers/LocationController.php',
+                                data: 'clear_all_search_options=' + 'true',
+                                success: function (data) {
+                                    updateRatingsListHtmlElements(data, true)
+                                }
+                            });
+                        }
                     </script>
                 </div>
                 
@@ -296,17 +313,6 @@
         </div>
     </div>   
     </div> <!-- container -->
-    <script type="text/javascript">  
-        function addRating(){
-            checkLoggedIn().success(function(logged_in){
-                if(logged_in){
-                    $('#addLocationRatingModal').modal('show');// triggers login modal to display
-                }else{
-                    showLoginModal();
-                }
-            });
-        }
-    </script>
 </body>
 
 </html>

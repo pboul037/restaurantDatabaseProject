@@ -20,6 +20,30 @@ class DAL {
         return $conn;
     }
     
+     /*
+     * Deletes a location, all the ratings related to it and its restaurant if there is no more 
+     * location of this restaurant in the db.
+     *
+     * @author Patrice Boulet
+     */
+    public function delete_location($location_id){ 
+        $sql = "WITH deleted AS (DELETE FROM restaurant_ratings.locations l
+                    USING restaurant_ratings.restaurant r
+                    WHERE r.restaurant_id = l.restaurant_id AND l.location_id = " . $location_id . "
+                    RETURNING r.restaurant_id)
+                    
+                DELETE FROM restaurant_ratings.restaurant r2
+                USING deleted, (SELECT r3.restaurant_id
+                        FROM restaurant_ratings.restaurant r3, restaurant_ratings.locations l2
+                        WHERE r3.restaurant_id = l2.restaurant_id
+                        GROUP BY r3.restaurant_id
+                        HAVING COUNT(*) < 2) AS locations_count
+                WHERE r2.restaurant_id = deleted.restaurant_id AND 
+                    r2.restaurant_id =  locations_count.restaurant_id AND 
+                        r2.restaurant_id IN (locations_count.restaurant_id)";
+        return $this->query($sql);
+    }     
+    
     /*
      * Checks login credentials.
      *
@@ -41,12 +65,25 @@ class DAL {
         $sql = "WITH user_insert AS (
             INSERT INTO restaurant_ratings.users(email, _name, pswd, join_date)
             VALUES ('" . $email . "', '" . $username . "', '" . $pswd . "', NOW()::DATE)
-            RETURNING user_id 
-            )
-INSERT INTO restaurant_ratings.rater(user_id, _type)
-VALUES (  (SELECT i.user_id FROM user_insert i), '" . $rater_type . "');";
-return $this->query($sql);
-}     
+            RETURNING user_id )
+            INSERT INTO restaurant_ratings.rater(user_id, _type)
+            VALUES (  (SELECT i.user_id FROM user_insert i), '" . $rater_type . "');";
+            return $this->query($sql);
+        }
+    
+    /*
+     * Add a rating for a location.
+     *
+     * @author Patrice Boulet
+     */
+    public function add_new_location_rating($location_id, $rater_id, $price, $food, $ambiance, $service, $comments, $avg_rating){ 
+        $sql = "INSERT INTO restaurant_ratings.rating(location_id, rater_id, date_written, price, food, 
+                        ambiance, service, _comments, avg_rating)
+                VALUES (" . $location_id . ", " .$rater_id . ", NOW()::DATE, " . $price . ", " .
+                            $food . ", " . $ambiance . ", " . $service . ", '" . $comments . "', " .
+                                $avg_rating . ");";
+        return $this->query($sql);
+    }  
 
     /*
      * Gets all rater types.
@@ -125,28 +162,6 @@ return $this->query($sql);
         return $this->query($sql);
     }
 
-
-
-    
-    /*
-     * Gets location id, address and name for all locations.
-     * 
-     * @author Patrice Boulet
-     */
-    public function get_all_restaurants($sorting){
-       $sql = "SELECT l.location_id AS location_id, r._name AS name, l.street_address AS address, COUNT(*) as total_num_ratings, 
-       ROUND(AVG(g.price)::INTEGER) AS avg_price, ROUND(AVG(g.ambiance)::NUMERIC, 1) as avg_ambiance, 
-       ROUND(AVG(g.food)::NUMERIC, 1) as avg_food, ROUND(AVG(g.service)::NUMERIC, 1) as avg_service,
-       ROUND(AVG(g.avg_rating)::NUMERIC, 1) as avg_rating, MIN(date_part('days', now() - g.date_written)) as days_written_to_now,
-       ROUND((SUM((extract('epoch' from g.date_written)/100000000)*g.avg_rating)/COUNT(*))::NUMERIC, 1) as popularity
-       FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating g
-       WHERE r.restaurant_id = l.restaurant_id AND g.location_id = l.location_id
-       GROUP BY l.location_id, l.street_address, r._name";
-       if($sorting !== null)
-        $sql .= ' ORDER BY ' . $sorting;
-    return $this->query($sql);
-}
-
     /*
      * Gets the cuisine types of this $location.
      *
@@ -165,19 +180,26 @@ return $this->query($sql);
      *
      * @author Patrice Boulet
      */
-    public function get_only_restaurants_of_types($types_array, $sorting){
+    public function get_locations_list($types_array, $sorting){
         
         $sql = "SELECT l.location_id AS location_id, r._name AS name, l.street_address AS address, COUNT(*) as total_num_ratings, 
-        ROUND(AVG(g.price)::INTEGER) AS avg_price, ROUND(AVG(g.ambiance)::NUMERIC, 1) as avg_ambiance, 
-        ROUND(AVG(g.food)::NUMERIC, 1) as avg_food, ROUND(AVG(g.service)::NUMERIC, 1) as avg_service,
-        ROUND(AVG(g.avg_rating)::NUMERIC, 1) as avg_rating, MIN(date_part('days', now() - g.date_written)) as days_written_to_now,
-        ROUND((SUM((extract('epoch' from g.date_written)/100000000)*g.avg_rating)/COUNT(*))::NUMERIC, 1) as popularity
-        FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating g, restaurant_ratings.isOfType t  
-        WHERE r.restaurant_id = l.restaurant_id AND r.restaurant_id = t.restaurant_id 
-        AND g.location_id = l.location_id AND t.type_id IN (" . $this->get_user_specified_types_query($types_array) . ")
-        GROUP BY l.location_id, l.street_address, r._name";
+                    ROUND(AVG(g.price)::INTEGER) AS avg_price, ROUND(AVG(g.ambiance)::NUMERIC, 1) as avg_ambiance, 
+                    ROUND(AVG(g.food)::NUMERIC, 1) as avg_food, ROUND(AVG(g.service)::NUMERIC, 1) as avg_service,
+                    ROUND(AVG(g.avg_rating)::NUMERIC, 1) as avg_rating, MIN(date_part('days', now() - g.date_written)) as                                       days_written_to_now,
+                    ROUND((SUM((extract('epoch' from g.date_written)/100000000)*g.avg_rating)/COUNT(*))::NUMERIC, 1) as popularity
+                    FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating g,                                                  restaurant_ratings.isOfType t  
+                    WHERE r.restaurant_id = l.restaurant_id AND r.restaurant_id = t.restaurant_id 
+                            AND g.location_id = l.location_id";
+        
+        if($types_array !== null){            
+            $sql .= " AND t.type_id IN (" . $this->get_user_specified_types_query($types_array) . ")";
+        }
+        
+        $sql.= " GROUP BY l.location_id, l.street_address, r._name";
+        
         if($sorting !== null)
             $sql .= ' ORDER BY ' . $sorting;
+        
         return $this->query($sql);
     }
     

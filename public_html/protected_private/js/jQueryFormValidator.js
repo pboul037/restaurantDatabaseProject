@@ -9,9 +9,11 @@ function validateForm(formId){
     $('.has-error').removeClass('has-error');
     $('.has-success').removeClass('has-error');
     $('span.validationError').remove();
+    $('br.validationError').remove();
     $('span.validationSuccess').remove();
         
-    if(formId == "signUpForm"){
+    // validate the signup form
+    if(formId == "signupForm"){
     
         var usernameReg = /^[A-Za-z0-9]+$/;
         var numberReg =  /^[0-9]+$/;
@@ -27,7 +29,7 @@ function validateForm(formId){
 
             if(inputVal[0] == ""){
                 $('#signupEmailGroup').addClass("has-error has-feedback");
-                $('#signupEmail').after('<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><span  class=validationError"> Please enter your email.</span>');
+                $('#signupEmail').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><span  class="validationError"> Please enter your email.</span>');
             } 
             else if(!emailReg.test(email)){
                 $('#signupEmailGroup').addClass("has-error has-feedback");
@@ -39,7 +41,7 @@ function validateForm(formId){
 
             if(inputVal[1] == ""){
                 $('#signupUsernameGroup').addClass("has-error has-feedback");
-                $('#signupUsername').after('<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><span  class=validationError"> Please enter a username.</span>');
+                $('#signupUsername').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><span  class="validationError"> Please enter a username.</span>');
             } else {
                 $('#signupUsernameGroup').addClass("has-success has-feedback");
                 $('#signupUsername').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
@@ -47,7 +49,7 @@ function validateForm(formId){
 
             if(inputVal[2] == ""){
                 $('#signupPasswordGroup').addClass("has-error has-feedback");
-                $('#signupPassword').after('<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><span  class=validationError"> Please enter a password.</span>');
+                $('#signupPassword').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><span  class="validationError"> Please enter a password.</span>');
             } else {
                 $('#signupPasswordGroup').addClass("has-success has-feedback");
                 $('#signupPassword').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
@@ -101,21 +103,32 @@ function validateForm(formId){
               type: "POST",
               url: "../controllers/LoginModalController.php",
               data: "login_form_data=" + JSON.stringify(inputVal),
-              success: function(matchedCredentials){
-                if(matchedCredentials > 0){ // login was successful
-                    
+              success: function(response){
+                var responseArray = JSON.parse(response);  
+                var matchingCredentialsFound = responseArray[0] > 0;
+                var userIsAdmin = responseArray[1];
+
+                if(matchingCredentialsFound){ // login was successful
+                    console.log("user is admin: " + userIsAdmin);
                     // update user feedback
                     $('#loginUsernameGroup').addClass("has-success has-feedback");
                     $('#loginUsername').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
                     $('#loginPasswordGroup').addClass("has-success has-feedback");
                     $('#loginPassword').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
                     
-                    $('#sessionButtons').html('<li><a style="cursor: pointer" onclick="">' +
+                    $('#sessionButtons').html('<li><a id="usernameBtn" style="cursor: pointer">' +
                                               $('#loginUsername').val() + '</a></li>' +
-                                              '<li><a style="cursor: pointer" onclick="logout()">Log out</a></li>');
+                                              '<li><a id="logoutBtn" style="cursor: pointer">Log out</a></li>');
                     
                     $('#loginModal').modal('hide');
-                    $.notify("Logged in", "success");
+                    if( !userIsAdmin ){
+                        $.notify("Logged in", "success");
+                    }else{
+                        $.notify("Logged in... The page will reload in 3 seconds with your administrator privileges activated...",                                              "success");
+                        setTimeout(function(){ 
+                            location.reload();},3000
+                        );
+                    }
                 }else{ // login failed
                     
                     // update user feedback
@@ -127,9 +140,70 @@ function validateForm(formId){
                }
             });
             return true;
+        }else{
+            return false;    
+        }
+        // validate add a location rating form
+        }else if( formId == "addLocationRatingForm"){
+            var foodRating = $('#addLocationRatingFood').val();
+            var serviceRating = $('#addLocationRatingService').val();
+            var ambianceRating = $('#addLocationRatingAmbiance').val();
+            var price = $('#addLocationRatingPrice').val();
+            var comments = $('#addLocationRatingComments').val();
+            var location_id = parseInt(location.search.split("=")[1]);
+            
+            var inputVal = new Array(foodRating, serviceRating, ambianceRating, price, comments, location_id);
+            
+            if(inputVal[0] == ""){
+                $('#addLocationRatingFoodGroup').addClass("has-error has-feedback");
+                $('#addLocationRatingFood').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please rate the food.</span>');
+            } else {
+                $('#addLocationRatingFoodGroup').addClass("has-success has-feedback");
+                $('#addLocationRatingFood').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+            if(inputVal[1] == ""){
+                $('#addLocationRatingServiceGroup').addClass("has-error has-feedback");
+                $('#addLocationRatingService').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please rate the service.</span>');
+            } else {
+                $('#addLocationRatingServiceGroup').addClass("has-success has-feedback");
+                $('#addLocationRatingService').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+            if(inputVal[2] == ""){
+                $('#addLocationRatingAmbianceGroup').addClass("has-error has-feedback");
+                $('#addLocationRatingAmbiance').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please rate the ambiance.</span>');
+            } else {
+                $('#addLocationRatingAmbianceGroup').addClass("has-success has-feedback");
+                $('#addLocationRatingAmbiance').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+            if(inputVal[3] == ""){
+                $('#addLocationRatingPriceGroup').addClass("has-error has-feedback");
+                $('#addLocationRatingPrice').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please enter a price range.</span>');
+            } else {
+                $('#addLocationRatingPriceGroup').addClass("has-success has-feedback");
+                $('#addLocationRatingPrice').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+                 // when there are error in form data entries
+        if( $('validationError').length == 0){
+            $.ajax({
+              type: "POST",
+              url: "../controllers/AddRatingModalController.php",
+              data: "add_location_rating_form_data=" + JSON.stringify(inputVal),
+              success: function(){  
+                    $.notify("Thanks for rating! The page will now reload in 3 seconds to update your changes...", "success");
+                    setTimeout(function(){ 
+                        $('#addLocationRatingModal').modal('hide');
+                        window.location.hash = "#ratings";
+                        location.reload();},3000
+                    );
+                }
+            });
+            return true;
+        }else{
+            return false;    
+        }   
         }else
             return false;
     }
-    
-    
-} 

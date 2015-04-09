@@ -1,10 +1,7 @@
 <?php 
-
     // include configuration
     require_once(dirname(dirname(__FILE__)) . '\etc\conf\config.php');
-
     $dal =  new DAL();
-
     /**
       * Gets the rater types to populate the select 
       * input of the signup form.
@@ -18,7 +15,6 @@
         }
         echo $rater_types;
     }
-
     /**
       * Handles the submit request from the signup form.
       *
