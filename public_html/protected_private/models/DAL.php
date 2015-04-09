@@ -26,9 +26,9 @@ class DAL {
      * @author Patrice Boulet
      */
     public function check_credentials($username, $pswd){ 
-        $sql = "SELECT u._name as name, u.pswd as pswd
-        FROM restaurant_ratings.users u
-        WHERE u._name = '" . $username . "' AND u.pswd = '" . $pswd . "';";
+         $sql = "SELECT u._name as name, u.pswd as pswd, r.rater_id as rater_id
+                FROM restaurant_ratings.users u, restaurant_ratings.rater r
+                WHERE u.user_id = r.user_id AND u._name = '" . $username . "' AND u.pswd = '" . $pswd . "';";
         return $this->query($sql);
     } 
     

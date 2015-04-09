@@ -288,7 +288,8 @@ INSERT INTO restaurant_ratings.users(email, _name, pswd, join_date)
     ( 'trouncecrackers@yahoo.ca', 'trouncecracker', 'trouncecrackers$', '2013-12-13'),
     ( 'nestingpistache@gmail.com', 'nestingpistache', 'nestingpistachio$', '2014-11-14'),
     ( 'trapdooroil@yahoo.ca', 'trapdooroil', 'trapdooroil$', '2013-10-15'),
-    ( 'bizarremilk@gmail.com', 'bizarremilk', 'bizarremilkshakes$', '2015-09-16');
+    ( 'bizarremilk@gmail.com', 'bizarremilk', 'bizarremilkshakes$', '2015-09-16'),
+    ( 'admin@gmail.com', 'admin', 'admin', '2015-09-16');
     
 
 
@@ -311,7 +312,8 @@ INSERT INTO restaurant_ratings.rater(
 	(13, 'online'),
 	(14, 'online'),
 	(15, 'blog'),
-	(16, 'online');
+	(16, 'online'),
+    (17, 'online');
 
 
 INSERT INTO rating (location_id, rater_id, date_written, price, food, ambiance, service,  _comments,  found_helpful, wasnt_helpful, avg_rating) VALUES (1, 2, '2014-01-30', 5, 5, 5, 5, 'We discovered it and ate there three times in a week. Reasonable prices, fresh tasty food and a great location.
