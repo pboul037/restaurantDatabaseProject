@@ -99,26 +99,21 @@
     <div class="container">
 
         <div class="row">
+            <div class="row">
+                <div style="text-align:center" class="page-header">
+                    <h2>Find a Restaurant</h1>
+                </div>
+            </div>
             <div class="col-md-3">
-                <p class="lead">Find a Restaurant</p>
                 <div class="row">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h3 class="panel-title">Search options</h3>
+                      </div>
+                      <div class="panel-body">
                     <div class="col-sm-12">
-                        <div class="row">
-                            <select id="types_select" class="btn btn-default dropdown-toggle" onchange="updateSelectedTypes(this.value)">
-                                <option value="" disabled selected>Show only type(s)...</option>
-                                <?php foreach($restaurant_types as $type) { ?>
-                                <option value='<?php echo $type->name; ?>'>
-                                    <?php echo $type->name; echo ' (' . $type->count . ')'; ?></option><?php } ?>
-                            </select>
-                        </div>
-                        <div class="row">
-                            <div id="selected_types_tags">
-                                <?php foreach($_SESSION['restaurant_types_selected'] as $already_selected){ ?>
-                                    <span class="tagcloud tag label label-info"><?php echo $already_selected ?>
-                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></span>
-                                <?php } ?>  
-                            </div>
-                        </div>
+                        <ul class="list-group">
+                            <li style="border-style:none" class="list-group-item">
                         <div class="row">
                             <select id="types_select" class="btn btn-default dropdown-toggle" onchange="updateSorting(this.value)">
                                 <option value="" disabled selected>Sort by...</option>
@@ -143,7 +138,30 @@
                                 } ?>
                             </div>
                         </div>
-                         <div class="row">
+                        </li>
+                        <li style="border-style:none" class="list-group-item">
+                        <div class="row">
+                            <select id="types_select" class="btn btn-default dropdown-toggle" onchange="updateSelectedTypes(this.value)">
+                                <option value="" disabled selected>Show only cuisine(s)...</option>
+                                <?php foreach($restaurant_types as $type) { ?>
+                                <option value='<?php echo $type->name; ?>'>
+                                    <?php echo $type->name; echo ' (' . $type->count . ')'; ?></option><?php } ?>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div id="selected_types_tags">
+                                <?php if( isset($_SESSION['restaurant_types_selected'])){
+                                    if(count($_SESSION['restaurant_types_selected']) > 0)
+                                        echo $type_tags;
+                                } ?> 
+                            </div>
+                        </div>
+                        </li>
+                        <li style="border-style:none" class="list-group-item">
+                            <div class="row">
+                                <h4>Show only:</h4>
+                            </div>
+                            <div class="row">
                             <div class="input-group">
                                 <div style="text-align:center"><span class="lbl">Global rating of:</span></br>
                                     <input type="checkbox" id="filterGlobal1" name="filterGlobal1" value="avg_global=1">
@@ -195,15 +213,30 @@
                                 </div>
                             </div>
                         </div>
+                    </li>
+                    <li style="border-style:none"  class="list-group-item">
                         <div class="row">
-                            <button id="clear_search_options_btn" type="button" class="btn btn-default" 
+                            <button id="clear_search_options_btn" type="button" class="btn btn-danger" 
                                 onclick="clearAllSearchOptions()" 
                                     <?php if( count($_SESSION['restaurant_types_selected']) == 0 && !isset($_SESSION['locations_sorting_selected']))                                            echo 'disabled'; ?>> Clear search options</button>
                         </div>
+                        </li>
+                </ul>
+                      </div>
+                    </div>
                     </div>
                     <script type="text/javascript">     
+                        // executed on page load
                         $(function(){
+                            
+                            // update the rating filter checkbox input state && clear search options btn state
                             $( "input[id*='filter']").on('click', updateRatingFilters);
+                            updateRatingFiltersInputState();   
+                            $.each($("input[id*='filter']"), function(key, filterInput) {
+                                if( filterInput.checked == true){
+                                    $('#clear_search_options_btn').prop('disabled', false);
+                                }
+                            });
                         });
                         
                         /*
@@ -216,13 +249,24 @@
                             var filter_sel_array =  event.target.value.split("=");
                             var filter_sel_type = filter_sel_array[0];
                             var filter_sel_value =  parseInt(filter_sel_array[1]);
-
+                            var filter_sel_checked = event.target.checked;
+                            
                             $.ajax({
                                 type: 'POST',
                                 url: '../controllers/RestaurantsController.php',
-                                data: {rating_filter: filter_sel_type, rating_filter_value: filter_sel_value},
+                                data: {rating_filter: filter_sel_type, 
+                                       rating_filter_value: filter_sel_value,
+                                       rating_filter_checked: filter_sel_checked},
                                 success: function (data) {
-                                    //updateLocationListHtmlElements(data, false, true, false);
+                                    var enableClearSearchOptions = false;
+
+                                    $.each($("input[id*='filter']"), function(key, filterInput) {
+                                        if( filterInput.checked == true){
+                                            enableClearSearchOptions = true;
+                                        }
+                                    });
+                                    
+                                    updateLocationListHtmlElements(data, !enableClearSearchOptions, false, false);
                                 }
                             });
                         }
@@ -273,6 +317,11 @@
                                 data: 'clear_all_search_options=' + 'true',
                                 success: function (data) {
                                     updateLocationListHtmlElements(data, true, true, true)
+                                    
+                                    // clear all rating filters input checkboxes
+                                    $.each($( "input[id*='filter']" ), function(){
+                                        this.checked = false;
+                                    })
                                 }
                             });
                         }
@@ -283,6 +332,7 @@
                          * @author Patrice Boulet
                          */
                         function updateLocationListHtmlElements(response, disableClearSearchOptions, updateTypesMenuAndTags, updateSortingTag){
+                            //console.log(response);
                             var response = $.parseJSON(response);
                             //update restaurant list
                             $('#restaurant_list').html(response[2]);
@@ -330,6 +380,38 @@
                                     updateLocationListHtmlElements(response, responseArray[4], false, false);
                                 }
                             });
+                        }
+                            
+                        /*
+                         * Updates the checked status of the rating filters inputs.
+                         *
+                         * @author Patrice Boulet
+                         */
+                        function updateRatingFiltersInputState() {
+                            <?php 
+                                if (isset($_SESSION['avg_global_r_filter'])){
+                                    foreach($_SESSION['avg_global_r_filter'] as $filter_val){ ?>
+                                        $('#filterGlobal' + <?php echo $filter_val ?>)[0].checked = true;
+                                <?php }
+                                }?>
+                            <?php 
+                                if (isset($_SESSION['avg_food_r_filter'])){
+                                    foreach($_SESSION['avg_food_r_filter'] as $filter_val){ ?>
+                                        $('#filterFood' + <?php echo $filter_val ?>)[0].checked = true;
+                                <?php }
+                                }?>
+                            <?php 
+                                if (isset($_SESSION['avg_service_r_filter'])){
+                                    foreach($_SESSION['avg_service_r_filter'] as $filter_val){ ?>
+                                        $('#filterService' + <?php echo $filter_val ?>)[0].checked = true;
+                                <?php }
+                                }?>
+                            <?php 
+                                if (isset($_SESSION['avg_ambiance_r_filter'])){
+                                    foreach($_SESSION['avg_ambiance_r_filter'] as $filter_val){ ?>
+                                        $('#filterAmbiance' + <?php echo $filter_val ?>)[0].checked = true;
+                                <?php }
+                                }?>
                         }
                     </script>
                 </div>

@@ -180,11 +180,15 @@ class DAL {
      *
      * @author Patrice Boulet
      */
-    public function get_locations_list($types_array, $sorting, $global_r_filters, $food_r_filters, $service_r_filters, $ambiance_r_filters){
+    public function get_locations_list($types_array, $sorting, $rating_filters){
         $sql = "";
+
+        $global_r_filters = $rating_filters[0];
+        $food_r_filters = $rating_filters[1];
+        $service_r_filters = $rating_filters[2];
+        $ambiance_r_filters = $rating_filters[3];
         
-        if ( $global_r_filters !== null || $food_r_filters !== null ||
-                    $service_r_filters !== null || $ambiance_r_filters !== null){
+        if ( count($global_r_filters) > 0 || count($food_r_filters) > 0 || count($service_r_filters) > 0 || count($ambiance_r_filters) > 0){
             $sql .= "WITH location_tbl AS (";
         }
         
@@ -211,26 +215,26 @@ class DAL {
                         FROM location_tbl
                         WHERE ";
             
-            if( $global_r_filters !== null){
+            if( count($global_r_filters) > 0){
                 $sql.= "floor(avg_rating) IN (" . join(',', $global_r_filters) . ")";
                 $first_filter = false;
             }
             
-            if( $food_r_filters !== null){
+            if( count($food_r_filters) > 0){
                 if( !$first_filter )
                     $sql.= " AND ";
                 $sql.= "floor(avg_food) IN (" . join(',', $food_r_filters) . ")";
                 $first_filter = false;
             }
             
-            if( $service_r_filters !== null){
+            if( count($service_r_filters) > 0){
                 if( !$first_filter )
                     $sql.= " AND ";
                 $sql.= "floor(avg_service) IN (" . join(',', $service_r_filters) . ")";
                 $first_filter = false;
             }
             
-            if( $ambiance_r_filters !== null){
+            if( count($ambiance_r_filters) > 0){
                 if( !$first_filter )
                     $sql.= " AND ";
                 $sql.= "floor(avg_ambiance) IN (" . join(',', $ambiance_r_filters) . ")";
