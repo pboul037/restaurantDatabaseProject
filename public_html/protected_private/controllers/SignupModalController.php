@@ -1,3 +1,10 @@
+/*
+  * Signup modal controller.
+  *
+  * @author Patrice Boulet
+  */
+
+
 <?php 
     // include configuration
     require_once(dirname(dirname(__FILE__)) . '\etc\conf\config.php');

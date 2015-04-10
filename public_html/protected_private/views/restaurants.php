@@ -1,3 +1,10 @@
+<!--
+  * Restaurants page.
+  *
+  * @author Patrice Boulet
+  */
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 

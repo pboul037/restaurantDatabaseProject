@@ -1,3 +1,9 @@
+/*
+  * Add Rating Modal component
+  *
+  * @author Patrice Boulet
+  */
+
 <?php 
 
     session_start();

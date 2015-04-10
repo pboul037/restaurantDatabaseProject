@@ -1,3 +1,9 @@
+ /*
+  * Add menu item modal component.
+  *
+  * @author Patrice Boulet
+  */
+
 <?php 
 
     session_start();

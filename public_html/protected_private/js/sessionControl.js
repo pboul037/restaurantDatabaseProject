@@ -1,8 +1,9 @@
- /*
-     * Shows the signup form.
-     *
-     * @author Patrice Boulet
-     */
+/*
+  * Session component logic.
+  *
+  * @author Patrice Boulet
+  */
+
     function showSignupModal(){
         $.ajax({
               type: "POST",

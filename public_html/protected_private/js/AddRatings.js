@@ -1,3 +1,10 @@
+/*
+  * Add a rating component logic.
+  *
+  * @author Patrice Boulet
+  */
+
+
 //  executed on the document load event
 $(function (){
   

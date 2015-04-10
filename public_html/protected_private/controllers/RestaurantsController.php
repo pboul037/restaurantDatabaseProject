@@ -1,3 +1,10 @@
+/*
+  * Restaurants page controller.
+  *
+  * @author Patrice Boulet
+  */
+
+
 <?php
         /*
          * Controller for the restaurants page.

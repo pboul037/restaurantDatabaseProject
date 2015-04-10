@@ -1,5 +1,5 @@
 /**
-  * A small jQuery form validation function for the signup and login forms.
+  * A small jQuery form validation function for all the forms of the project.
   *
   * @author Patrice Boulet
   */

@@ -1,3 +1,9 @@
+/*
+  * Login controller.
+  *
+  * @author Patrice Boulet
+  */
+
 <?php 
     session_start();
     // include configuration

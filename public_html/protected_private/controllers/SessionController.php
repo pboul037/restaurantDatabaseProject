@@ -1,3 +1,9 @@
+/*
+  * Session controller.
+  *
+  * @author Patrice Boulet
+  */
+
 <?php
 session_start();
 if(isset($_POST['logout'])){

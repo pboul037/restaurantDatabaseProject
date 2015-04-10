@@ -1,3 +1,9 @@
+/*
+  * Add menu item component logic.
+  *
+  * @author Patrice Boulet
+  */
+
 //  executed on the document load event
 $(function (){
   
