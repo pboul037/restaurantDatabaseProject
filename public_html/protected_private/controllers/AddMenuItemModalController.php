@@ -1,10 +1,6 @@
- /*
-  * Add menu item modal component.
-  *
-  * @author Patrice Boulet
-  */
-
 <?php 
+    //Add menu item controller.
+    //@author Patrice Boulet
 
     session_start();
     // include configuration

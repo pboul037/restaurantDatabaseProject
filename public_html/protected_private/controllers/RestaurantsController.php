@@ -1,16 +1,6 @@
-<!-- /*
-  * Restaurants page controller.
-  *
-  * @author Patrice Boulet
-  */
--->
-
 <?php
-        /*
-         * Controller for the restaurants page.
-         *
-         * @author Patrice Boulet
-         */
+        // Controller for the restaurants page.
+        // @author Patrice Boulet
 
         session_start();
         

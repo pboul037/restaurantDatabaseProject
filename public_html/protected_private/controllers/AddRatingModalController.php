@@ -1,10 +1,6 @@
-/*
-  * Add Rating Modal component
-  *
-  * @author Patrice Boulet
-  */
-
 <?php 
+    // Add rating modal Controller.
+    // @author Patrice Boulet
 
     session_start();
     // include configuration

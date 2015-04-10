@@ -1,11 +1,8 @@
-/*
-  * Signup modal controller.
-  *
-  * @author Patrice Boulet
-  */
-
-
 <?php 
+
+    //Signup controller.
+    //@author Patrice Boulet
+
     // include configuration
     require_once(dirname(dirname(__FILE__)) . '\etc\conf\config.php');
     $dal =  new DAL();
