@@ -147,7 +147,7 @@ session_start();
      * Returns a $location_rating list html item as 
      * a string.
      *
-     * @author Junyi Dai, Qasim Ahmed, Patrice Boulet
+     * @author Patrice Boulet, Junyi Dai, Qasim Ahmed 
      */
     function get_location_rating_html_items($location_ratings_list){
         global $dal;
@@ -254,21 +254,35 @@ session_start();
         
         $menu_items_html = "";
         $menu_items = $dal->get_menu_items($details->location_id, $type, $category);
+        $temp_str = "";
+        $avg_category_price = null;
+        $category_price_sum = 0;
+        
+        foreach($menu_items as $menu_item){
+            $category_price_sum += $menu_item->price;
+            $temp_str .= '<li class="list-group-item"><div class="pull-right"><h5>$ ' . $menu_item->price . '</h5></div><h5>' .                              $menu_item->_name . '</br>
+            <small>' . $menu_item->description . '</small></h5><span class="badge"></span></li>
+            ';
+        }
+        if( count($menu_items) >  0)
+            $avg_category_price = $category_price_sum/count($menu_items);
+        
         $menu_items_html .= '<div class="panel-heading">
         <h4 class="panel-title">
           <a data-toggle="collapse" data-parent="#accordion" 
-          href="#collapse' . $category . '">' . $category . '</a><span class="pull-right badge">' . count($menu_items) . '</span>
+          href="#collapse' . $category . '">' . $category . '</a>';
+        
+        if( $avg_category_price != null)
+            $menu_items_html .= '<span class="pull-right"> (avg. price: $'. round($avg_category_price,2) . ')</span>';
+        
+        $menu_items_html .= '<span style="padding-left:15px"><span class="badge">' . count($menu_items) . '</span></span>
         </h4>
         </div>
         <div id="collapse' . $category . '" class="panel-collapse collapse">
         <ul class="list-group">
         <?php echo $appetizers_html; ?>';
         
-        foreach($menu_items as $menu_item){
-            $menu_items_html .= '<li class="list-group-item"><div class="pull-right"><h5>$ ' . $menu_item->price . '</h5></div><h5>' .                              $menu_item->_name . '</br>
-            <small>' . $menu_item->description . '</small></h5><span class="badge"></span></li>
-            ';
-        }
+        $menu_items_html .= $temp_str;
         
         $menu_items_html .= '</ul></div>';
         
