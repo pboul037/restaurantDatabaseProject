@@ -18,6 +18,7 @@
     <link href="../../css/default.css" rel="stylesheet">
     <link href="../../../framwork_dir/bootstrap/css/homepage.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../../../framwork_dir/bootstrap-spinner/bootstrap-spinner.css" rel="stylesheet">
 
     
     <!-- jQuery -->
@@ -41,12 +42,15 @@
         include('/SignupModal.html'); 
         include('/LoginModal.html');
         include('/AddRatingModal.html');
+        include('/AddMenuItemModal.html');
     ?>
     
     <!-- Form validation and session control -->
     <script src="../../../public_html/protected_private/js/jQueryFormValidator.js"></script>
     <script src="../../../public_html/protected_private/js/sessionControl.js"></script>
     <script src="../../../public_html/protected_private/js/AddRatings.js"></script>
+    <script src="../../../public_html/protected_private/js/AddMenuItems.js"></script>
+    <script src="../../../framwork_dir/bootstrap-spinner/jquery.spinner.min.js"></script>
     
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -144,6 +148,12 @@
             <li class="active"><a href="#details" data-toggle="tab">Details</a></li>
             <li><a href="#ratings" data-toggle="tab">Ratings</a></li>
             <li><a href="#menu" data-toggle="tab">Menu</a></li>
+            <div class="pull-right" style="padding-left:5px">
+                <button class="btn btn-primary pull-right" onclick="addMenuItem()">Add a menu item</button>
+            </div>
+            <div class="pull-right">
+                <button class="btn btn-primary pull-right" onclick="addRating()">Add a rating</button>
+            </div>
         </ul>
         <div id="my-tab-content" class="tab-content">
             <div class="tab-pane active" id="details">
@@ -166,9 +176,6 @@
             <div class="tab-pane" id="ratings">
                 <div class="row">
                     <div class="col-sm-4"><h1>Ratings</h1></div>
-                    <div class="col-sm-8" style="padding-top:18px">
-                        <button class="btn btn-primary pull-right" onclick="addRating()">Add a rating</button>
-                    </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-12">

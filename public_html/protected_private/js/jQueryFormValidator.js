@@ -233,6 +233,77 @@ function validateForm(formId){
         }else{
             return false;    
         }   
+        }else if( formId == "addLocationMenuItemForm"){
+
+            var name = $('#itemName').val();
+            var description = $('#itemDesc').val();
+            var price = $('#itemPrice').val();
+            var type = $("#menuItemTypeButtonvalue").val();
+            var category = $('#addMenuItemCategoriesAvail option:selected')[0].value;
+            var location_id = parseInt(location.search.split("=")[1]);
+            
+            var inputVal = new Array(name, description, price, type, category, location_id);
+            
+            if(inputVal[0] == ""){
+                $('#itemNameGroup').addClass("has-error has-feedback");
+                $('#itemName').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please enter a name for the item.</span>');
+            } else {
+                $('#itemNameGroup').addClass("has-success has-feedback");
+                $('#itemName').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+            if(inputVal[1] == ""){
+                $('#itemDescGroup').addClass("has-error has-feedback");
+                $('#itemDesc').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please enter a description for the item.</span>');
+            } else {
+                $('#itemDescGroup').addClass("has-success has-feedback");
+                $('#itemDesc').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+            if(inputVal[2] == undefined || inputVal[2].match(new RegExp('\\d[.]\\d\\d')) == null){
+                $('#itemPriceGroup').addClass("has-error has-feedback");
+                $('#itemPrice').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please enter a price for the item with form "X.XX".</span>');
+            } else {
+                $('#itemPriceGroup').addClass("has-success has-feedback");
+                $('#itemPrice').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+            if(inputVal[3] == undefined || inputVal[3] == "" || inputVal[3] == null){
+                $('#addMenuItemTypesAvailGroup').addClass("has-error has-feedback");
+                $('#addMenuItemTypesAvail').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please choose an item type.</span>');
+            } else {
+                $('#addMenuItemTypesAvailGroup').addClass("has-success has-feedback");
+                $('#addMenuItemTypesAvail').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+            if(inputVal[4] == undefined || inputVal[4] == "" || inputVal[4] == null){
+                $('#addMenuItemCategoriesAvailGroup').addClass("has-error has-feedback");
+                $('#addMenuItemCategoriesAvail').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please choose an item category.</span>');
+            } else {
+                $('#addMenuItemCategoriesAvailGroup').addClass("has-success has-feedback");
+                $('#addMenuItemCategoriesAvail').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+        // when there are error in form data entries
+        if( $('validationError').length == 0){
+            
+            $.ajax({
+              type: "POST",
+              url: "../controllers/AddMenuItemModalController.php",
+              data: "add_menu_item=" + JSON.stringify(inputVal),
+              success: function(data){
+                        $.notify("Thanks for contributing! The page will now reload in 3 seconds to update your changes...", "success");
+                        setTimeout(function(){ 
+                            $('#addLocationMenuItemModal').modal('hide');
+                            window.location.hash = "#menu";
+                            location.reload();},3000
+                        );
+              }
+            }); 
+            return true;
+        }else{
+            return false;    
+        }   
         }else
             return false;
     }

@@ -146,7 +146,7 @@ class DAL {
     }
     
     /*
-     * Gets food menu items for this $location of type $type and category $category.
+     * Gets all beverages categories available for this location.
      *
      * @author Patrice Boulet
      */
@@ -156,6 +156,33 @@ class DAL {
         FROM restaurant_ratings.locations l, restaurant_ratings.menu_item i
         WHERE l.location_id = i.location_id AND i.location_id =" . $location_id . " AND i._type = 'drink'
         GROUP BY i.category";
+        return $this->query($sql);
+    }
+    
+    /*
+     * Gets all categories available for this $type.
+     *
+     * @author Patrice Boulet
+     */
+    public function get_categories_by_type($type){
+        
+        $sql = "SELECT i.category
+                FROM restaurant_ratings.menu_item i
+                WHERE i._type = '" . $type . "'
+                GROUP BY i.category";
+        return $this->query($sql);
+    }
+    
+        
+    /*
+     * Adds a menu item to that $location.
+     *
+     * @author Patrice Boulet
+     */
+    public function add_menu_item($location_id, $name, $type, $category, $description, $price){
+        
+        $sql = "INSERT INTO restaurant_ratings.menu_item(_name, _type, category, description, price, location_id)
+                VALUES ('". $name ."', '". $type ."', '". $category ."', '". $description ."', ". $price .", ". $location_id .");";
         return $this->query($sql);
     }
     
