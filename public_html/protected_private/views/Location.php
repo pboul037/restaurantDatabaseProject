@@ -172,8 +172,9 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
-                        <select id="types_select" class="btn btn-default dropdown-toggle" onchange="updateSorting(this.value)">
+                        <select id="types_select" class="btn btn-default dropdown-toggle" onchange="updateSorting(this.value)">    
                                 <option value="" disabled selected>Sort by...</option>
+                                <option value='rater_ratings_for_this_loc DESC'>Most frequent raters first</option>
                                 <option value='date_written ASC'>Date Written (ascending)</option>
                                 <option value='date_written DESC'>Date Written (descending)</option>
                                 <option value='food ASC'>Food Rating (ascending)</option>
