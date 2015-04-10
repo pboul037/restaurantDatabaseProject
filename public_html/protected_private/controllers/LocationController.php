@@ -147,7 +147,7 @@ session_start();
      * Returns a $location_rating list html item as 
      * a string.
      *
-     * @author Junyi Dai, Qasim Ahmed
+     * @author Junyi Dai, Qasim Ahmed, Patrice Boulet
      */
     function get_location_rating_html_items($location_ratings_list){
 
@@ -164,56 +164,67 @@ session_start();
 
             // add gold $ for actual price avg and store it in $dollar_sign_string
             for( $i = 0; $i < $location_rating->price; $i++){
-                $dollar_sign_string .= '<h6 <span class="glyphicon glyphicon-usd" style="color:black"></span></h6>';
+                $dollar_sign_string .= '<span style="font-size:12px" class="glyphicon glyphicon-usd" style="color:black"></span>';
             }
 
             // add the subtraction of 5 by avg price of grey $ and store it in $dollar_sign_string
             for( $i = 0; $i < 5-$location_rating->price; $i++){
-                $dollar_sign_string .= '<h6 <span class="glyphicon glyphicon-usd" style="color:#DCDCDC"></span></h6>';
+                $dollar_sign_string .= '<span  style="font-size:12px" class="glyphicon glyphicon-usd" style="color:#DCDCDC"></span>';
             }
 
             $location_rating_html_item .= 
-            '<div class="list-group-item"><div class="row">
-            <div class="col-sm-4">
+            '<div class="list-group-item">
                 <div class="row">
-                    <span class="col-sm-12">
-                        <span style="font-size:14pt; font-style:italic;">Food: </span>
-                        <span style="font-size:12pt; font-weight:bold;">' . $location_rating->food . '</span>
-                        <span style="font-size:12pt">out of 5 </span>
-                    </span>
-                </div>
-                <div class="row">
-                    <span class="col-sm-12">
-                        <span style="font-size:14pt; font-style:italic;">Ambiance: </span>
-                        <span style="font-size:12pt; font-weight:bold;">' . $location_rating->ambiance . '</span>
-                        <span style="font-size:12pt">out of 5 </span>
-                    </span>
-                </div>
-                <div class="row">
-                    <span class="col-sm-12">
-                        <span style="font-size:14pt; font-style:italic;">Service: </span>
-                        <span style="font-size:12pt; font-weight:bold;">' . $location_rating->service . '</span>
-                        <span style="font-size:12pt">out of 5 </span>
-                    </span>
-                </div>
-                <div class="row">
-                    <span class="col-sm-12">
-                        <span style="font-size:14pt; font-style:italic;">Price: </span>
-                        <span style="font-size:12pt; font-weight:bold;">' . $dollar_sign_string . '</span>
-                    </span>
-                </div>
-            </div>
-            <div class="col-sm-12">
-                <span style="font-size:10pt">By </span>
-                <a style="font-size:10pt" href="Location.php?locationid=' . $location_rating->location_id . '#ratings">' 
-                    . $location_rating->_name .'</a>
-                    <span style="font-size:10pt">on </span>
+                <div class="col-sm-3">
+                    <div class="row"
+                            <span style="text-align:center" class="col-sm-5">
+                                <h4 style="font-weight:bold">' . $location_rating->avg_rating . '<small style="padding-right:25px"> out of 5</small>' . $dollar_sign_string . '</h4>
+                            </span>
+                    </div>
+                    <div class="row">
+                            <span style="text-align:center" class="col-sm-4">
+                                <span style="font-size:10pt;">Food </span>
+                                <h5 style="font-weight:bold">' . $location_rating->food . '<small>/5</small></h5>
+                            </span>
+                            <span style="text-align:center" class="col-sm-4">
+                                <span style="font-size:10pt;">Ambiance </span>
+                                <h5 style="font-weight:bold">' . $location_rating->ambiance . '<small>/5</small></h5>
+                            </span>
+                            <span style="text-align:center" class="col-sm-4">
+                                <span style="font-size:10pt;">Service </span>
+                                <h5 style="font-weight:bold">' . $location_rating->service . '<small>/5</small></h5>
+                            </span>
+                    </div>
+                    <span style="font-size:12pt">By </span>
+                    <a style="font-size:12pt" href="Location.php?locationid=' . $location_rating->location_id . '#ratings">' 
+                        . $location_rating->_name .'
+                    </a>
+                    <span style="font-size:12pt">on </span>
                     <span style="font-size:10pt;">' . $location_rating->date_written . '</span>
+                    <div class="row">
+                        <span class="col-sm-1 glyphicon glyphicon-star" style="color:green"></span>
+                        <span class="col-sm-1">' . $location_rating->rater_reputation .'</span>
+                        <span class="col-sm-5">Reputation</span>
+                    </div>
+                    <div class="row">
+                        <span class="col-sm-1 glyphicon glyphicon-stats" style="color:green"></span>
+                        <span class="col-sm-1">' . $location_rating->total_rater_ratings .'</span>
+                        <span class="col-sm-5">total ratings</span>
+                    </div>
+                                       <div class="row">
+                        <span class="col-sm-12">Rated this location ' . $location_rating->rater_ratings_for_this_loc .' time(s)</span>
+                    </div>
+                    </div>
+                    <div class="col-sm-8 comment">
+                        <div class="row">
+                            <div class="col-sm-12
+                                    <span style="font-size:10pt;">' . 
+                                        (strlen($location_rating->_comments) > 0 ? $location_rating->_comments : "No comments") 
+                                    . '</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-sm-12
-                <span style="font-size:10pt;">' . $location_rating->_comments . '</span>
-            </div>
-            </div>
             </div>';
 
             // Clear the dollar sign string

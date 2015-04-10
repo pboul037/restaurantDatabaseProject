@@ -183,11 +183,28 @@ class DAL {
      */
     public function get_location_ratings($location_id, $sorting){
         
-        $sql = "SELECT *, ((rat.found_helpful - rat.wasnt_helpful) * 10) AS rater_reputation
-        FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating ra, restaurant_ratings.rater rat, restaurant_ratings.users u
+        $sql = "WITH 
+        number_of_ratings_of_this_loc_per_rater AS (SELECT ra.rater_id, COUNT(*) as rater_ratings_for_this_loc
+        FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating ra, restaurant_ratings.rater rat,               restaurant_ratings.users u
         WHERE r.restaurant_id = l.restaurant_id AND l.location_id = ra.location_id 
-        AND ra.rater_id = rat.rater_id AND rat.user_id = u.user_id 
-        AND l.location_id = " . $location_id;
+		  AND ra.rater_id = rat.rater_id AND rat.user_id = u.user_id 
+		  AND l.location_id =" . $location_id . "
+        GROUP BY ra.rater_id),
+
+        number_of_total_ratings_per_rater AS (SELECT ra.rater_id, COUNT(*) as total_rater_ratings
+        FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating ra, restaurant_ratings.rater rat,               restaurant_ratings.users u
+        WHERE r.restaurant_id = l.restaurant_id AND l.location_id = ra.location_id 
+		  AND ra.rater_id = rat.rater_id AND rat.user_id = u.user_id 
+        GROUP BY ra.rater_id)
+
+        SELECT *, ((rat.found_helpful - rat.wasnt_helpful) * 10) AS rater_reputation
+        FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, 
+		  restaurant_ratings.rating ra, restaurant_ratings.rater rat, restaurant_ratings.users u,
+		  number_of_ratings_of_this_loc_per_rater, number_of_total_ratings_per_rater
+        WHERE r.restaurant_id = l.restaurant_id AND l.location_id = ra.location_id 
+		  AND ra.rater_id = rat.rater_id AND rat.user_id = u.user_id 
+		  AND ra.rater_id = number_of_ratings_of_this_loc_per_rater.rater_id 
+		  AND ra.rater_id = number_of_total_ratings_per_rater.rater_id AND l.location_id = " . $location_id;
         if($sorting !== null)
             $sql .= ' ORDER BY ' .$sorting;
 
