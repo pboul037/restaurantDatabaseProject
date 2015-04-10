@@ -17,6 +17,14 @@ session_start();
     //Declaring the variable that will hold on to the location name and information associated with the location
     //that matches the given location id
 
+    $menu_item_delete_sel = isset($_POST['delete_menu_item']);            // a menu item's deletion has been requested by admin
+
+    // delete a location
+    if($menu_item_delete_sel){      
+        $dal->delete_menu_item($_POST['delete_menu_item']);
+    }
+
+
     $location_id;
     if(!isset($_POST['locations_ratings_sorting_selected']))
     {
@@ -260,8 +268,21 @@ session_start();
         
         foreach($menu_items as $menu_item){
             $category_price_sum += $menu_item->price;
-            $temp_str .= '<li class="list-group-item"><div class="pull-right"><h5>$ ' . $menu_item->price . '</h5></div><h5>' .                              $menu_item->_name . '</br>
-            <small>' . $menu_item->description . '</small></h5><span class="badge"></span></li>
+            $temp_str .= '<li class="list-group-item"  data-itemid="' . $menu_item->item_id . '"><div class="row">';
+            
+                        // if the admin is logged in, give the privileges to delete a location
+            if( isset($_SESSION['username']) ){
+                if( $_SESSION['username'] == 'admin'){
+                    $temp_str .= '<div class="col-sm-2 pull-left adminControl"><button class="btn btn-danger" onclick="deleteMenuItem(parseInt(this.parentNode.parentNode.parentNode.dataset.itemid))">
+                                                <span class="glyphicon glyphicon-trash" style="color:black"> </span>
+                                            </button></div>';
+                }
+            }
+            
+            $temp_str .= '<div class="pull-right col-sm-3"><h5>$ ' . $menu_item->price;
+            
+            $temp_str .= '</h5></div><h5 class="col-sm-7">' . $menu_item->_name . '</br>
+            <small>' . $menu_item->description . '</small></h5><span class="badge"></span></div></li>
             ';
         }
         if( count($menu_items) >  0)
@@ -274,6 +295,7 @@ session_start();
         
         if( $avg_category_price != null)
             $menu_items_html .= '<span class="pull-right"> (avg. price: $'. round($avg_category_price,2) . ')</span>';
+        
         
         $menu_items_html .= '<span style="padding-left:15px"><span class="badge">' . count($menu_items) . '</span></span>
         </h4>

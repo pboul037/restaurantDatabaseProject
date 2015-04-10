@@ -277,6 +277,27 @@
                                 }
                             });
                         }
+                        
+                        /*
+                         * Deletes a menu item.
+                         *
+                         * @author Patrice Boulet
+                         */
+                        function deleteMenuItem(item_id){
+                            var item_id = item_id;
+                            $.ajax({
+                                type: 'POST',
+                                url: '../controllers/LocationController.php',
+                                data: 'delete_menu_item=' + item_id,
+                                success: function (response) {
+                                    $.notify("The page will now reload in 3 seconds to update your changes...", "success");
+                                    setTimeout(function(){ 
+                                        window.location.hash = "#menu";
+                                        location.reload();},3000
+                                    );
+                                }
+                            });
+                        }
                     </script>
                 </div>
                 

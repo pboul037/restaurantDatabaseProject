@@ -1,9 +1,9 @@
-/*
+<!-- /*
   * Restaurants page controller.
   *
   * @author Patrice Boulet
   */
-
+-->
 
 <?php
         /*

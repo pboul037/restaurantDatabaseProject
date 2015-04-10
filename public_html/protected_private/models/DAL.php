@@ -42,7 +42,18 @@ class DAL {
                     r2.restaurant_id =  locations_count.restaurant_id AND 
                         r2.restaurant_id IN (locations_count.restaurant_id)";
         return $this->query($sql);
-    }     
+    }    
+    
+    /*
+     * Deletes menu item.
+     *
+     * @author Patrice Boulet
+     */
+    public function delete_menu_item($item_id){ 
+        $sql = "DELETE FROM restaurant_ratings.menu_item i
+                WHERE i.item_id = " . $item_id;
+        return $this->query($sql);
+    }    
     
     /*
      * Checks login credentials.
