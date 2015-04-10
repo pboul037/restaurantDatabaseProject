@@ -225,6 +225,19 @@ class DAL {
     }
     
     /*
+     * Gets the rating items name and price for this rating.
+     *
+     * @author Patrice Boulet
+     */
+    public function get_rating_items_for_rating($rating_id){
+        
+        $sql = "SELECT DISTINCT ON (i.rating_item_id) _name, m.price
+                FROM restaurant_ratings.rating r, restaurant_ratings.rating_item i, restaurant_ratings.menu_item m
+                WHERE r.rating_id = i.rating_id AND i.item_id = m.item_id AND r.rating_id = " . $rating_id;
+        return $this->query($sql);
+    }
+    
+    /*
      * Gets location id, address and name for locations with types in $types.
      *
      * @author Patrice Boulet

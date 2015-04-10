@@ -150,7 +150,7 @@ session_start();
      * @author Junyi Dai, Qasim Ahmed, Patrice Boulet
      */
     function get_location_rating_html_items($location_ratings_list){
-
+        global $dal;
         //QA
         //Declaring the variable that will hold all the HTML code that will be returned to the view
         $location_rating_html_item = '';
@@ -215,6 +215,15 @@ session_start();
                         <span class="col-sm-12">Rated this location ' . $location_rating->rater_ratings_for_this_loc .' time(s)</span>
                     </div>
                     </div>
+                    <div class="well col-sm-8"><span class="col-sm-2">Ordered: </span>';
+                    $rating_items_for_rating = $dal->get_rating_items_for_rating($location_rating->rating_id);
+                    foreach($rating_items_for_rating as $rating_item){
+                        $location_rating_html_item .= '<span class="tagcloud tag label label-warning">' . $rating_item->_name . ' :                                                                 $' . $rating_item->price . '</span>';
+                    }
+                    if( count($rating_items_for_rating) < 1)
+                        $location_rating_html_item .= '<span>No order specified. </span>';
+                        
+        $location_rating_html_item .= '</div>
                     <div class="col-sm-8 comment">
                         <div class="row">
                             <div class="col-sm-12
