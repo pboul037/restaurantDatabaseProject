@@ -198,7 +198,7 @@ function validateForm(formId){
                 $('#addLocationRatingPrice').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
             }
                  // when there are error in form data entries
-        if( $('validationError').length == 0){
+        if( $('.validationError').length == 0){
             $.ajax({
               type: "POST",
               url: "../controllers/AddRatingModalController.php",
