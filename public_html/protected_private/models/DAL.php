@@ -68,6 +68,42 @@ class DAL {
     } 
     
     /*
+     * Updates found_helpful and wasn't helpful of rating and rater.
+     *
+     * @author Patrice Boulet
+     */
+    public function update_helpfulness($helpful, $rating_id, $rater_id){ 
+        if( $helpful === 'true'){
+            
+            $sql1 = "UPDATE restaurant_ratings.rating SET found_helpful = found_helpful + 1
+                    WHERE rating_id = " . $rating_id;
+            
+            $sql2 = "UPDATE restaurant_ratings.rater SET found_helpful = found_helpful + 1
+                    WHERE rater_id = " . $rater_id;
+        }else{
+            $sql1 = "UPDATE restaurant_ratings.rating SET wasnt_helpful = wasnt_helpful + 1
+                    WHERE rating_id = " . $rating_id;
+
+            $sql2 = "UPDATE restaurant_ratings.rater SET wasnt_helpful = wasnt_helpful + 1
+                    WHERE rater_id = " . $rater_id;
+        }
+        
+        
+            $dbh = $this->dbconnect();
+            $stmt = pg_prepare($dbh, "ps1", $sql1);
+            $stmt = pg_prepare($dbh, "ps2", $sql2);
+            $res1 = pg_execute($dbh, "ps1", array());
+            $res2 = pg_execute($dbh, "ps2", array());
+            
+            //free memory
+            pg_free_result($res1);
+            pg_free_result($res2);
+            //close connection
+            pg_close($dbh);
+    }     
+    
+    
+    /*
      * Signup a new rater (also creates a new user associated with it).
      *
      * @author Patrice Boulet
@@ -235,7 +271,7 @@ class DAL {
 		  AND ra.rater_id = rat.rater_id AND rat.user_id = u.user_id 
         GROUP BY ra.rater_id)
 
-        SELECT *, ((rat.found_helpful - rat.wasnt_helpful) * 10) AS rater_reputation
+        SELECT *, ((rat.found_helpful * (rat.found_helpful + rat.wasnt_helpful)) - rat.wasnt_helpful * (rat.found_helpful + rat.wasnt_helpful)) AS rater_reputation
         FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, 
 		  restaurant_ratings.rating ra, restaurant_ratings.rater rat, restaurant_ratings.users u,
 		  number_of_ratings_of_this_loc_per_rater, number_of_total_ratings_per_rater

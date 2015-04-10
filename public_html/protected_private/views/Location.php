@@ -298,6 +298,31 @@
                                 }
                             });
                         }
+                        
+                        /*
+                         * Updates helpfulness of a rater and rating id.
+                         *
+                         * @author Patrice Boulet
+                         */
+                        function updateHelpfulness(helpful, raterId, ratingId){
+                            var helpful = helpful;
+                            var raterId = raterId;
+                            var ratingId = ratingId;
+                            
+                            $.ajax({
+                                type: 'POST',
+                                url: '../controllers/UpdateHelpfulnessController.php',
+                                data: {update_helpfulness: true, helpful: helpful, rater_id: raterId, rating_id: ratingId},
+                                success: function (response) {
+                                    $.notify("The page will now reload in 3 seconds to update the helpfulness...", "success");
+                                    setTimeout(function(){ 
+                                        window.location.hash = "#ratings";
+                                        location.reload();},3000
+                                    );
+                                }
+                            });
+                        }
+                        
                     </script>
                 </div>
                 

@@ -24,7 +24,6 @@ session_start();
         $dal->delete_menu_item($_POST['delete_menu_item']);
     }
 
-
     $location_id;
     if(!isset($_POST['locations_ratings_sorting_selected']))
     {
@@ -223,23 +222,39 @@ session_start();
                         <span class="col-sm-12">Rated this location ' . $location_rating->rater_ratings_for_this_loc .' time(s)</span>
                     </div>
                     </div>
-                    <div class="well col-sm-8"><span class="col-sm-2">Ordered: </span>';
-                    $rating_items_for_rating = $dal->get_rating_items_for_rating($location_rating->rating_id);
-                    foreach($rating_items_for_rating as $rating_item){
-                        $location_rating_html_item .= '<span class="tagcloud tag label label-warning">' . $rating_item->_name . ' :                                                                 $' . $rating_item->price . '</span>';
-                    }
-                    if( count($rating_items_for_rating) < 1)
-                        $location_rating_html_item .= '<span>No order specified. </span>';
-                        
-        $location_rating_html_item .= '</div>
-                    <div class="col-sm-8 comment">
-                        <div class="row">
-                            <div class="col-sm-12
-                                    <span style="font-size:10pt;">' . 
-                                        (strlen($location_rating->_comments) > 0 ? $location_rating->_comments : "No comments") 
-                                    . '</span>
+                    <div class="col-sm-8">
+                        <div class="well col-sm-12"><span class="col-sm-2">Ordered: </span>';
+                        $rating_items_for_rating = $dal->get_rating_items_for_rating($location_rating->rating_id);
+                        foreach($rating_items_for_rating as $rating_item){
+                            $location_rating_html_item .= '<span class="tagcloud tag label label-warning">' . $rating_item->_name . ' :                                                                 $' . $rating_item->price . '</span>';
+                        }
+                        if( count($rating_items_for_rating) < 1)
+                            $location_rating_html_item .= '<span>No order specified. </span>';
+
+            $location_rating_html_item .= '</div>
+                        <div class="col-sm-12 comment">
+                            <div class="row">
+                                <div class="col-sm-12
+                                        <span style="font-size:10pt;">' . 
+                                            (strlen($location_rating->_comments) > 0 ? $location_rating->_comments : "No comments") 
+                                        . '</span>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                    <div style="vertical-align:middle" class="col-sm-1">
+                            <div class="row">
+                                <a onclick="updateHelpfulness(true, this.dataset.rater_id, this.dataset.ratingid)" style"cursor: pointer" 
+                                        data-rater_id="' . $location_rating->rater_id . '" 
+                                        data-ratingid="' . $location_rating->rating_id . '"><span style="font-size:16pt; color:green" class="col-sm-12 glyphicon glyphicon-thumbs-up"> </span>
+                                <label style="text-align:center; font-size:10pt">Was helpful</label></a>
+                            </div>
+                            <div class="row">
+                                <a onclick="updateHelpfulness(false, this.dataset.rater_id, this.dataset.ratingid)" style"cursor: pointer" 
+                                        data-rater_id="' . $location_rating->rater_id . '" 
+                                        data-ratingid="' . $location_rating->rating_id . '"><span style="font-size:16pt; color:red" class="col-sm-12 glyphicon glyphicon-thumbs-down"></span>
+                                <label style="text-align:center; font-size:10pt">' . "Wasn't helpful</label></a>" . '
+                            </div>
                     </div>
                 </div>
             </div>';
