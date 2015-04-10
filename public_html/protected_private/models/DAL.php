@@ -77,11 +77,14 @@ class DAL {
      * @author Patrice Boulet
      */
     public function add_new_location_rating($location_id, $rater_id, $price, $food, $ambiance, $service, $comments, $avg_rating){ 
-        $sql = "INSERT INTO restaurant_ratings.rating(location_id, rater_id, date_written, price, food, 
+        $sql = "WITH tmp AS (INSERT INTO restaurant_ratings.rating(location_id, rater_id, date_written, price, food, 
                         ambiance, service, _comments, avg_rating)
                 VALUES (" . $location_id . ", " .$rater_id . ", NOW()::DATE, " . $price . ", " .
                             $food . ", " . $ambiance . ", " . $service . ", '" . $comments . "', " .
-                                $avg_rating . ");";
+                                $avg_rating . ")
+                RETURNING rating_id)
+                SELECT rating_id
+                FROM tmp";
         return $this->query($sql);
     }  
 
@@ -98,18 +101,47 @@ class DAL {
     }
     
     /*
+     * Add a menu item to a rating. 
+     *
+     * Note: I'm not using
+     * the query method here because the prepared statements
+     * names overlapse so I have to give them a different name each time
+     * it executes.
+     *
+     * @author Patrice Boulet
+     */
+    public function add_rating_item_no_rating($item_id, $rating_id){ 
+        
+        $dbh = $this->dbconnect();
+        
+        $sql = "INSERT INTO restaurant_ratings.rating_item(item_id, rating_id)
+                VALUES (" . $item_id . ", " . $rating_id . ")";
+        
+        $stmt = pg_prepare($dbh, $item_id, $sql);
+
+        $res = pg_execute($dbh, $item_id, array());
+        //free memory
+        pg_free_result($res);
+        //close connection
+        pg_close($dbh);
+    }
+
+    /*
      * Gets food menu items for this $location of type $type and category $category.
      *
      * @author Patrice Boulet
      */
     public function get_menu_items($location_id, $type, $category){
         
-        $sql = "SELECT i._name, i.description, i.price
+        $sql = "SELECT i.item_id, i._name, i.description, i.price
         FROM restaurant_ratings.locations l, restaurant_ratings.menu_item i
         WHERE l.location_id = i.location_id
         AND i.location_id =" . $location_id .
-        "AND i._type ='" . $type . 
-        "' AND i.category = '" . $category . "'";
+        "AND i._type ='" . $type . "'";
+        
+        if($category != null)
+            $sql .= " AND i.category = '" . $category . "'";
+        
         return $this->query($sql);
     }
     

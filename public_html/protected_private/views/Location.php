@@ -11,17 +11,6 @@
 
     <title>Restaurant Ratings</title>
     
-    <!-- controller -->
-    <?php 
-        // controller
-        require_once(dirname(dirname(__FILE__)) . '\controllers\LocationController.php');
-        
-        // modal dialogs 
-        include('/SignupModal.html'); 
-        include('/LoginModal.html');
-        include('/AddRatingModal.html');
-    ?>
-    
     <!-- Bootstrap Core CSS -->
     <link href="../../../framwork_dir/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -41,6 +30,17 @@
     
     <!-- Bootstrap rating input (stars) -->
     <script src="../../../framwork_dir/bootstrap-rating-input/bootstrap-rating-input.min.js"></script>
+    
+        <!-- controller -->
+    <?php 
+        // controller
+        require_once(dirname(dirname(__FILE__)) . '\controllers\LocationController.php');
+        
+        // modal dialogs 
+        include('/SignupModal.html'); 
+        include('/LoginModal.html');
+        include('/AddRatingModal.html');
+    ?>
     
     <!-- Form validation and session control -->
     <script src="../../../public_html/protected_private/js/jQueryFormValidator.js"></script>
@@ -75,8 +75,7 @@
     <script type="text/javascript"> 
         $(function () {
             $('#tabs').tab();
-                var hash = window.location.hash;
-                console.log(hash);  
+                var hash = window.location.hash; 
                 // do some validation on the hash here
                 hash && $('ul.nav a[href="' + hash + '"]').tab('show');
         });   

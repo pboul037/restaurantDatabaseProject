@@ -152,6 +152,18 @@ function validateForm(formId){
             var comments = $('#addLocationRatingComments').val();
             var location_id = parseInt(location.search.split("=")[1]);
             
+            var drinks = [];
+            var food = [];
+            
+            
+            $('#addRatingFoodAvail option:selected').each(function (){
+               food.push($(this).val());     
+            });
+            
+            $('#addRatingDrinksAvail option:selected').each(function(){
+                drink.push($(this).val());
+            });
+            
             var inputVal = new Array(foodRating, serviceRating, ambianceRating, price, comments, location_id);
             
             if(inputVal[0] == ""){
@@ -191,13 +203,30 @@ function validateForm(formId){
               type: "POST",
               url: "../controllers/AddRatingModalController.php",
               data: "add_location_rating_form_data=" + JSON.stringify(inputVal),
-              success: function(){  
-                    $.notify("Thanks for rating! The page will now reload in 3 seconds to update your changes...", "success");
-                    setTimeout(function(){ 
-                        $('#addLocationRatingModal').modal('hide');
-                        window.location.hash = "#ratings";
-                        location.reload();},3000
-                    );
+              success: function(rating_id){
+                    if( drinks.length > 0 || food.length > 0){
+                          $.ajax({
+                          type: "POST",
+                          url: "../controllers/AddRatingModalController.php",
+                          data: {add_rating_menu_items: true, add_rating_menu_drinks: JSON.stringify(drinks),
+                                 add_rating_menu_food: JSON.stringify(food), add_rating_menu_rating_id: rating_id},
+                          success: function(data){
+                                $.notify("Thanks for rating! The page will now reload in 3 seconds to update your changes...", "success");
+                                setTimeout(function(){ 
+                                    $('#addLocationRatingModal').modal('hide');
+                                    window.location.hash = "#ratings";
+                                    location.reload();},3000
+                                );
+                            }
+                        });
+                    }else{
+                        $.notify("Thanks for rating! The page will now reload in 3 seconds to update your changes...", "success");
+                        setTimeout(function(){ 
+                            $('#addLocationRatingModal').modal('hide');
+                            window.location.hash = "#ratings";
+                            location.reload();},3000
+                        );
+                    }
                 }
             });
             return true;
