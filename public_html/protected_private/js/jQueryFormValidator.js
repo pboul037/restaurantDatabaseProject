@@ -285,7 +285,7 @@ function validateForm(formId){
             }
             
         // when there are error in form data entries
-        if( $('validationError').length == 0){
+        if( $('.validationError').length == 0){
             
             $.ajax({
               type: "POST",
