@@ -17,15 +17,6 @@
     <meta name="author" content="">
 
     <title>Restaurant Ratings</title>
-
-    <?php 
-        // controller 
-        require_once(dirname(dirname(__FILE__)) . '\controllers\RestaurantsController.php');
-        
-        // modal dialogs 
-        include('/SignupModal.html'); 
-        include('/LoginModal.html'); 
-    ?>
     
     <!-- Bootstrap Core CSS -->
     <link href="../../../framwork_dir/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -42,6 +33,18 @@
     <!-- Form validation & session control -->
     <script src="../../../public_html/protected_private/js/jQueryFormValidator.js"></script>
     <script src="../../../public_html/protected_private/js/sessionControl.js"></script>
+    <script src="../../../public_html/protected_private/js/AddLocation.js"></script>
+    
+    
+    <?php 
+        // controller 
+        require_once(dirname(dirname(__FILE__)) . '\controllers\RestaurantsController.php');
+        
+        // modal dialogs 
+        include('/SignupModal.html'); 
+        include('/LoginModal.html'); 
+        include('/AddLocationModal.html');
+    ?>
     
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->

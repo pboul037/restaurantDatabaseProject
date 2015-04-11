@@ -1,5 +1,5 @@
 /**
-  * A small jQuery form validation function for all the forms of the project.
+  * A jQuery form validation function for all the forms of the project.
   *
   * @author Patrice Boulet
   */
@@ -300,6 +300,171 @@ function validateForm(formId){
                         );
               }
             }); 
+            return true;
+        }else{
+            return false;    
+        }   
+        }else if( formId == "addLocationForm"){
+
+            var existingRestaurantId = $('#addLocationRestaurantsAvail option:selected').val();
+            var restaurantName = $('#addLocationRestaurantName').val();
+            var restaurantURL = $('#addLocationRestaurantUrl').val();
+            
+            var openingDate = $('#addLocationOpenedDate')[0].value;
+            var manager = $('#addLocationRestaurantManager').val();
+            var phone = $('#addLocationRestaurantPhone').val();
+            var address = $('#addLocationRestaurantAddress').val();
+            
+            var openingHoursMon = $('#addLocationRestaurantOHMon').val();
+            var openingHoursTuesday = $('#addLocationRestaurantOHTuesday').val();
+            var openingHoursWednesday = $('#addLocationRestaurantOHWednesday').val();
+            var openingHoursThursday = $('#addLocationRestaurantOHThursday').val();
+            var openingHoursFriday = $('#addLocationRestaurantOHFriday').val();
+            var openingHoursSaturday = $('#addLocationRestaurantOHSaturday').val();
+            var openingHoursSunday = $('#addLocationRestaurantOHSunday').val();
+            
+            var restaurantTypes = [];
+            
+            
+            $('#addLocationRestaurantTypesAvail option:selected').each(function (){
+               restaurantTypes.push($(this).val());     
+            });
+            
+            var inputVal = new Array(existingRestaurantId, restaurantName, restaurantURL, 
+                                     openingDate, manager, phone, address,
+                                        openingHoursMon, openingHoursTuesday, openingHoursWednesday,
+                                            openingHoursThursday, openingHoursFriday, openingHoursSaturday,
+                                                openingHoursSunday);
+            
+            if(inputVal[0] == "" && inputVal[1] == ""){
+                $('#addLocationRestaurantsAvailGroup').addClass("has-error has-feedback");
+                $('#addLocationRestaurantsAvail').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please choose or add a restaurant.</span>');
+                 $('#addLocationRestaurantNameGroup').addClass("has-error has-feedback");
+                $('#addLocationRestaurantName').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please choose or add a restaurant.</span>');
+            } else if(inputVal[0] != "" && inputVal[1] != ""){
+                $('#addLocationRestaurantsAvailGroup').addClass("has-error has-feedback");
+                $('#addLocationRestaurantsAvail').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Choose either to add a restaurant OR an existing one( if you wish to unselect the existing restaurant choice, select "None selected").</span>');
+                 $('#addLocationRestaurantNameGroup').addClass("has-error has-feedback");
+                $('#addLocationRestaurantName').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError">  Choose either to add a restaurant OR an existing one( if you wish to use an existing restaurant, clear the name field).</span>');
+            }else {
+                $('#addLocationRestaurantsAvailGroup').addClass("has-success has-feedback");
+                $('#addLocationRestaurantsAvail').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+                $('#addLocationRestaurantNameGroup').addClass("has-success has-feedback");
+                $('#addLocationRestaurantName').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+            if(inputVal[3] == ""){
+                $('#addLocationOpenedDateGroup').addClass("has-error has-feedback");
+                $('#addLocationOpenedDate').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please enter the first opening date of the restaurant.</span>');
+            } else {
+                $('#addLocationOpenedDateGroup').addClass("has-success has-feedback");
+                $('#addLocationOpenedDate').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+            
+            if(inputVal[4] == ""){
+                $('#addLocationRestaurantManagerGroup').addClass("has-error has-feedback");
+                $('#addLocationRestaurantManager').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please enter the location manager name.</span>');
+            } else {
+                $('#addLocationRestaurantManagerGroup').addClass("has-success has-feedback");
+                $('#addLocationRestaurantManager').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+            if(inputVal[5] == "" || inputVal[5].length < 10){
+                $('#addLocationRestaurantPhoneGroup').addClass("has-error has-feedback");
+                $('#addLocationRestaurantPhone').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please the phone number of the location in this format : XXX-XXX-XXXX.</span>');
+            } else {
+                $('#addLocationRestaurantPhoneGroup').addClass("has-success has-feedback");
+                $('#addLocationRestaurantPhone').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+            if(inputVal[6] == ""){
+                $('#addLocationRestaurantAddressGroup').addClass("has-error has-feedback");
+                $('#addLocationRestaurantAddress').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please enter the address of the location.</span>');
+            } else {
+                $('#addLocationRestaurantAddressGroup').addClass("has-success has-feedback");
+                $('#addLocationRestaurantAddress').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+            if(inputVal[7] == ""){
+                $('#addLocationRestaurantOHMonGroup').addClass("has-error has-feedback");
+                $('#addLocationRestaurantOHMon').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please enter opening hours for that day.</span>');
+            } else {
+                $('#addLocationRestaurantOHMonGroup').addClass("has-success has-feedback");
+                $('#addLocationRestaurantOHMon').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+             if(inputVal[8] == ""){
+                $('#addLocationRestaurantOHTuesdayGroup').addClass("has-error has-feedback");
+                $('#addLocationRestaurantOHTuesday').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please enter opening hours for that day.</span>');
+            } else {
+                $('#addLocationRestaurantOHTuesdayGroup').addClass("has-success has-feedback");
+                $('#addLocationRestaurantOHTuesday').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+            if(inputVal[9] == ""){
+                $('#addLocationRestaurantOHWednesdayGroup').addClass("has-error has-feedback");
+                $('#addLocationRestaurantOHWednesday').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please enter opening hours for that day.</span>');
+            } else {
+                $('#addLocationRestaurantOHWednesdayGroup').addClass("has-success has-feedback");
+                $('#addLocationRestaurantOHWednesday').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+            if(inputVal[10] == ""){
+                $('#addLocationRestaurantOHThursdayGroup').addClass("has-error has-feedback");
+                $('#addLocationRestaurantOHThursday').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please enter opening hours for that day.</span>');
+            } else {
+                $('#addLocationRestaurantOHThursdayGroup').addClass("has-success has-feedback");
+                $('#addLocationRestaurantOHThursday').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+            if(inputVal[11] == ""){
+                $('#addLocationRestaurantOHFridayGroup').addClass("has-error has-feedback");
+                $('#addLocationRestaurantOHFriday').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please enter opening hours for that day.</span>');
+            } else {
+                $('#addLocationRestaurantOHFridayGroup').addClass("has-success has-feedback");
+                $('#addLocationRestaurantOHFriday').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+                        
+            if(inputVal[12] == ""){
+                $('#addLocationRestaurantOHSaturdayGroup').addClass("has-error has-feedback");
+                $('#addLocationRestaurantOHSaturday').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please enter opening hours for that day.</span>');
+            } else {
+                $('#addLocationRestaurantOHSaturdayGroup').addClass("has-success has-feedback");
+                $('#addLocationRestaurantOHSaturday').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+            if(inputVal[13] == ""){
+                $('#addLocationRestaurantOHSundayGroup').addClass("has-error has-feedback");
+                $('#addLocationRestaurantOHSunday').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please enter opening hours for that day.</span>');
+            } else {
+                $('#addLocationRestaurantOHSundayGroup').addClass("has-success has-feedback");
+                $('#addLocationRestaurantOHSunday').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+            if(restaurantTypes.length < 1 && inputVal[0] == "" ){
+                $('#addLocationRestaurantTypesAvailGroup').addClass("has-error has-feedback");
+                $('#addLocationRestaurantTypesAvail').after('<span class="validationError glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><br class="validationError"><span  class="validationError"> Please choose at least 1 type.</span>');
+            } else {
+                $('#addLocationRestaurantTypesAvailGroup').addClass("has-success has-feedback");
+                $('#addLocationRestaurantTypesAvail').after('<span class="validationSuccess glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            }
+            
+        // when there are error in form data entries
+        if( $('.validationError').length == 0){
+            $.ajax({
+              type: "POST",
+              url: "../controllers/AddLocationModalController.php",
+              data: {add_location:true, add_location_data: JSON.stringify(inputVal), add_location_types: JSON.stringify(restaurantTypes)},
+              success: function(data){     
+                    $.notify("Thanks for contributing! The page will now reload in 3 seconds to update your changes...", "success");
+                    setTimeout(function(){ 
+                            $('#addLocatioModal').modal('hide');
+                            location.reload();},3000
+                    ); 
+              }
+            });
             return true;
         }else{
             return false;    

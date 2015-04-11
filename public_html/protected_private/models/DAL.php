@@ -148,6 +148,59 @@ class DAL {
     }
     
     /*
+     * Gets all restaurants and their ids.
+     *
+     * @author Patrice Boulet
+     */
+    public function get_all_restaurants(){ 
+        $sql = "    SELECT r.restaurant_id, _name AS name
+                    FROM restaurant_ratings.restaurant r";
+        return $this->query_with_stmt_name($sql, "restaurants");
+    }
+    
+    /*
+     * Adds a restaurant.
+     *
+     * @author Patrice Boulet
+     */
+    public function add_restaurant($restaurantName, $restaurantURL, $typesArray){        
+        
+        $sql = "WITH new_restaurant AS (INSERT INTO restaurant_ratings.restaurant(_name, url)
+                                        VALUES ('" . $restaurantName . "', '" . $restaurantURL . "')
+                                        RETURNING restaurant_id)
+                                        
+                INSERT INTO restaurant_ratings.isoftype(type_id, restaurant_id) ";
+        
+                $first_type = true;
+                foreach($typesArray as $type){
+                    if($first_type){
+                        $sql .= "VALUES (" . $type . ", (SELECT r.restaurant_id FROM new_restaurant r))";
+                        $first_type = false;
+                    }else{
+                        $sql .= ", (" . $type . ", (SELECT r.restaurant_id FROM new_restaurant r))";
+                    }
+                }
+        
+                $sql .= " RETURNING (SELECT r.restaurant_id FROM new_restaurant r)";
+        return $this->query($sql);
+    }
+    
+    /*
+     * Adds a location.
+     *
+     * @author Patrice Boulet
+     */
+    public function add_location($openingDate, $manager, $phone, $address, $openingHours, $restaurant_id){        
+        
+        $sql = "INSERT INTO restaurant_ratings.locations(
+                        first_open_date, manager_name, phone_number, street_address, 
+                            opening_hours, restaurant_id)
+                VALUES ('" . $openingDate . "', '" . $manager . "', '" . $phone . "', '" . $address . "', '" .
+                                $openingHours . "', " . $restaurant_id . ")";
+        return $this->query_with_stmt_name($sql, "add_location");
+    }
+        
+    /*
      * Add a menu item to a rating. 
      *
      * Note: I'm not using
@@ -447,6 +500,20 @@ class DAL {
        GROUP BY t._name";
        return $this->query($sql);
    }
+    
+    
+    /*
+     * Get all the restaurant types.
+     *
+     * @author Patrice Boulet
+     */
+    public function get_restaurant_types(){
+    
+       $sql = "SELECT t.type_id, t._name
+FROM restaurant_ratings.restaurant_type t";
+        
+    return $this->query_with_stmt_name($sql, "types");
+   }
    
     /*
      * Get all the restaurant types for which there's at least one restaurant of this type
@@ -474,7 +541,57 @@ class DAL {
       return $object_results;
   }
 }
+    /* 
+     * Prepares and executes a  generic query to the database
+     * and then converts it to DALQueryResult object.
+     *
+     * 
+     * return
+     *      If there are not any results, it returns null on a SELECT query, 
+     * false on other queries. If the query was successful and the query was 
+     * not a SELECT query, it will return true. 
+     */  
+    private function query_with_stmt_name($sql, $stmtid){
+        $dbh = $this->dbconnect();
+        
+        $stmt = pg_prepare($dbh, $stmtid, $sql);
 
+        $res = pg_execute($dbh, $stmtid, array());
+        if (!$res) {
+            if( strpos($sql, 'SELECT') === false){
+                return false;
+            }
+            else{
+                return null;
+            }
+        }else{
+            if(strpos($sql, 'SELECT') === false){
+                return true;
+            }
+        }
+        
+        $results = array();
+        
+        while($row=pg_fetch_array($res)){
+            $result = new DALQueryResult();
+            
+            foreach ($row as $k=>$v){
+                $result->$k = $v;
+            }
+            
+            $results[] = $result;
+        }
+        
+        
+        //free memory
+        pg_free_result($res);
+        //close connection
+        pg_close($dbh);
+        
+        return $results;
+    }
+    
+    
     /* 
      * Prepares and executes a  generic query to the database
      * and then converts it to DALQueryResult object.

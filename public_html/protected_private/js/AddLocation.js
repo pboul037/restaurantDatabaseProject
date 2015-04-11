@@ -14,30 +14,27 @@ $(function (){
 
 });
 
-function addRating(){
+function addLocation(){
     checkLoggedIn().success(function(logged_in){
         if(logged_in){
             $.ajax({
                   type: "POST",
-                  url: "../controllers/AddRatingModalController.php",
-                  data: {add_rating:((window.location.search).split('='))[1]},
+                  url: "../controllers/AddLocationModalController.php",
+                  data: {get_all_restaurants:true},
                   success: function(response){
                         var responseArray = JSON.parse(response);
+                        var restaurantsAvailOptions = responseArray[0];
+                        var restaurantTypesAvailOptions = responseArray[1];
                         
-                        var drinksAvail = responseArray[0];
-                        var foodAvail = responseArray[1];
+                        $('#addLocationRestaurantsAvail').html(restaurantsAvailOptions);
+                        $('#addLocationRestaurantTypesAvail').html(restaurantTypesAvailOptions);
+                        
                       
-                        $('#addRatingDrinksAvail').html(drinksAvail);
-                        $('#addRatingFoodAvail').html(foodAvail);
-                        $('#addRatingDrinksAvail').multiselect({
-                            enableFiltering: true
-                        });
-                        $('#addRatingFoodAvail').multiselect({
+                        $('#addLocationRestaurantTypesAvail').multiselect({
                             enableFiltering: true
                         });
                       
-                      
-                        $('#addLocationRatingModal').modal('show');// triggers login modal to display
+                        $('#addLocationModal').modal('show');// triggers login modal to display
                    }
             });
         }else{
