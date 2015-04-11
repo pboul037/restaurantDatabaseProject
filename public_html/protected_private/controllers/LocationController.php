@@ -167,6 +167,10 @@ session_start();
 
        //QA
        //Loops through the the list of ratings and generates html for each one to display on the view
+        
+        if( count($location_ratings_list) < 1 )
+            $location_rating_html_item .= "<div style='text-align:center' class='col-sm-12'><p>No rating yet...</p></div>";
+        
         foreach($location_ratings_list as $location_rating){
 
             // add gold $ for actual price avg and store it in $dollar_sign_string

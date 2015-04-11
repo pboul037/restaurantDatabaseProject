@@ -246,8 +246,8 @@
                     </div>
                     <div class="col-sm-3">
                     <div class="row"><span class="col-sm-12"><span style="font-size:16pt; font-weight:bold;">' . 
-                            $location->avg_rating . '</span>
-                            <span style="font-size:10pt">out of 5 </span><a style="font-size:8pt" href="Location.php?locationid=' . $location->location_id . '#ratings">(' . $location->total_num_ratings .' ratings)</a></span>
+                            ($location->avg_rating == NULL ? "--" : $location->avg_rating ) . '</span>
+                            <span style="font-size:10pt">out of 5 </span><a style="font-size:8pt" href="Location.php?locationid=' . $location->location_id . '#ratings">(' . ($location->avg_rating == NULL ? "--" : $location->total_num_ratings ) .' ratings)</a></span>
                     </div>';
                 
                     // add black $ for actual price avg

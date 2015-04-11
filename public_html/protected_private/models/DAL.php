@@ -253,7 +253,7 @@ class DAL {
      * such as hours and ect.
      * 
      *
-     * @author Junyi Dai, Qasim Ahmed
+     * @author Patrice Boulet, Junyi Dai, Qasim Ahmed
      */
     public function get_location_ratings($location_id, $sorting){
         
@@ -317,6 +317,8 @@ class DAL {
      * @author Patrice Boulet
      */
     public function get_locations_list($types_array, $sorting, $rating_filters){
+        $first_where_clause = true;
+        
         $sql = "";
 
         $global_r_filters = $rating_filters[0];
@@ -338,9 +340,10 @@ class DAL {
                     FROM
                         (SELECT l.location_id AS location_id, r._name AS name, l.street_address AS address,
                             g.price, g.food, g.service, g.ambiance, g.avg_rating, g.date_written, g.rating_id
-                        FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating g,                                              restaurant_ratings.isOfType t  
-                        WHERE r.restaurant_id = l.restaurant_id AND r.restaurant_id = t.restaurant_id 
-                            AND g.location_id = l.location_id";
+                        FROM 
+				restaurant_ratings.locations l JOIN restaurant_ratings.restaurant r ON r.restaurant_id = l.restaurant_id 
+				JOIN restaurant_ratings.isOfType t ON r.restaurant_id = t.restaurant_id 
+				LEFT JOIN restaurant_ratings.rating g ON g.location_id = l.location_id ";
                         
         if($types_array !== null){            
             $sql .= " AND t.type_id IN (" . $this->get_user_specified_types_query($types_array) . ")";
@@ -361,11 +364,19 @@ class DAL {
                         WHERE ";
             
             if( count($global_r_filters) > 0){
+                if($first_where_clause){
+                     $sql.= "WHERE ";
+                    $first_where_clause = false;
+                }
                 $sql.= "floor(avg_rating) IN (" . join(',', $global_r_filters) . ")";
                 $first_filter = false;
             }
             
             if( count($food_r_filters) > 0){
+                if($first_where_clause){
+                     $sql.= "WHERE ";
+                    $first_where_clause = false;
+                }
                 if( !$first_filter )
                     $sql.= " AND ";
                 $sql.= "floor(avg_food) IN (" . join(',', $food_r_filters) . ")";
@@ -373,6 +384,10 @@ class DAL {
             }
             
             if( count($service_r_filters) > 0){
+                if($first_where_clause){
+                     $sql.= "WHERE ";
+                    $first_where_clause = false;
+                }
                 if( !$first_filter )
                     $sql.= " AND ";
                 $sql.= "floor(avg_service) IN (" . join(',', $service_r_filters) . ")";
@@ -380,6 +395,10 @@ class DAL {
             }
             
             if( count($ambiance_r_filters) > 0){
+                if($first_where_clause){
+                     $sql.= "WHERE ";
+                    $first_where_clause = false;
+                }
                 if( !$first_filter )
                     $sql.= " AND ";
                 $sql.= "floor(avg_ambiance) IN (" . join(',', $ambiance_r_filters) . ")";

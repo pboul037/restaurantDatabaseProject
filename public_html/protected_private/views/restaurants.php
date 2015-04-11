@@ -106,9 +106,13 @@
     <div class="container">
 
         <div class="row">
+            
             <div class="row">
                 <div style="text-align:center" class="page-header">
-                    <h2>Find a Restaurant</h1>
+                    <span style="font-size:20pt; font-weight: bold">Find a Restaurant</span>
+                     <span style="float:right" style="padding-left:5px">
+                        <button class="btn btn-primary pull-right" onclick="addLocation()">Add a Restaurant Location</button>
+                    </span>
                 </div>
             </div>
             <div class="col-md-3">
