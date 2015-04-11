@@ -142,12 +142,36 @@
  
     <!-------->
     <div id="content">
-        <h3><?php echo $details->_name; ?></h3>
-        <h6><small style="font-size:10pt"><a href="https://www.google.com/maps/dir/Current+Location/<?php echo $address_for_gmaps; ?>"><?php echo $details->street_address; ?></small></h6></h6></a><div class="row">
+        <div class="row">
+            <div class="col-sm-4">
+                <h3><?php echo $details->_name; ?><br><small style="font-size:10pt">opened  <?php echo $details->first_open_date; ?></small></h3>
+                <div class="row">
+                <span style="padding-left:15px"><a href="tel:<?php echo $details->phone_number; ?>"><?php echo $details->phone_number; ?></a></span><span>  (Manager: <?php echo $details->manager_name; ?>)</span>
+                </div>
+                <div class="row">
+                <span style="padding-left:15px"><a href="<?php echo $details->url; ?>"><?php echo $details->url; ?></a></span></span>
+                </div>
+                <div class="row">
+                    <span style="padding-left:15px"><small style="font-size:10pt"><a href="https://www.google.com/maps/dir/Current+Location/<?php echo $address_for_gmaps; ?>"><?php echo $details->street_address; ?></small><span></a>
+                </h5>
+                </div>
+            </div>
+                <div class="col-sm-6 well">
+                    <div class="row">
+                        <span style="padding-left:30px; font-size:12pt; text-align:left;" class="col-sm-12">Opening Hours</span>
+                    </div>
+                    <div class="col-sm-6"><?php for($i = 0; $i < 4; $i++){ ?>
+                    <span style="font-size:7pt"><?php echo $opening_hours[$i]; ?></span></br>
+                <?php } ?></div>
+                    <div class="col-sm-6"><?php for($i = 4; $i < 7; $i++){ ?>
+                        <span style="font-size:7pt"><?php echo $opening_hours[$i]; ?></span></br>
+                    <?php } ?></div>
+                </div>
+        </div>
+        <div class="row">
         <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-            <li class="active"><a href="#details" data-toggle="tab">Details</a></li>
-            <li><a href="#ratings" data-toggle="tab">Ratings</a></li>
-            <li><a href="#menu" data-toggle="tab">Menu</a></li>
+            <li class="active"><a href="#ratings" data-toggle="tab"><h3>Ratings</h3></a></li>
+            <li><a href="#menu" data-toggle="tab"><h3>Menu</h3></a></li>
             <div class="pull-right" style="padding-left:5px">
                 <button class="btn btn-primary pull-right" onclick="addMenuItem()">Add a menu item</button>
             </div>
@@ -156,27 +180,7 @@
             </div>
         </ul>
         <div id="my-tab-content" class="tab-content">
-            <div class="tab-pane active" id="details">
-                <div class="row">
-                <h5><?php echo $details->phone_number; ?><h5>
-                </div>
-                <div class="row">
-                    <p>Opening date: <?php echo $details->first_open_date; ?></p>
-                </div>
-                <div class="row">
-                    <p>Manager: <?php echo $details->manager_name; ?></p>
-                </div>
-                <div class="row">
-                    <p>Opening Hours:</p>
-                </div>
-                <div><?php for($i = 0; $i < 7; $i++){ ?>
-                    <span style="font-size:10pt"><?php echo $opening_hours[$i]; ?></span></br>
-                <?php } ?></div>
-            </div>
-            <div class="tab-pane" id="ratings">
-                <div class="row">
-                    <div class="col-sm-4"><h1>Ratings</h1></div>
-                </div>
+            <div class="tab-pane active" id="ratings">
                 <div class="row">
                     <div class="col-sm-12">
                         <select id="types_select" class="btn btn-default dropdown-toggle" onchange="updateSorting(this.value)">    
