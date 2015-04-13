@@ -65,10 +65,10 @@ session_start();
                         </span>
                     </div>
                     <div class="row">
-                        <div class="col-sm-4">
+                        <!-- <div class="col-sm-3">
                             <span class="col-sm-5"> Rater ID:</span>
                             <span class="col-sm-1">' . $rater->rater_id .'</span>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="row">
                     	<div class="col-sm-4">
@@ -81,8 +81,8 @@ session_start();
 	                       <span class="col-sm-5">' . $rater->_type .'</span>
                     	</div>
                     	<div class="col-sm-4">
-	                       <span class="col-sm-7"> Join Date: </span>
-	                       <span class="col-sm-2">' . $rater->join_date .'</span>
+	                       <span class="col-sm-5"> Join Date: </span>
+	                       <span style="text-align:right" class="col-sm-7">' . $rater->join_date .'</span>
                     	</div>
                     </div>
                     <div class="row">

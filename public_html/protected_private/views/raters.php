@@ -140,11 +140,11 @@
                                 <option value='join_date ASC'>Join Date (ascending)</option>
                                 <option value='join_date DESC'>Join Date (descending)</option>
 
-                                <option value='rater_id ASC'>Rater ID (ascending)</option>
-                                <option value='rater_id DESC'>Rater ID (descending)</option>
+                                <!-- <option value='rater_id ASC'>Rater ID (ascending)</option>
+                                <option value='rater_id DESC'>Rater ID (descending)</option> -->
 
-                                <option value='_name ASC'>User name (ascending)</option>
-                                <option value='_name DESC'>User name (descending)</option>
+                                <option value='_name ASC'>Username (ascending)</option>
+                                <option value='_name DESC'>Username (descending)</option>
 
                                 <option value='rater_reputation ASC'>Rater Reputation (ascending)</option>
                                 <option value='rater_reputation DESC'>Rater Reputation (descending)</option>

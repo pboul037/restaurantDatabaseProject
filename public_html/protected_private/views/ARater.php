@@ -215,7 +215,7 @@
                 <li class="list-group-item text-right"><span class="pull-left"><strong class="">Joined: </strong></span>  <?php 	echo $rater->join_date ?></li>
                 <li class="list-group-item text-right"><span class="pull-left"><strong class="">Last Rating Date: </strong></span> <?php 	echo $last_rated ?></li>
                 <li class="list-group-item text-right"><span class="pull-left"><strong class="">Type: </strong></span><?php 	echo $rater->_type ?></li>
-                <li class="list-group-item text-right"><span class="pull-left"></span> <?php 	echo deleteButton() ?></li>
+                <li class="list-group-item text-right userControl adminControl"><span class="pull-left"></span> <?php 	echo deleteButton() ?></li>
             </ul>
 
         </div>
