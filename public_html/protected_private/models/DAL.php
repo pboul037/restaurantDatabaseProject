@@ -6,6 +6,79 @@
 
 class DAL {
     
+     //////////////////////EXTRA QUERIES
+    
+    /** Folowing queries @author Quasim */
+    /* Query N ----------
+    set search_path = 'restaurant_ratings';
+
+    --all ratings smaller than max
+    Select DISTINCT usersOut._name, usersOut.email, compMax
+    from rating,rater, users usersOut,(
+                --gets max rating from a rater
+                select max(avg_rating)
+                from rater, users, rating
+                where rater.rater_id = rating.rater_id AND rater.user_id = users.user_id AND users._name = 'John'
+                )as Compmax
+    where avg_rating < max AND rating.rater_id = rater.rater_id AND rater.user_id = usersOut.user_id
+    */
+
+    /* QUERY K
+    set search_path = 'restaurant_ratings';
+
+        select t.avg_rating, t._name, t.join_date, rater_reputation from(
+                select DISTINCT  TotalNumberOfRating.*,tmp.avg_rating, tmp._name, tmp.join_date, ((tmp.found_helpful * (tmp.found_helpful + tmp.wasnt_helpful)) - tmp.wasnt_helpful * (tmp.found_helpful + tmp.wasnt_helpful)) AS rater_reputation 
+                from
+                (
+                select rater.*, rating.avg_rating, users._name, users.join_date
+                from rater, rating, users
+                where rater.rater_id = rating.rater_id AND users.user_id = rater.user_id
+                ) as tmp,
+                (
+                select max(avg_rating) from(
+                select DISTINCT  tmp.avg_rating, tmp._name, tmp.join_date, ((tmp.found_helpful * (tmp.found_helpful + tmp.wasnt_helpful)) - tmp.wasnt_helpful * (tmp.found_helpful + tmp.wasnt_helpful)) AS rater_reputation from(
+                select rater.*, rating.avg_rating, users._name, users.join_date
+                from rater, rating, users
+                where rater.rater_id = rating.rater_id AND users.user_id = rater.user_id
+                )as tmp
+                )t2) as TotalNumberOfRating
+                ) as t
+                where avg_rating = max 
+            --Where tmp.avg_rating = max(tmp.avg_rating)
+
+            */
+    
+    
+    /* @author Jeff
+    -- Query (c)
+    SELECT rt._name, r._name, l.manager_name, l.first_open_date
+    FROM locations l, isoftype isa, restaurant_type rt, restaurant r
+    WHERE l.restaurant_id = isa.restaurant_id AND isa.type_id = rt.type_id AND  r.restaurant_id = l.restaurant_id
+        AND rt._name = 'Asian'
+
+    -- Query (g)
+    SELECT r._name, l.phone_number, rt._name, ra.date_written
+    FROM restaurant r, locations l, rating ra, isoftype isa, restaurant_type rt
+    WHERE r.restaurant_id = l.restaurant_id AND ra.location_id = l.location_id
+        AND isa.restaurant_id = r.restaurant_id AND isa.type_id = rt.type_id
+        AND NOT (EXTRACT(MONTH FROM ra.date_written) = '1')
+        
+        -- Query (h)
+    SELECT r._name, l.first_open_date, ra.date_written, ra.service
+    FROM restaurant r, rating ra, locations l
+    WHERE r.restaurant_id = l.location_id AND l.location_id = ra.location_id
+        AND ra.service < (
+                    SELECT MAX(ra.service)
+                    FROM rating ra, rater r
+                    WHERE ra.rater_id = r.rater_id AND r.rater_id = 3
+                )
+    ORDER BY ra.date_written
+
+
+
+        */
+    
+    
     public function __construct(){}
     
     /* 
