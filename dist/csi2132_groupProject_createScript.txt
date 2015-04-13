@@ -68,7 +68,7 @@ CREATE TABLE rating
 (
 	rating_id SERIAL,
     location_id INTEGER,
-    rater_id INTEGER DEFAULT 0,
+    rater_id INTEGER DEFAULT 1,
 	date_written DATE NOT NULL,
 	price REAL NOT NULL 
         CHECK(price >= 1 AND price <= 5),
@@ -112,7 +112,7 @@ CREATE TABLE menu_item
 CREATE TABLE rating_item
 (
 	rating_item_id SERIAL,
-	rating REAL NOT NULL 
+	rating REAL
         CHECK(rating >= 1 AND rating <= 5),
     item_id INTEGER,
 	_comments TEXT,
@@ -120,19 +120,10 @@ CREATE TABLE rating_item
 	PRIMARY KEY(rating_item_id),
 	FOREIGN KEY(rating_id)
         REFERENCES rating(rating_id)
-        ON DELETE CASCADE
-);
-
-CREATE TABLE refers(
-    rating_item_id INTEGER,
-    item_id INTEGER,
-    PRIMARY KEY (rating_item_id, item_id),
-    FOREIGN KEY (rating_item_id)
-        REFERENCES rating_item(rating_item_id)
-        ON DELETE RESTRICT,
+        ON DELETE CASCADE,
     FOREIGN KEY (item_id)
         REFERENCES menu_item(item_id)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
 );
 
 ALTER SEQUENCE users_user_id_seq RESTART WITH 1;

@@ -1,4 +1,8 @@
 <?php 
+
+    // Login controller.
+    //@author Patrice Boulet
+
     session_start();
     // include configuration
     require_once(dirname(dirname(__FILE__)) . '\etc\conf\config.php');

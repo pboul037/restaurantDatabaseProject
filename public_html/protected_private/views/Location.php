@@ -11,23 +11,14 @@
 
     <title>Restaurant Ratings</title>
     
-    <!-- controller -->
-    <?php 
-        // controller
-        require_once(dirname(dirname(__FILE__)) . '\controllers\LocationController.php');
-        
-        // modal dialogs 
-        include('/SignupModal.html'); 
-        include('/LoginModal.html');
-        include('/AddRatingModal.html');
-    ?>
-    
     <!-- Bootstrap Core CSS -->
     <link href="../../../framwork_dir/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
+    <link href="../../css/default.css" rel="stylesheet">
     <link href="../../../framwork_dir/bootstrap/css/homepage.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../../../framwork_dir/bootstrap-spinner/bootstrap-spinner.css" rel="stylesheet">
 
     
     <!-- jQuery -->
@@ -42,10 +33,24 @@
     <!-- Bootstrap rating input (stars) -->
     <script src="../../../framwork_dir/bootstrap-rating-input/bootstrap-rating-input.min.js"></script>
     
+        <!-- controller -->
+    <?php 
+        // controller
+        require_once(dirname(dirname(__FILE__)) . '\controllers\LocationController.php');
+        
+        // modal dialogs 
+        include('/SignupModal.html'); 
+        include('/LoginModal.html');
+        include('/AddRatingModal.html');
+        include('/AddMenuItemModal.html');
+    ?>
+    
     <!-- Form validation and session control -->
     <script src="../../../public_html/protected_private/js/jQueryFormValidator.js"></script>
     <script src="../../../public_html/protected_private/js/sessionControl.js"></script>
     <script src="../../../public_html/protected_private/js/AddRatings.js"></script>
+    <script src="../../../public_html/protected_private/js/AddMenuItems.js"></script>
+    <script src="../../../framwork_dir/bootstrap-spinner/jquery.spinner.min.js"></script>
     
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -75,8 +80,7 @@
     <script type="text/javascript"> 
         $(function () {
             $('#tabs').tab();
-                var hash = window.location.hash;
-                console.log(hash);  
+                var hash = window.location.hash; 
                 // do some validation on the hash here
                 hash && $('ul.nav a[href="' + hash + '"]').tab('show');
         });   
@@ -105,7 +109,7 @@
                         <a href="restaurants.php">Restaurants</a>
                     </li>
                     <li>
-                        <a href="raters.php">Ratings</a>
+                        <a href="raters.php">Raters</a>
                     </li>
                 </ul>
                 <ul id ="sessionButtons" class="nav navbar-nav pull-right">
@@ -138,42 +142,50 @@
  
     <!-------->
     <div id="content">
-        <h3><?php echo $details->_name; ?></h3>
-        <h6><small style="font-size:10pt"><a href="https://www.google.com/maps/dir/Current+Location/<?php echo $address_for_gmaps; ?>"><?php echo $details->street_address; ?></small></h6></h6></a><div class="row">
+        <div class="row">
+            <div class="col-sm-4">
+                <h3><?php echo $details->_name; ?><br><small style="font-size:10pt">opened  <?php echo $details->first_open_date; ?></small></h3>
+                <div class="row">
+                <span style="padding-left:15px"><a href="tel:<?php echo $details->phone_number; ?>"><?php echo $details->phone_number; ?></a></span><span>  (Manager: <?php echo $details->manager_name; ?>)</span>
+                </div>
+                <div class="row">
+                <span style="padding-left:15px"><a href="<?php echo $details->url; ?>"><?php echo $details->url; ?></a></span></span>
+                </div>
+                <div class="row">
+                    <span style="padding-left:15px"><small style="font-size:10pt"><a href="https://www.google.com/maps/dir/Current+Location/<?php echo $address_for_gmaps; ?>"><?php echo $details->street_address; ?></small><span></a>
+                </h5>
+                </div>
+            </div>
+                <div class="col-sm-6 well">
+                    <div class="row">
+                        <span style="padding-left:30px; font-size:12pt; text-align:left;" class="col-sm-12">Opening Hours</span>
+                    </div>
+                    <div class="col-sm-6"><?php for($i = 0; $i < 4; $i++){ ?>
+                    <span style="font-size:7pt"><?php echo $opening_hours[$i]; ?></span></br>
+                <?php } ?></div>
+                    <div class="col-sm-6"><?php for($i = 4; $i < 7; $i++){ ?>
+                        <span style="font-size:7pt"><?php echo $opening_hours[$i]; ?></span></br>
+                    <?php } ?></div>
+                </div>
+        </div>
+        <div class="row">
         <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-            <li class="active"><a href="#details" data-toggle="tab">Details</a></li>
-            <li><a href="#ratings" data-toggle="tab">Ratings</a></li>
-            <li><a href="#menu" data-toggle="tab">Menu</a></li>
+            <li class="active"><a href="#ratings" data-toggle="tab"><h3>Ratings</h3></a></li>
+            <li><a href="#menu" data-toggle="tab"><h3>Menu</h3></a></li>
+            <div class="pull-right" style="padding-left:5px">
+                <button class="btn btn-primary pull-right" onclick="addMenuItem()">Add a menu item</button>
+            </div>
+            <div class="pull-right">
+                <button class="btn btn-primary pull-right" onclick="addRating()">Add a rating</button>
+            </div>
         </ul>
         <div id="my-tab-content" class="tab-content">
-            <div class="tab-pane active" id="details">
-                <div class="row">
-                <h5><?php echo $details->phone_number; ?><h5>
-                </div>
-                <div class="row">
-                    <p>Opening date: <?php echo $details->first_open_date; ?></p>
-                </div>
-                <div class="row">
-                    <p>Manager: <?php echo $details->manager_name; ?></p>
-                </div>
-                <div class="row">
-                    <p>Opening Hours:</p>
-                </div>
-                <div><?php for($i = 0; $i < 7; $i++){ ?>
-                    <span style="font-size:10pt"><?php echo $opening_hours[$i]; ?></span></br>
-                <?php } ?></div>
-            </div>
-            <div class="tab-pane" id="ratings">
-                <div class="row">
-                    <div class="col-sm-4"><h1>Ratings</h1></div>
-                    <div class="col-sm-8" style="padding-top:18px">
-                        <button class="btn btn-primary pull-right" onclick="addRating()">Add a rating</button>
-                    </div>
-                </div>
+            <div class="tab-pane active" id="ratings">
                 <div class="row">
                     <div class="col-sm-12">
-                        <select id="types_select" class="btn btn-default dropdown-toggle" onchange="updateSorting(this.value)">
+                        <select id="types_select" class="btn btn-default dropdown-toggle" onchange="updateSorting(this.value)">    
                                 <option value="" disabled selected>Sort by...</option>
+                                <option value='rater_ratings_for_this_loc DESC'>Most frequent raters first</option>
                                 <option value='date_written ASC'>Date Written (ascending)</option>
                                 <option value='date_written DESC'>Date Written (descending)</option>
                                 <option value='food ASC'>Food Rating (ascending)</option>
@@ -226,12 +238,9 @@
                             $.ajax({
                                 type: 'POST',
                                 url: '../controllers/LocationController.php',
-                               // data: 'clear_all_search_options=' + 'true',
                                 data: {locations_ratings_sorting_selected: true, clear_all_search_options : true, location_id: location_id},
                                 success: function (data) {
-                                	console.log(data);
-                                    console.log(JSON.parse(data));
-                                    updateRatingsListHtmlElements(data, true)
+                                      updateRatingsListHtmlElements(data, true)
                                 },
                                 error: function(data){
                                 	alert("error");
@@ -269,6 +278,52 @@
                                 }
                             });
                         }
+                        
+                        /*
+                         * Deletes a menu item.
+                         *
+                         * @author Patrice Boulet
+                         */
+                        function deleteMenuItem(item_id){
+                            var item_id = item_id;
+                            $.ajax({
+                                type: 'POST',
+                                url: '../controllers/LocationController.php',
+                                data: 'delete_menu_item=' + item_id,
+                                success: function (response) {
+                                    $.notify("The page will now reload in 3 seconds to update your changes...", "success");
+                                    setTimeout(function(){ 
+                                        window.location.hash = "#menu";
+                                        location.reload();},3000
+                                    );
+                                }
+                            });
+                        }
+                        
+                        /*
+                         * Updates helpfulness of a rater and rating id.
+                         *
+                         * @author Patrice Boulet
+                         */
+                        function updateHelpfulness(helpful, raterId, ratingId){
+                            var helpful = helpful;
+                            var raterId = raterId;
+                            var ratingId = ratingId;
+                            
+                            $.ajax({
+                                type: 'POST',
+                                url: '../controllers/UpdateHelpfulnessController.php',
+                                data: {update_helpfulness: true, helpful: helpful, rater_id: raterId, rating_id: ratingId},
+                                success: function (response) {
+                                    $.notify("The page will now reload in 3 seconds to update the helpfulness...", "success");
+                                    setTimeout(function(){ 
+                                        window.location.hash = "#ratings";
+                                        location.reload();},3000
+                                    );
+                                }
+                            });
+                        }
+                        
                     </script>
                 </div>
                 

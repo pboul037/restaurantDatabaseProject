@@ -17,6 +17,13 @@ session_start();
     //Declaring the variable that will hold on to the location name and information associated with the location
     //that matches the given location id
 
+    $menu_item_delete_sel = isset($_POST['delete_menu_item']);            // a menu item's deletion has been requested by admin
+
+    // delete a location
+    if($menu_item_delete_sel){      
+        $dal->delete_menu_item($_POST['delete_menu_item']);
+    }
+
     $location_id;
     if(!isset($_POST['locations_ratings_sorting_selected']))
     {
@@ -31,8 +38,7 @@ session_start();
     
 
 
-    // to solve this error: we can get the location_id when dynamically selecting a sorting parameter with ($_POST['location_id'])
-    
+
     //We are only interested in the first entry of the array, because it corresponds to the first and only row of the
     //corresponding sql query result table.
     $details = $details[0];
@@ -57,13 +63,9 @@ session_start();
     //Declaring the variable that will hold on to the categories of beverages for the given location
     $beverage_categories = $dal->get_beverages_categories($details->location_id);
     
-    //QA
-    //QUESTION: I do not know what we are declaring here
     $beverages_menu_items_by_category = array();
     
-    //QA
-    //QUESTION what are we doing here? why is beverages treated specially compared to other menu items 
-    //ANSWER: b/c its like in a restaurant menu, the drink and food menus are separated -PB
+
     foreach($beverage_categories as $category){
     $beverages_menu_items_by_category[$category->category] = get_menu_items('drink', $category->category);
     }
@@ -147,10 +149,10 @@ session_start();
      * Returns a $location_rating list html item as 
      * a string.
      *
-     * @author Junyi Dai, Qasim Ahmed
+     * @author Patrice Boulet, Junyi Dai, Qasim Ahmed 
      */
     function get_location_rating_html_items($location_ratings_list){
-
+        global $dal;
         //QA
         //Declaring the variable that will hold all the HTML code that will be returned to the view
         $location_rating_html_item = '';
@@ -160,60 +162,100 @@ session_start();
 
        //QA
        //Loops through the the list of ratings and generates html for each one to display on the view
+        
+        if( count($location_ratings_list) < 1 )
+            $location_rating_html_item .= "<div style='text-align:center' class='col-sm-12'><p>No rating yet...</p></div>";
+        
         foreach($location_ratings_list as $location_rating){
 
             // add gold $ for actual price avg and store it in $dollar_sign_string
             for( $i = 0; $i < $location_rating->price; $i++){
-                $dollar_sign_string .= '<h6 <span class="glyphicon glyphicon-usd" style="color:black"></span></h6>';
+                $dollar_sign_string .= '<span style="font-size:12px" class="glyphicon glyphicon-usd" style="color:black"></span>';
             }
 
             // add the subtraction of 5 by avg price of grey $ and store it in $dollar_sign_string
             for( $i = 0; $i < 5-$location_rating->price; $i++){
-                $dollar_sign_string .= '<h6 <span class="glyphicon glyphicon-usd" style="color:#DCDCDC"></span></h6>';
+                $dollar_sign_string .= '<span  style="font-size:12px" class="glyphicon glyphicon-usd" style="color:#DCDCDC"></span>';
             }
 
             $location_rating_html_item .= 
-            '<div class="list-group-item"><div class="row">
-            <div class="col-sm-4">
+            '<div class="list-group-item">
                 <div class="row">
-                    <span class="col-sm-12">
-                        <span style="font-size:14pt; font-style:italic;">Food: </span>
-                        <span style="font-size:12pt; font-weight:bold;">' . $location_rating->food . '</span>
-                        <span style="font-size:12pt">out of 5 </span>
-                    </span>
-                </div>
-                <div class="row">
-                    <span class="col-sm-12">
-                        <span style="font-size:14pt; font-style:italic;">Ambiance: </span>
-                        <span style="font-size:12pt; font-weight:bold;">' . $location_rating->ambiance . '</span>
-                        <span style="font-size:12pt">out of 5 </span>
-                    </span>
-                </div>
-                <div class="row">
-                    <span class="col-sm-12">
-                        <span style="font-size:14pt; font-style:italic;">Service: </span>
-                        <span style="font-size:12pt; font-weight:bold;">' . $location_rating->service . '</span>
-                        <span style="font-size:12pt">out of 5 </span>
-                    </span>
-                </div>
-                <div class="row">
-                    <span class="col-sm-12">
-                        <span style="font-size:14pt; font-style:italic;">Price: </span>
-                        <span style="font-size:12pt; font-weight:bold;">' . $dollar_sign_string . '</span>
-                    </span>
-                </div>
-            </div>
-            <div class="col-sm-12">
-                <span style="font-size:10pt">By </span>
-                <a style="font-size:10pt" href="Location.php?locationid=' . $location_rating->location_id . '#ratings">' 
-                    . $location_rating->_name .'</a>
-                    <span style="font-size:10pt">on </span>
+                <div class="col-sm-3">
+                    <div class="row"
+                            <span style="text-align:center" class="col-sm-5">
+                                <h4 style="font-weight:bold">' . $location_rating->avg_rating . '<small style="padding-right:25px"> out of 5</small>' . $dollar_sign_string . '</h4>
+                            </span>
+                    </div>
+                    <div class="row">
+                            <span style="text-align:center" class="col-sm-4">
+                                <span style="font-size:10pt;">Food </span>
+                                <h5 style="font-weight:bold">' . $location_rating->food . '<small>/5</small></h5>
+                            </span>
+                            <span style="text-align:center" class="col-sm-4">
+                                <span style="font-size:10pt;">Ambiance </span>
+                                <h5 style="font-weight:bold">' . $location_rating->ambiance . '<small>/5</small></h5>
+                            </span>
+                            <span style="text-align:center" class="col-sm-4">
+                                <span style="font-size:10pt;">Service </span>
+                                <h5 style="font-weight:bold">' . $location_rating->service . '<small>/5</small></h5>
+                            </span>
+                    </div>
+                    <span style="font-size:12pt">By </span>
+                    <a style="font-size:12pt" href="Location.php?locationid=' . $location_rating->location_id . '#ratings">' 
+                        . $location_rating->_name .'
+                    </a>
+                    <span style="font-size:12pt">on </span>
                     <span style="font-size:10pt;">' . $location_rating->date_written . '</span>
+                    <div class="row">
+                        <span class="col-sm-1 glyphicon glyphicon-star" style="color:green"></span>
+                        <span class="col-sm-1">' . $location_rating->rater_reputation .'</span>
+                        <span class="col-sm-5">Reputation</span>
+                    </div>
+                    <div class="row">
+                        <span class="col-sm-1 glyphicon glyphicon-stats" style="color:green"></span>
+                        <span class="col-sm-1">' . $location_rating->total_rater_ratings .'</span>
+                        <span class="col-sm-5">total ratings</span>
+                    </div>
+                                       <div class="row">
+                        <span class="col-sm-12">Rated this location ' . $location_rating->rater_ratings_for_this_loc .' time(s)</span>
+                    </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="well col-sm-12"><span class="col-sm-2">Ordered: </span>';
+                        $rating_items_for_rating = $dal->get_rating_items_for_rating($location_rating->rating_id);
+                        foreach($rating_items_for_rating as $rating_item){
+                            $location_rating_html_item .= '<span class="tagcloud tag label label-warning">' . $rating_item->_name . ' :                                                                 $' . $rating_item->price . '</span>';
+                        }
+                        if( count($rating_items_for_rating) < 1)
+                            $location_rating_html_item .= '<span>No order specified. </span>';
+
+            $location_rating_html_item .= '</div>
+                        <div class="col-sm-12 comment">
+                            <div class="row">
+                                <div class="col-sm-12
+                                        <span style="font-size:10pt;">' . 
+                                            (strlen($location_rating->_comments) > 0 ? $location_rating->_comments : "No comments") 
+                                        . '</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="vertical-align:middle" class="col-sm-1">
+                            <div class="row">
+                                <a onclick="updateHelpfulness(true, this.dataset.rater_id, this.dataset.ratingid)" style"cursor: pointer" 
+                                        data-rater_id="' . $location_rating->rater_id . '" 
+                                        data-ratingid="' . $location_rating->rating_id . '"><span style="font-size:16pt; color:green" class="col-sm-12 glyphicon glyphicon-thumbs-up"> </span>
+                                <label style="text-align:center; font-size:10pt">Was helpful</label></a>
+                            </div>
+                            <div class="row">
+                                <a onclick="updateHelpfulness(false, this.dataset.rater_id, this.dataset.ratingid)" style"cursor: pointer" 
+                                        data-rater_id="' . $location_rating->rater_id . '" 
+                                        data-ratingid="' . $location_rating->rating_id . '"><span style="font-size:16pt; color:red" class="col-sm-12 glyphicon glyphicon-thumbs-down"></span>
+                                <label style="text-align:center; font-size:10pt">' . "Wasn't helpful</label></a>" . '
+                            </div>
+                    </div>
                 </div>
-                <div class="col-sm-12
-                <span style="font-size:10pt;">' . $location_rating->_comments . '</span>
-            </div>
-            </div>
             </div>';
 
             // Clear the dollar sign string
@@ -234,21 +276,49 @@ session_start();
         
         $menu_items_html = "";
         $menu_items = $dal->get_menu_items($details->location_id, $type, $category);
+        $temp_str = "";
+        $avg_category_price = null;
+        $category_price_sum = 0;
+        
+        foreach($menu_items as $menu_item){
+            $category_price_sum += $menu_item->price;
+            $temp_str .= '<li class="list-group-item"  data-itemid="' . $menu_item->item_id . '"><div class="row">';
+            
+                        // if the admin is logged in, give the privileges to delete a location
+            if( isset($_SESSION['username']) ){
+                if( $_SESSION['username'] == 'admin'){
+                    $temp_str .= '<div class="col-sm-2 pull-left adminControl"><button class="btn btn-danger" onclick="deleteMenuItem(parseInt(this.parentNode.parentNode.parentNode.dataset.itemid))">
+                                                <span class="glyphicon glyphicon-trash" style="color:black"> </span>
+                                            </button></div>';
+                }
+            }
+            
+            $temp_str .= '<div class="pull-right col-sm-3"><h5>$ ' . $menu_item->price;
+            
+            $temp_str .= '</h5></div><h5 class="col-sm-7">' . $menu_item->_name . '</br>
+            <small>' . $menu_item->description . '</small></h5><span class="badge"></span></div></li>
+            ';
+        }
+        if( count($menu_items) >  0)
+            $avg_category_price = $category_price_sum/count($menu_items);
+        
         $menu_items_html .= '<div class="panel-heading">
         <h4 class="panel-title">
           <a data-toggle="collapse" data-parent="#accordion" 
-          href="#collapse' . $category . '">' . $category . '</a><span class="pull-right badge">' . count($menu_items) . '</span>
+          href="#collapse' . $category . '">' . $category . '</a>';
+        
+        if( $avg_category_price != null)
+            $menu_items_html .= '<span class="pull-right"> (avg. price: $'. round($avg_category_price,2) . ')</span>';
+        
+        
+        $menu_items_html .= '<span style="padding-left:15px"><span class="badge">' . count($menu_items) . '</span></span>
         </h4>
         </div>
         <div id="collapse' . $category . '" class="panel-collapse collapse">
         <ul class="list-group">
         <?php echo $appetizers_html; ?>';
         
-        foreach($menu_items as $menu_item){
-            $menu_items_html .= '<li class="list-group-item"><div class="pull-right"><h5>$ ' . $menu_item->price . '</h5></div><h5>' .                              $menu_item->_name . '</br>
-            <small>' . $menu_item->description . '</small></h5><span class="badge"></span></li>
-            ';
-        }
+        $menu_items_html .= $temp_str;
         
         $menu_items_html .= '</ul></div>';
         

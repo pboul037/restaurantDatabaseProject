@@ -1,0 +1,175 @@
+<!--
+  * Add location modal component.
+  *
+  * @author Patrice Boulet
+  */
+-->
+
+<!-- Include the plugin's CSS and JS: -->
+<script type="text/javascript" src="../../../framwork_dir/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+<link rel="stylesheet" href="../../../framwork_dir/bootstrap-multiselect/bootstrap-multiselect.css" type="text/css"/>
+
+<!-- Modal -->
+<div class="modal fade" id="addLocationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" style="width:70%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Add a Restaurant Location</h4>
+      </div>
+      <div class="modal-body">
+        <form id="addLocationRatingForm" class="form-horizontal form-signup" role="form">
+                <div class="row">
+                     <div class="col-sm-12">
+                         <div class="col-sm-5">
+                             <h4>Pick an Existing Restaurant</h4>
+                             <div id="addLocationRestaurantsAvailGroup" class="form-group">
+                                <label for="addLocationRestaurantsAvail" class="col-sm-5 control-label">Restaurants available</label>
+                                <div class="col-sm-7">
+                                    <select id="addLocationRestaurantsAvail" class="btn btn-default dropdown-toggle">
+                                        <option value="" disabled selected>Pick a restaurant.</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-7">
+                            <h4>Add a New Restaurant</h4>
+                             <div id="addLocationRestaurantNameGroup" class="form-group">
+                                <label for="addLocationRestaurantName" class="col-sm-2 control-label">Name</label>
+                                <div class="col-sm-10">
+                                  <input type="text" class="form-control" 
+                                         id="addLocationRestaurantName" name="addLocationRestaurantName" placeholder="Restaurant's name" />
+                                </div>
+                            </div>
+                            <div id="addLocationRestaurantTypesAvailGroup" class="form-group">
+                                <label for="addLocationRestaurantTypesAvail" class="col-sm-2 control-label">Cuisine types</label>
+                                <div class="col-sm-10">
+                                    <select style="padding-left:15px" id="addLocationRestaurantTypesAvail" 
+                                            multiple="multiple" class="btn btn-default dropdown-toggle">
+                                        <option value="" disabled selected>Pick cuisine types</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="addLocationRestaurantUrlGroup" class="form-group">
+                                <label for="addLocationRestaurantUrl" class="col-sm-2 control-label">Website URL</label>
+                                <div class="col-sm-10">
+                                  <input type="text" class="form-control" 
+                                    id="addLocationRestaurantUrl" name="addLocationRestaurantUrl" placeholder="Restaurant's website URL" />
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="divider">
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="col-sm-6">
+                            <h4 style="padding-left:15px">Add the Restaurant Location</h4>
+                            <div id="addLocationOpenedDateGroup" class="form-group">
+                                <label for="addLocationOpenedDate" class="col-sm-3 control-label">Opening date</label>
+                                <div class="col-sm-9">
+                                    <div style="padding-left:10px" class="input-group">
+                                        <input id="addLocationOpenedDate" type="date"
+                                                class="form-control" id="addLocationOpenedDate" 
+                                                    name="addLocationOpenedDate" placeholder="YYYY-MM-DD" />
+                                    </div>
+                                </div>
+                            </div>
+                             <div id="addLocationRestaurantManagerGroup" class="form-group">
+                                <label for="addLocationRestaurantManager" class="col-sm-3 control-label">Manager</label>
+                                <div class="col-sm-9">
+                                  <input type="text" class="form-control" 
+                                         id="addLocationRestaurantManager" name="addLocationRestaurantManager" 
+                                            placeholder="Manager's name" />
+                                </div>
+                            </div>
+                            <div id="addLocationRestaurantPhoneGroup" class="form-group">
+                                <label for="addLocationRestaurantPhone" class="col-sm-3 control-label">Phone</label>
+                                <div class="col-sm-9">
+                                  <input type="text" class="form-control" 
+                                         id="addLocationRestaurantPhone" name="addLocationRestaurantPhone" 
+                                            placeholder="555-555-5555" />
+                                </div>
+                            </div>
+                             <div id="addLocationRestaurantAddressGroup" class="form-group">
+                                <label for="addLocationRestaurantAddress" class="col-sm-3 control-label">Address</label>
+                                <div class="col-sm-9">
+                                  <input type="text" class="form-control" 
+                                         id="addLocationRestaurantAddress" name="addLocationRestaurantAddress" 
+                                            placeholder="Street Address" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            </br></br>
+                            <label style="font-size:12pt">Opening hours</label>
+                             <div id="addLocationRestaurantOHMonGroup" class="form-group">
+                                <label for="addLocationRestaurantOHMon" class="col-sm-3 control-label">Monday</label>
+                                <div class="col-sm-9">
+                                  <input type="text" class="form-control" 
+                                         id="addLocationRestaurantOHMon" name="addLocationRestaurantOHMon" 
+                                            placeholder="9:00 AM - 5:00 PM" />
+                                </div>
+                            </div>
+                            <div id="addLocationRestaurantOHTuesdayGroup" class="form-group">
+                                <label for="addLocationRestaurantOHTuesday" class="col-sm-3 control-label">Tuesday</label>
+                                <div class="col-sm-9">
+                                  <input type="text" class="form-control" 
+                                         id="addLocationRestaurantOHTuesday" name="addLocationRestaurantOHTuesday" 
+                                            placeholder="9:00 AM - 5:00 PM" />
+                                </div>
+                            </div>
+                             <div id="addLocationRestaurantOHWednesdayGroup" class="form-group">
+                                <label for="addLocationRestaurantOHWednesday" class="col-sm-3 control-label">Wednesday</label>
+                                <div class="col-sm-9">
+                                  <input type="text" class="form-control" 
+                                         id="addLocationRestaurantOHWednesday" name="addLocationRestaurantOHWednesday" 
+                                            placeholder="9:00 AM - 5:00 PM" />
+                                </div>
+                            </div>
+                             <div id="addLocationRestaurantOHThursdayGroup" class="form-group">
+                                <label for="addLocationRestaurantOHThursday" class="col-sm-3 control-label">Thursday</label>
+                                <div class="col-sm-9">
+                                  <input type="text" class="form-control" 
+                                         id="addLocationRestaurantOHThursday" name="addLocationRestaurantOHThursday" 
+                                            placeholder="9:00 AM - 5:00 PM" />
+                                </div>
+                            </div>
+                             <div id="addLocationRestaurantOHFridayGroup" class="form-group">
+                                <label for="addLocationRestaurantOHFriday" class="col-sm-3 control-label">Friday</label>
+                                <div class="col-sm-9">
+                                  <input type="text" class="form-control" 
+                                         id="addLocationRestaurantOHFriday" name="addLocationRestaurantOHFriday" 
+                                            placeholder="9:00 AM - 5:00 PM" />
+                                </div>
+                            </div>
+                             <div id="addLocationRestaurantOHSaturdayGroup" class="form-group">
+                                <label for="addLocationRestaurantOHSaturday" class="col-sm-3 control-label">Saturday</label>
+                                <div class="col-sm-9">
+                                  <input type="text" class="form-control" 
+                                         id="addLocationRestaurantOHSaturday" name="addLocationRestaurantOHSaturday" 
+                                            placeholder="9:00 AM - 1:00 PM & 4:00 PM - 11:00 PM" />
+                                </div>
+                            </div>
+                             <div id="addLocationRestaurantOHSundayGroup" class="form-group">
+                                <label for="addLocationRestaurantOHSunday" class="col-sm-3 control-label">Sunday</label>
+                                <div class="col-sm-9">
+                                  <input type="text" class="form-control" 
+                                         id="addLocationRestaurantOHSunday" name="addLocationRestaurantOHSunday" 
+                                            placeholder="CLOSED" />
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group col-sm-12">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" 
+                                id="addLocationFormSubmit" name="submit">Add Location</button>
+                    </div>
+                </div>
+            </div>    
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

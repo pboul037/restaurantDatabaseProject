@@ -273,23 +273,23 @@ INSERT INTO restaurant_ratings.menu_item(_name, _type, category, description, pr
     
 INSERT INTO restaurant_ratings.users(email, _name, pswd, join_date)
     VALUES 
-    ( 'deleted_user@gmail.com', 'Deleted User', 'default', '2014-12-01'),
-    ( 'chompcaviar@yahoo.ca', 'chompcaviar', 'chompcaviar$', '2013-11-02'),
-    ( 'welcomemayonnai@uottawa.ca', 'welcomemayonnai', 'welcomemayonnaise$', '2012-10-03'),
-    ( 'abstractedcake@gmail.com', 'abstractedcake', 'abstractedcake$', '2013-09-04'),
-    ( 'spencersvenison@yahoo.ca', 'spencersvenison', 'spencersvenison$', '2014-08-05'),
-    ( 'mentionrelish@videotron.ca', 'mentionrelish', 'mentionrelish$', '2012-07-06'),
-    ( 'abdomenclam@gmail.com', 'abdomenclam', 'abdomenclam$', '2013-06-07'),
-    ( 'diskspaella@yahoo.com', 'diskspaella', 'diskspaella$', '2014-05-08'),
-    ( 'oatmealchowder@bell.ca', 'oatmealchowder', 'oatmealchowder$', '2013-04-09'),
-    ( 'chimneyspolenta@gmail.com', 'chimneyspolenta', 'chimneyspolenta$', '2015-03-10'),
-    ( 'partingorange@yahoo.ca', 'partingorange', 'partingorange$', '2013-02-11'),
-    ( 'catsalami@gmail.com', 'catsalami', 'catsalami$', '2015-01-12'),
-    ( 'trouncecrackers@yahoo.ca', 'trouncecracker', 'trouncecrackers$', '2013-12-13'),
-    ( 'nestingpistache@gmail.com', 'nestingpistache', 'nestingpistachio$', '2014-11-14'),
-    ( 'trapdooroil@yahoo.ca', 'trapdooroil', 'trapdooroil$', '2013-10-15'),
-    ( 'bizarremilk@gmail.com', 'bizarremilk', 'bizarremilkshakes$', '2015-09-16'),
-    ( 'admin@gmail.com', 'admin', 'admin', '2015-09-16');
+    ( 'deleted_user@gmail.com', 'Deleted User', 'default', '2011-12-01'),
+    ( 'chompcaviar@yahoo.ca', 'chompcaviar', 'chompcaviar$', '2011-11-02'),
+    ( 'welcomemayonnai@uottawa.ca', 'welcomemayonnai', 'welcomemayonnaise$', '2011-10-03'),
+    ( 'abstractedcake@gmail.com', 'abstractedcake', 'abstractedcake$', '2011-09-04'),
+    ( 'spencersvenison@yahoo.ca', 'spencersvenison', 'spencersvenison$', '2011-08-05'),
+    ( 'mentionrelish@videotron.ca', 'mentionrelish', 'mentionrelish$', '2011-07-06'),
+    ( 'abdomenclam@gmail.com', 'abdomenclam', 'abdomenclam$', '2011-06-07'),
+    ( 'diskspaella@yahoo.com', 'diskspaella', 'diskspaella$', '2011-05-08'),
+    ( 'oatmealchowder@bell.ca', 'oatmealchowder', 'oatmealchowder$', '2011-04-09'),
+    ( 'chimneyspolenta@gmail.com', 'chimneyspolenta', 'chimneyspolenta$', '2011-03-10'),
+    ( 'partingorange@yahoo.ca', 'partingorange', 'partingorange$', '2011-02-11'),
+    ( 'catsalami@gmail.com', 'catsalami', 'catsalami$', '2011-01-12'),
+    ( 'trouncecrackers@yahoo.ca', 'trouncecracker', 'trouncecrackers$', '2011-12-13'),
+    ( 'nestingpistache@gmail.com', 'nestingpistache', 'nestingpistachio$', '2011-11-14'),
+    ( 'trapdooroil@yahoo.ca', 'trapdooroil', 'trapdooroil$', '2011-10-15'),
+    ( 'bizarremilk@gmail.com', 'bizarremilk', 'bizarremilkshakes$', '2011-09-16'),
+    ( 'admin@gmail.com', 'admin', 'admin', '2011-09-16');
     
 
 

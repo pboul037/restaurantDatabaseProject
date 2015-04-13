@@ -1,4 +1,8 @@
 <?php
+
+// Session Controller.
+// @author Patrice Boulet
+
 session_start();
 if(isset($_POST['logout'])){
     unset($_SESSION['username']);

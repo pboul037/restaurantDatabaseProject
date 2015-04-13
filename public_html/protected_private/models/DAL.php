@@ -42,7 +42,41 @@ class DAL {
                     r2.restaurant_id =  locations_count.restaurant_id AND 
                         r2.restaurant_id IN (locations_count.restaurant_id)";
         return $this->query($sql);
-    }     
+    }    
+    
+	/*
+     * Gets all rater details.
+     *
+     * @author Junyi Dai
+     */
+    public function get_all_raters($sorting){ 
+
+          if($sorting == null)
+                $sorting = 'u._name';
+            
+        $sql = "SELECT rat.*, u._name, u.email, u.pswd, u.join_date, (
+                    SELECT COUNT(*)
+                    FROM(   
+                            SELECT *
+                            FROM restaurant_ratings.rating ra
+                            WHERE rat.rater_id = ra.rater_id) AS tmp
+                        ) AS total_num_ratings, ((rat.found_helpful * (rat.found_helpful + rat.wasnt_helpful)) - rat.wasnt_helpful * (rat.found_helpful + rat.wasnt_helpful)) AS rater_reputation
+                FROM restaurant_ratings.rater rat, restaurant_ratings.users u
+                WHERE rat.user_id = u.user_id " .
+                "ORDER BY " . $sorting ;
+        return $this->query($sql);
+    }
+	
+    /*
+     * Deletes menu item.
+     *
+     * @author Patrice Boulet
+     */
+    public function delete_menu_item($item_id){ 
+        $sql = "DELETE FROM restaurant_ratings.menu_item i
+                WHERE i.item_id = " . $item_id;
+        return $this->query($sql);
+    }    
     
     /*
      * Checks login credentials.
@@ -55,6 +89,42 @@ class DAL {
                 WHERE u.user_id = r.user_id AND u._name = '" . $username . "' AND u.pswd = '" . $pswd . "';";
         return $this->query($sql);
     } 
+    
+    /*
+     * Updates found_helpful and wasn't helpful of rating and rater.
+     *
+     * @author Patrice Boulet
+     */
+    public function update_helpfulness($helpful, $rating_id, $rater_id){ 
+        if( $helpful === 'true'){
+            
+            $sql1 = "UPDATE restaurant_ratings.rating SET found_helpful = found_helpful + 1
+                    WHERE rating_id = " . $rating_id;
+            
+            $sql2 = "UPDATE restaurant_ratings.rater SET found_helpful = found_helpful + 1
+                    WHERE rater_id = " . $rater_id;
+        }else{
+            $sql1 = "UPDATE restaurant_ratings.rating SET wasnt_helpful = wasnt_helpful + 1
+                    WHERE rating_id = " . $rating_id;
+
+            $sql2 = "UPDATE restaurant_ratings.rater SET wasnt_helpful = wasnt_helpful + 1
+                    WHERE rater_id = " . $rater_id;
+        }
+        
+        
+            $dbh = $this->dbconnect();
+            $stmt = pg_prepare($dbh, "ps1", $sql1);
+            $stmt = pg_prepare($dbh, "ps2", $sql2);
+            $res1 = pg_execute($dbh, "ps1", array());
+            $res2 = pg_execute($dbh, "ps2", array());
+            
+            //free memory
+            pg_free_result($res1);
+            pg_free_result($res2);
+            //close connection
+            pg_close($dbh);
+    }     
+    
     
     /*
      * Signup a new rater (also creates a new user associated with it).
@@ -77,11 +147,14 @@ class DAL {
      * @author Patrice Boulet
      */
     public function add_new_location_rating($location_id, $rater_id, $price, $food, $ambiance, $service, $comments, $avg_rating){ 
-        $sql = "INSERT INTO restaurant_ratings.rating(location_id, rater_id, date_written, price, food, 
+        $sql = "WITH tmp AS (INSERT INTO restaurant_ratings.rating(location_id, rater_id, date_written, price, food, 
                         ambiance, service, _comments, avg_rating)
                 VALUES (" . $location_id . ", " .$rater_id . ", NOW()::DATE, " . $price . ", " .
                             $food . ", " . $ambiance . ", " . $service . ", '" . $comments . "', " .
-                                $avg_rating . ");";
+                                $avg_rating . ")
+                RETURNING rating_id)
+                SELECT rating_id
+                FROM tmp";
         return $this->query($sql);
     }  
 
@@ -98,23 +171,105 @@ class DAL {
     }
     
     /*
+     * Gets all restaurants and their ids.
+     *
+     * @author Patrice Boulet
+     */
+    public function get_all_restaurants(){ 
+        $sql = "    SELECT r.restaurant_id, _name AS name
+                    FROM restaurant_ratings.restaurant r";
+        return $this->query_with_stmt_name($sql, "restaurants");
+    }
+    
+    /*
+     * Adds a restaurant.
+     *
+     * @author Patrice Boulet
+     */
+    public function add_restaurant($restaurantName, $restaurantURL, $typesArray){        
+        
+        $sql = "WITH new_restaurant AS (INSERT INTO restaurant_ratings.restaurant(_name, url)
+                                        VALUES ('" . $restaurantName . "', '" . $restaurantURL . "')
+                                        RETURNING restaurant_id)
+                                        
+                INSERT INTO restaurant_ratings.isoftype(type_id, restaurant_id) ";
+        
+                $first_type = true;
+                foreach($typesArray as $type){
+                    if($first_type){
+                        $sql .= "VALUES (" . $type . ", (SELECT r.restaurant_id FROM new_restaurant r))";
+                        $first_type = false;
+                    }else{
+                        $sql .= ", (" . $type . ", (SELECT r.restaurant_id FROM new_restaurant r))";
+                    }
+                }
+        
+                $sql .= " RETURNING (SELECT r.restaurant_id FROM new_restaurant r)";
+        return $this->query($sql);
+    }
+    
+    /*
+     * Adds a location.
+     *
+     * @author Patrice Boulet
+     */
+    public function add_location($openingDate, $manager, $phone, $address, $openingHours, $restaurant_id){        
+        
+        $sql = "INSERT INTO restaurant_ratings.locations(
+                        first_open_date, manager_name, phone_number, street_address, 
+                            opening_hours, restaurant_id)
+                VALUES ('" . $openingDate . "', '" . $manager . "', '" . $phone . "', '" . $address . "', '" .
+                                $openingHours . "', " . $restaurant_id . ")";
+        return $this->query_with_stmt_name($sql, "add_location");
+    }
+        
+    /*
+     * Add a menu item to a rating. 
+     *
+     * Note: I'm not using
+     * the query method here because the prepared statements
+     * names overlapse so I have to give them a different name each time
+     * it executes.
+     *
+     * @author Patrice Boulet
+     */
+    public function add_rating_item_no_rating($item_id, $rating_id){ 
+        
+        $dbh = $this->dbconnect();
+        
+        $sql = "INSERT INTO restaurant_ratings.rating_item(item_id, rating_id)
+                VALUES (" . $item_id . ", " . $rating_id . ")";
+        
+        $stmt = pg_prepare($dbh, $item_id, $sql);
+
+        $res = pg_execute($dbh, $item_id, array());
+        //free memory
+        pg_free_result($res);
+        //close connection
+        pg_close($dbh);
+    }
+
+    /*
      * Gets food menu items for this $location of type $type and category $category.
      *
      * @author Patrice Boulet
      */
     public function get_menu_items($location_id, $type, $category){
         
-        $sql = "SELECT i._name, i.description, i.price
+        $sql = "SELECT i.item_id, i._name, i.description, i.price
         FROM restaurant_ratings.locations l, restaurant_ratings.menu_item i
         WHERE l.location_id = i.location_id
         AND i.location_id =" . $location_id .
-        "AND i._type ='" . $type . 
-        "' AND i.category = '" . $category . "'";
+        "AND i._type ='" . $type . "'";
+        
+        if($category != null)
+            $sql .= " AND i.category = '" . $category . "'";
+        
         return $this->query($sql);
     }
     
     /*
-     * Gets food menu items for this $location of type $type and category $category.
+     * Gets all beverages categories available for this location.
      *
      * @author Patrice Boulet
      */
@@ -124,6 +279,33 @@ class DAL {
         FROM restaurant_ratings.locations l, restaurant_ratings.menu_item i
         WHERE l.location_id = i.location_id AND i.location_id =" . $location_id . " AND i._type = 'drink'
         GROUP BY i.category";
+        return $this->query($sql);
+    }
+    
+    /*
+     * Gets all categories available for this $type.
+     *
+     * @author Patrice Boulet
+     */
+    public function get_categories_by_type($type){
+        
+        $sql = "SELECT i.category
+                FROM restaurant_ratings.menu_item i
+                WHERE i._type = '" . $type . "'
+                GROUP BY i.category";
+        return $this->query($sql);
+    }
+    
+        
+    /*
+     * Adds a menu item to that $location.
+     *
+     * @author Patrice Boulet
+     */
+    public function add_menu_item($location_id, $name, $type, $category, $description, $price){
+        
+        $sql = "INSERT INTO restaurant_ratings.menu_item(_name, _type, category, description, price, location_id)
+                VALUES ('". $name ."', '". $type ."', '". $category ."', '". $description ."', ". $price .", ". $location_id .");";
         return $this->query($sql);
     }
     
@@ -147,15 +329,32 @@ class DAL {
      * such as hours and ect.
      * 
      *
-     * @author Junyi Dai, Qasim Ahmed
+     * @author Patrice Boulet, Junyi Dai, Qasim Ahmed
      */
     public function get_location_ratings($location_id, $sorting){
         
-        $sql = "SELECT *, ((rat.found_helpful - rat.wasnt_helpful) * 10) AS rater_reputation
-        FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating ra, restaurant_ratings.rater rat, restaurant_ratings.users u
+        $sql = "WITH 
+        number_of_ratings_of_this_loc_per_rater AS (SELECT ra.rater_id, COUNT(*) as rater_ratings_for_this_loc
+        FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating ra, restaurant_ratings.rater rat,               restaurant_ratings.users u
         WHERE r.restaurant_id = l.restaurant_id AND l.location_id = ra.location_id 
-        AND ra.rater_id = rat.rater_id AND rat.user_id = u.user_id 
-        AND l.location_id = " . $location_id;
+		  AND ra.rater_id = rat.rater_id AND rat.user_id = u.user_id 
+		  AND l.location_id =" . $location_id . "
+        GROUP BY ra.rater_id),
+
+        number_of_total_ratings_per_rater AS (SELECT ra.rater_id, COUNT(*) as total_rater_ratings
+        FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating ra, restaurant_ratings.rater rat,               restaurant_ratings.users u
+        WHERE r.restaurant_id = l.restaurant_id AND l.location_id = ra.location_id 
+		  AND ra.rater_id = rat.rater_id AND rat.user_id = u.user_id 
+        GROUP BY ra.rater_id)
+
+        SELECT *, ((rat.found_helpful * (rat.found_helpful + rat.wasnt_helpful)) - rat.wasnt_helpful * (rat.found_helpful + rat.wasnt_helpful)) AS rater_reputation
+        FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, 
+		  restaurant_ratings.rating ra, restaurant_ratings.rater rat, restaurant_ratings.users u,
+		  number_of_ratings_of_this_loc_per_rater, number_of_total_ratings_per_rater
+        WHERE r.restaurant_id = l.restaurant_id AND l.location_id = ra.location_id 
+		  AND ra.rater_id = rat.rater_id AND rat.user_id = u.user_id 
+		  AND ra.rater_id = number_of_ratings_of_this_loc_per_rater.rater_id 
+		  AND ra.rater_id = number_of_total_ratings_per_rater.rater_id AND l.location_id = " . $location_id;
         if($sorting !== null)
             $sql .= ' ORDER BY ' .$sorting;
 
@@ -176,32 +375,61 @@ class DAL {
     }
     
     /*
+     * Gets the rating items name and price for this rating.
+     *
+     * @author Patrice Boulet
+     */
+    public function get_rating_items_for_rating($rating_id){
+        
+        $sql = "SELECT DISTINCT ON (i.rating_item_id) _name, m.price
+                FROM restaurant_ratings.rating r, restaurant_ratings.rating_item i, restaurant_ratings.menu_item m
+                WHERE r.rating_id = i.rating_id AND i.item_id = m.item_id AND r.rating_id = " . $rating_id;
+        return $this->query($sql);
+    }
+    
+    /*
      * Gets location id, address and name for locations with types in $types.
      *
      * @author Patrice Boulet
      */
-    public function get_locations_list($types_array, $sorting, $global_r_filters, $food_r_filters, $service_r_filters, $ambiance_r_filters){
-        $sql = "";
+    public function get_locations_list($types_array, $sorting, $rating_filters){
+        $first_where_clause = true;
         
-        if ( $global_r_filters !== null || $food_r_filters !== null ||
-                    $service_r_filters !== null || $ambiance_r_filters !== null){
+        $sql = "";
+
+        $global_r_filters = $rating_filters[0];
+        $food_r_filters = $rating_filters[1];
+        $service_r_filters = $rating_filters[2];
+        $ambiance_r_filters = $rating_filters[3];
+        
+        if ( count($global_r_filters) > 0 || count($food_r_filters) > 0 || count($service_r_filters) > 0 || count($ambiance_r_filters) > 0){
             $sql .= "WITH location_tbl AS (";
         }
         
-        $sql .= "SELECT l.location_id AS location_id, r._name AS name, l.street_address AS address, COUNT(*) as total_num_ratings, 
-                    ROUND(AVG(g.price)::INTEGER) AS avg_price, ROUND(AVG(g.ambiance)::NUMERIC, 1) as avg_ambiance, 
-                    ROUND(AVG(g.food)::NUMERIC, 1) as avg_food, ROUND(AVG(g.service)::NUMERIC, 1) as avg_service,
-                    ROUND(AVG(g.avg_rating)::NUMERIC, 1) as avg_rating, MIN(date_part('days', now() - g.date_written)) as                                       days_written_to_now,
-                    ROUND((SUM((extract('epoch' from g.date_written)/100000000)*g.avg_rating)/COUNT(*))::NUMERIC, 1) as popularity
-                    FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating g,                                                  restaurant_ratings.isOfType t  
-                    WHERE r.restaurant_id = l.restaurant_id AND r.restaurant_id = t.restaurant_id 
-                            AND g.location_id = l.location_id";
-        
+        $sql .= "SELECT second_tbl.location_id, second_tbl.name, second_tbl.address , COUNT(*) as total_num_ratings, 
+                    ROUND(AVG(second_tbl.price)::INTEGER) AS avg_price, ROUND(AVG(second_tbl.ambiance)::NUMERIC, 1) as avg_ambiance, 
+                    ROUND(AVG(second_tbl.food)::NUMERIC, 1) as avg_food, ROUND(AVG(second_tbl.service)::NUMERIC, 1) as avg_service,
+                    ROUND(AVG(second_tbl.avg_rating)::NUMERIC, 1) as avg_rating, MIN(date_part('days', now() - second_tbl.date_written)) as                     days_written_to_now,
+                    ROUND((SUM((extract('epoch' from second_tbl.date_written)/100000000)*second_tbl.avg_rating)/COUNT(*))::NUMERIC, 1) as                       popularity
+                FROM (
+                    SELECT DISTINCT ON (first_tbl.rating_id) first_tbl.* 
+                    FROM
+                        (SELECT l.location_id AS location_id, r._name AS name, l.street_address AS address,
+                            g.price, g.food, g.service, g.ambiance, g.avg_rating, g.date_written, g.rating_id
+                        FROM 
+				restaurant_ratings.locations l JOIN restaurant_ratings.restaurant r ON r.restaurant_id = l.restaurant_id 
+				JOIN restaurant_ratings.isOfType t ON r.restaurant_id = t.restaurant_id 
+				LEFT JOIN restaurant_ratings.rating g ON g.location_id = l.location_id ";
+                        
         if($types_array !== null){            
             $sql .= " AND t.type_id IN (" . $this->get_user_specified_types_query($types_array) . ")";
         }
         
-        $sql.= " GROUP BY l.location_id, l.street_address, r._name";
+        $sql .= "
+                        ) AS first_tbl
+                    ) AS second_tbl
+
+                GROUP BY second_tbl.location_id, second_tbl.address, second_tbl.name";
         
         if ( $global_r_filters !== null || $food_r_filters !== null ||
                     $service_r_filters !== null || $ambiance_r_filters !== null){
@@ -211,26 +439,42 @@ class DAL {
                         FROM location_tbl
                         WHERE ";
             
-            if( $global_r_filters !== null){
+            if( count($global_r_filters) > 0){
+                if($first_where_clause){
+                     $sql.= "WHERE ";
+                    $first_where_clause = false;
+                }
                 $sql.= "floor(avg_rating) IN (" . join(',', $global_r_filters) . ")";
                 $first_filter = false;
             }
             
-            if( $food_r_filters !== null){
+            if( count($food_r_filters) > 0){
+                if($first_where_clause){
+                     $sql.= "WHERE ";
+                    $first_where_clause = false;
+                }
                 if( !$first_filter )
                     $sql.= " AND ";
                 $sql.= "floor(avg_food) IN (" . join(',', $food_r_filters) . ")";
                 $first_filter = false;
             }
             
-            if( $service_r_filters !== null){
+            if( count($service_r_filters) > 0){
+                if($first_where_clause){
+                     $sql.= "WHERE ";
+                    $first_where_clause = false;
+                }
                 if( !$first_filter )
                     $sql.= " AND ";
                 $sql.= "floor(avg_service) IN (" . join(',', $service_r_filters) . ")";
                 $first_filter = false;
             }
             
-            if( $ambiance_r_filters !== null){
+            if( count($ambiance_r_filters) > 0){
+                if($first_where_clause){
+                     $sql.= "WHERE ";
+                    $first_where_clause = false;
+                }
                 if( !$first_filter )
                     $sql.= " AND ";
                 $sql.= "floor(avg_ambiance) IN (" . join(',', $ambiance_r_filters) . ")";
@@ -279,6 +523,20 @@ class DAL {
        GROUP BY t._name";
        return $this->query($sql);
    }
+    
+    
+    /*
+     * Get all the restaurant types.
+     *
+     * @author Patrice Boulet
+     */
+    public function get_restaurant_types(){
+    
+       $sql = "SELECT t.type_id, t._name
+FROM restaurant_ratings.restaurant_type t";
+        
+    return $this->query_with_stmt_name($sql, "types");
+   }
    
     /*
      * Get all the restaurant types for which there's at least one restaurant of this type
@@ -307,6 +565,119 @@ class DAL {
   }
 }
 
+	/*
+     * Gets all rater details.
+     *
+     * @author Qasim Ahmed
+     */
+    public function getRaterInformation($username){ 
+        $sql = "SELECT rat.*, u._name, u.email, u.pswd, u.join_date, (
+                    SELECT COUNT(*)
+                    FROM(   
+                            SELECT *
+                            FROM restaurant_ratings.rating ra
+                            WHERE rat.rater_id = ra.rater_id) AS tmp
+                        ) AS total_num_ratings, ((rat.found_helpful * (rat.found_helpful + rat.wasnt_helpful)) - rat.wasnt_helpful * (rat.found_helpful + rat.wasnt_helpful)) AS rater_reputation
+                FROM restaurant_ratings.rater rat, restaurant_ratings.users u
+                WHERE rat.user_id = u.user_id AND u._name= '" . $username . "';";
+        return $this->query($sql);
+    }
+
+	   /*
+     *  Gets all the ratings of a particular rater
+     *  @author Qasim Ahmed
+     */
+    public function getRaterRatings($rater_id, $sorting_type){
+        if($rater_id == null)
+            $rater_id = 1;
+        if($sorting_type == null)
+            $sorting_type = 'date_written DESC';
+        $sql = "SELECT * 
+                FROM restaurant_ratings.rater rater, restaurant_ratings.rating rating, restaurant_ratings.locations l, restaurant_ratings.restaurant rest
+                WHERE rater.rater_id = rating.rater_id AND l.location_id = rating.location_id AND rest.restaurant_id = l.restaurant_id AND rater.rater_id=" . $rater_id .
+                " ORDER BY " . $sorting_type;
+
+        return $this->query($sql);
+    }
+    /*
+     *  Deletes a rater from the database
+     *  @author Qasim Ahmed
+     */
+    public function deleteRater($rater_id){
+        $sql =" DELETE
+                FROM restaurant_ratings.rater rater
+                WHERE rater.rater_id =" . $rater_id;
+
+        return $this->query($sql);
+    }
+
+    /*
+     *  Finds the number of ratings from a particular rater to a particular restaurant
+     *  @author Qasim Ahmed
+     */
+    public function numRatingsFromRaterForLocation($location_id, $rater_id){
+        $sql ="SELECT l.location_id, ra.rater_id, COUNT(*) as rater_ratings_for_this_loc
+                FROM restaurant_ratings.locations l, restaurant_ratings.restaurant r, restaurant_ratings.rating ra, restaurant_ratings.rater rat,               restaurant_ratings.users u
+                WHERE r.restaurant_id = l.restaurant_id AND l.location_id = ra.location_id 
+                  AND ra.rater_id = rat.rater_id AND rat.user_id = u.user_id 
+                  AND l.location_id = " . $location_id . "AND rat.rater_id = " . $rater_id .
+                "GROUP BY ra.rater_id, l.location_id";
+
+        return $this->query($sql);
+    }
+	
+	
+    /* 
+     * Prepares and executes a  generic query to the database
+     * and then converts it to DALQueryResult object.
+     *
+     * 
+     * return
+     *      If there are not any results, it returns null on a SELECT query, 
+     * false on other queries. If the query was successful and the query was 
+     * not a SELECT query, it will return true. 
+     */  
+    private function query_with_stmt_name($sql, $stmtid){
+        $dbh = $this->dbconnect();
+        
+        $stmt = pg_prepare($dbh, $stmtid, $sql);
+
+        $res = pg_execute($dbh, $stmtid, array());
+        if (!$res) {
+            if( strpos($sql, 'SELECT') === false){
+                return false;
+            }
+            else{
+                return null;
+            }
+        }else{
+            if(strpos($sql, 'SELECT') === false){
+                return true;
+            }
+        }
+        
+        $results = array();
+        
+        while($row=pg_fetch_array($res)){
+            $result = new DALQueryResult();
+            
+            foreach ($row as $k=>$v){
+                $result->$k = $v;
+            }
+            
+            $results[] = $result;
+        }
+        
+        
+        //free memory
+        pg_free_result($res);
+        //close connection
+        pg_close($dbh);
+        
+        return $results;
+    }
+    
+    
     /* 
      * Prepares and executes a  generic query to the database
      * and then converts it to DALQueryResult object.

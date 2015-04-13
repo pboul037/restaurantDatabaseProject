@@ -1,3 +1,14 @@
+<!--
+  * Add a rating modal component.
+  *
+  * @author Patrice Boulet
+  */
+-->
+
+<!-- Include the plugin's CSS and JS: -->
+<script type="text/javascript" src="../../../framwork_dir/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+<link rel="stylesheet" href="../../../framwork_dir/bootstrap-multiselect/bootstrap-multiselect.css" type="text/css"/>
+
 <!-- Modal -->
 <div class="modal fade" id="addLocationRatingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog" style="width:70%">
@@ -29,6 +40,18 @@
                         </div>
                     </div>
                     <div class="col-sm-7">
+                        <div id="addRatingDrinksAvailGRoup" class="form-group">
+                            <label for="addRatingDrinksAvail" class="col-sm-4 control-label">Drinked </label>
+                                <select id="addRatingDrinksAvail" multiple="multiple" class="btn btn-default dropdown-toggle">
+                                    <option value="" disabled selected>What did you drink?</option>
+                                </select>
+                        </div>
+                        <div id="addRatingFoodAvailGroup" class="form-group">
+                            <label for="addRatingFoodAvail" class="col-sm-4 control-label">Eated </label>
+                                <select id="addRatingFoodAvail" multiple="multiple" class="btn btn-default dropdown-toggle">
+                                    <option value="" disabled selected>What did you eat?</option>
+                                </select>
+                        </div>
                         <div id="addLocationRatingCommentsGroup" class="form-group">
                             <label for="addLocationRatingComments" class="col-sm-6">Comments</label>
                             <textarea name="addLocationRatingComments" id="addLocationRatingComments" class="form-control"></textarea>
