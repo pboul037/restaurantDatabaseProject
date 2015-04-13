@@ -8,9 +8,24 @@ a:hover {
  cursor:pointer;
 }
 
+a{color:#DC143C;}
+
+body{
+ color:#808080;   
+}
+
+body .h1 .h2{
+font-color:white;
+}
+
+navbar header{color:white;}
+
+
+body	{ background:url(../img/main_background.jpg) top right no-repeat; background-attachment:fixed; }
+
 .comment{margin-left:20px;margin-bottom:0;margin-top:0;display:inline-block;vertical-align:top;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;*display:inline;*zoom:1;font-size:14px}
 
 .comment{position:relative;display:inline-block; border-radius: 5px;vertical-align:top;padding:3px 10px;background:#f5f5f5;margin-bottom:15px;margin-left:0}.comment:after{content:"";position:absolute;top:5px;left:-15px;border-style:solid;border-width:10px 15px 10px 0;border-color:transparent #f5f5f5;display:block;width:0;z-index:1}
 .comment p{margin:5px 0}
-.comment{background:#d7e4ed}
-.comment:after{border-color:transparent #d7e4ed}
+.comment{background:#f5f5f5;}
+.comment:after{border-color:transparent #f5f5f5}

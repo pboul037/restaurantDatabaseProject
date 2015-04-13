@@ -263,7 +263,7 @@
                     <div class="col-sm-3">';
                     
                     foreach($_SESSION[$location->name . '-types'] as $cuisine_type){
-                      $location_html_item .= '<span class="tagcloud tag label label-warning">' . $cuisine_type . '</span>';
+                      $location_html_item .= '<span class="tagcloud tag label label-danger">' . $cuisine_type . '</span>';
                     }
                 
                 $location_html_item .= '</div>';
@@ -290,7 +290,7 @@
         function get_cloud_cuisine_tag_html_item($restaurant_types_selected){
             $returned_type_tags = "";
             foreach($restaurant_types_selected as $cuisine_type){
-                $returned_type_tags .= '<span class="tagcloud tag label label-warning">' . $cuisine_type .
+                $returned_type_tags .= '<span class="tagcloud tag label label-danger">' . $cuisine_type .
                                 '<!-- <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> --></span>';
             }
             return $returned_type_tags;
@@ -369,7 +369,7 @@
                     break;
             }
             
-            return '<span class="tagcloud tag label label-warning">' . $tag_text .
+            return '<span class="tagcloud tag label label-danger">' . $tag_text .
                             '<!-- <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> --></span>';
         }
 ?>

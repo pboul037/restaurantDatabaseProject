@@ -184,21 +184,21 @@ session_start();
                 <div class="col-sm-3">
                     <div class="row"
                             <span style="text-align:center" class="col-sm-5">
-                                <h4 style="font-weight:bold">' . $location_rating->avg_rating . '<small style="padding-right:25px"> out of 5</small>' . $dollar_sign_string . '</h4>
+                                <h4 style="color:black; font-weight:bold">' . $location_rating->avg_rating . '<small style="padding-right:25px"> out of 5</small>' . $dollar_sign_string . '</h4>
                             </span>
                     </div>
                     <div class="row">
                             <span style="text-align:center" class="col-sm-4">
                                 <span style="font-size:10pt;">Food </span>
-                                <h5 style="font-weight:bold">' . $location_rating->food . '<small>/5</small></h5>
+                                <h5 style="color:black; font-weight:bold">' . $location_rating->food . '<small>/5</small></h5>
                             </span>
                             <span style="text-align:center" class="col-sm-4">
                                 <span style="font-size:10pt;">Ambiance </span>
-                                <h5 style="font-weight:bold">' . $location_rating->ambiance . '<small>/5</small></h5>
+                                <h5 style="color:black; font-weight:bold">' . $location_rating->ambiance . '<small>/5</small></h5>
                             </span>
                             <span style="text-align:center" class="col-sm-4">
                                 <span style="font-size:10pt;">Service </span>
-                                <h5 style="font-weight:bold">' . $location_rating->service . '<small>/5</small></h5>
+                                <h5 style="color:black; font-weight:bold">' . $location_rating->service . '<small>/5</small></h5>
                             </span>
                     </div>
                     <span style="font-size:12pt">By </span>
@@ -225,7 +225,7 @@ session_start();
                         <div class="well col-sm-12"><span class="col-sm-2">Ordered: </span>';
                         $rating_items_for_rating = $dal->get_rating_items_for_rating($location_rating->rating_id);
                         foreach($rating_items_for_rating as $rating_item){
-                            $location_rating_html_item .= '<span class="tagcloud tag label label-warning">' . $rating_item->_name . ' :                                                                 $' . $rating_item->price . '</span>';
+                            $location_rating_html_item .= '<span class="tagcloud tag label label-danger">' . $rating_item->_name . ' :                                                                 $' . $rating_item->price . '</span>';
                         }
                         if( count($rating_items_for_rating) < 1)
                             $location_rating_html_item .= '<span>No order specified. </span>';

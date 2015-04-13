@@ -19,7 +19,7 @@
     <title>Restaurant Ratings</title>
     
     <!-- Bootstrap Core CSS -->
-    <link href="../../../framwork_dir/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../framwork_dir/bootstrap/css/bootstrap.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="../../../framwork_dir/bootstrap/css/homepage.css" rel="stylesheet">
@@ -121,7 +121,7 @@
             
             <div class="row">
                 <div style="text-align:center" class="page-header">
-                    <span style="font-size:20pt; font-weight: bold">Raters</span>
+                    <span style="font-size:26pt; font-weight: bold; color:white;">Raters</span>
                 </div>
             </div>
             <div class="col-md-12">

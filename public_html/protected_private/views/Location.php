@@ -12,7 +12,7 @@
     <title>Restaurant Ratings</title>
     
     <!-- Bootstrap Core CSS -->
-    <link href="../../../framwork_dir/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../framwork_dir/bootstrap/css/bootstrap.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="../../css/default.css" rel="stylesheet">
@@ -143,16 +143,16 @@
     <!-------->
     <div id="content">
         <div class="row">
-            <div class="col-sm-4">
-                <h3><?php echo $details->_name; ?><br><small style="font-size:10pt">opened  <?php echo $details->first_open_date; ?></small></h3>
+            <div class="col-sm-4" >
+                <h3><?php echo $details->_name; ?><br><small style="font-size:10pt; color:white;">opened  <?php echo $details->first_open_date; ?></small></h3>
                 <div class="row">
-                <span style="padding-left:15px"><a href="tel:<?php echo $details->phone_number; ?>"><?php echo $details->phone_number; ?></a></span><span>  (Manager: <?php echo $details->manager_name; ?>)</span>
+                <span style="padding-left:15px; color:white;"><a style="color:white;" href="tel:<?php echo $details->phone_number; ?>"><?php echo $details->phone_number; ?></a></span><span style="color:white;">  (Manager: <?php echo $details->manager_name; ?>)</span>
                 </div>
                 <div class="row">
-                <span style="padding-left:15px"><a href="<?php echo $details->url; ?>"><?php echo $details->url; ?></a></span></span>
+                <span style="padding-left:15px"><a style="color:white;" href="<?php echo $details->url; ?>"><?php echo $details->url; ?></a></span></span>
                 </div>
                 <div class="row">
-                    <span style="padding-left:15px"><small style="font-size:10pt"><a href="https://www.google.com/maps/dir/Current+Location/<?php echo $address_for_gmaps; ?>"><?php echo $details->street_address; ?></small><span></a>
+                    <span style="padding-left:15px" style="color:white;"><small style="color:white;" style="font-size:10pt"><a style="color:white;" href="https://www.google.com/maps/dir/Current+Location/<?php echo $address_for_gmaps; ?>"><?php echo $details->street_address; ?></small><span></a>
                 </h5>
                 </div>
             </div>
@@ -170,13 +170,13 @@
         </div>
         <div class="row">
         <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-            <li class="active"><a href="#ratings" data-toggle="tab"><h3>Ratings</h3></a></li>
+            <li class="active"><a href="#ratings" data-toggle="tab"><h3 style="color:black">Ratings</h3></a></li>
             <li><a href="#menu" data-toggle="tab"><h3>Menu</h3></a></li>
             <div class="pull-right" style="padding-left:5px">
-                <button class="btn btn-primary pull-right" onclick="addMenuItem()">Add a menu item</button>
+                <button class="btn btn-danger pull-right" onclick="addMenuItem()">Add a menu item</button>
             </div>
             <div class="pull-right">
-                <button class="btn btn-primary pull-right" onclick="addRating()">Add a rating</button>
+                <button class="btn btn-danger pull-right" onclick="addRating()">Add a rating</button>
             </div>
         </ul>
         <div id="my-tab-content" class="tab-content">

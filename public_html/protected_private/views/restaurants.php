@@ -19,7 +19,7 @@
     <title>Restaurant Ratings</title>
     
     <!-- Bootstrap Core CSS -->
-    <link href="../../../framwork_dir/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../framwork_dir/bootstrap/css/bootstrap.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="../../../framwork_dir/bootstrap/css/homepage.css" rel="stylesheet">
@@ -112,9 +112,9 @@
             
             <div class="row">
                 <div style="text-align:center" class="page-header">
-                    <span style="font-size:20pt; font-weight: bold">Find a Restaurant</span>
+                    <span style="font-size:20pt; font-weight: bold; color:white;">Find a Restaurant</span>
                      <span style="float:right" style="padding-left:5px">
-                        <button class="btn btn-primary pull-right" onclick="addLocation()">Add a Restaurant Location</button>
+                        <button class="btn btn-danger pull-right" onclick="addLocation()">Add a Restaurant Location</button>
                     </span>
                 </div>
             </div>

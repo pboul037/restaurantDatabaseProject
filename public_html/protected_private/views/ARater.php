@@ -12,7 +12,7 @@
     <title>Restaurant Ratings</title>
     
     <!-- Bootstrap Core CSS -->
-    <link href="../../../framwork_dir/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../framwork_dir/bootstrap/css/bootstrap.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="../../css/default.css" rel="stylesheet">

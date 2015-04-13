@@ -132,22 +132,22 @@
                 <div class="col-sm-3">
                     <div class="row"
                             <span style="text-align:center" class="col-sm-5">
-                            	<h4 style="font-weight:bold">' . $rating->_name . '</h4>
-                                <h4 style="font-weight:bold">' . $rating->avg_rating . '<small style="padding-right:25px"> out of 5</small>' . $dollar_sign_string . '</h4>
+                            	<h4 style="color:black; font-weight:bold">' . $rating->_name . '</h4>
+                                <h4 style="color:black; font-weight:bold">' . $rating->avg_rating . '<small style="padding-right:25px"> out of 5</small>' . $dollar_sign_string . '</h4>
                             </span>
                     </div>
                     <div class="row">
                             <span style="text-align:center" class="col-sm-4">
                                 <span style="font-size:10pt;">Food </span>
-                                <h5 style="font-weight:bold">' . $rating->food . '<small>/5</small></h5>
+                                <h5 style="color:black; font-weight:bold">' . $rating->food . '<small>/5</small></h5>
                             </span>
                             <span style="text-align:center" class="col-sm-4">
                                 <span style="font-size:10pt;">Ambiance </span>
-                                <h5 style="font-weight:bold">' . $rating->ambiance . '<small>/5</small></h5>
+                                <h5 style="color:black; font-weight:bold">' . $rating->ambiance . '<small>/5</small></h5>
                             </span>
                             <span style="text-align:center" class="col-sm-4">
                                 <span style="font-size:10pt;">Service </span>
-                                <h5 style="font-weight:bold">' . $rating->service . '<small>/5</small></h5>
+                                <h5 style="color:black; font-weight:bold">' . $rating->service . '<small>/5</small></h5>
                             </span>
                     </div>
 
