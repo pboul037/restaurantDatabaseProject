@@ -124,7 +124,7 @@
                         </li>';
                     }else{
                         echo '<li>
-                            <a id="usernameBtn" style="cursor: pointer">' . $_SESSION['username'] . '</a>
+                            <a id="usernameBtn" href="ARater.php?rater=' . $_SESSION['username'] . '" style="cursor: pointer">' . $_SESSION['username'] . '</a>
                         </li>
                         <li>
                             <a id="logoutBtn" style="cursor: pointer">Log out</a>

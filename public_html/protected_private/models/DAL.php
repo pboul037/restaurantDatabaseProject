@@ -44,7 +44,6 @@ class DAL {
         return $this->query($sql);
     }    
     
-<<<<<<< HEAD
 	/*
      * Gets all rater details.
      *
@@ -68,8 +67,6 @@ class DAL {
         return $this->query($sql);
     }
 	
-=======
->>>>>>> origin/master
     /*
      * Deletes menu item.
      *
@@ -567,22 +564,7 @@ FROM restaurant_ratings.restaurant_type t";
       return $object_results;
   }
 }
-    /* 
-     * Prepares and executes a  generic query to the database
-     * and then converts it to DALQueryResult object.
-     *
-     * 
-     * return
-     *      If there are not any results, it returns null on a SELECT query, 
-     * false on other queries. If the query was successful and the query was 
-     * not a SELECT query, it will return true. 
-     */  
-    private function query_with_stmt_name($sql, $stmtid){
-        $dbh = $this->dbconnect();
-        
-        $stmt = pg_prepare($dbh, $stmtid, $sql);
 
-<<<<<<< HEAD
 	/*
      * Gets all rater details.
      *
@@ -660,8 +642,6 @@ FROM restaurant_ratings.restaurant_type t";
         
         $stmt = pg_prepare($dbh, $stmtid, $sql);
 
-=======
->>>>>>> origin/master
         $res = pg_execute($dbh, $stmtid, array());
         if (!$res) {
             if( strpos($sql, 'SELECT') === false){

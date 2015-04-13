@@ -51,16 +51,11 @@
         	if(isset($_SESSION['username'])){
         			if($_SESSION['username'] == 'admin' || $_SESSION['username'] == $rater->_name){
         			//At this point by elimination the user or admin is signed in
-        			$button = ' <button id="delete_account_bt" type="button" class="btn btn-default" 
+        			$button = ' <button class="btn btn-danger adminControl userControl" id="delete_account_bt" type="button" class="btn btn-default" 
                                 onclick="deleteAccount(' . $rater_id . ')" 
                                     > Delete Account</button>' ;
                     }
             }
-            // //debugging
-            // $button = ' <button id="delete_account_bt" type="button" class="btn btn-default" 
-            //                     onclick="deleteAccount()" 
-            //                         > Delete Account</button>';
-
             return $button;            
         }
 
@@ -159,16 +154,7 @@
 
                     <span style="font-size:12pt">On: </span>
                     <span style="font-size:10pt;">' . $rating->date_written . '</span>
-                    <div class="row">
-                        <span class="col-sm-1 glyphicon glyphicon-star" style="color:green"></span>
-                        <span class="col-sm-1">' . $rater->rater_reputation .'</span>
-                        <span class="col-sm-5">Reputation</span>
-                    </div>
-                    <div class="row">
-                        <span class="col-sm-1 glyphicon glyphicon-stats" style="color:green"></span>
-                        <span class="col-sm-1">' . $rater->total_num_ratings.'</span>
-                        <span class="col-sm-5">total ratings</span>
-                    </div>
+
                                        <div class="row">
                         <span class="col-sm-12">Rated this location ' . $dal->numRatingsFromRaterForLocation($rating->location_id, $rater->rater_id)[0]->rater_ratings_for_this_loc.' time(s)</span>
                     </div>

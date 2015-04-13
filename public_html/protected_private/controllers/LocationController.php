@@ -202,7 +202,7 @@ session_start();
                             </span>
                     </div>
                     <span style="font-size:12pt">By </span>
-                    <a style="font-size:12pt" href="Location.php?locationid=' . $location_rating->location_id . '#ratings">' 
+                    <a style="font-size:12pt" href="ARater.php?rater=' . $location_rating->_name . '">' 
                         . $location_rating->_name .'
                     </a>
                     <span style="font-size:12pt">on </span>

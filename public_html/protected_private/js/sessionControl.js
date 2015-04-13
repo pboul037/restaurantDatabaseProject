@@ -51,6 +51,7 @@
             success: function() {
                 $.notify("Logged out", "error");
                 $('.adminControl').remove();
+                $('userControl').remove();
             }
         });
         $('#sessionButtons').html('<li><a id="loginBtn" style="cursor: pointer">Login</a>' +

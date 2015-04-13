@@ -92,7 +92,7 @@
                         </li>';
                     }else{
                         echo '<li>
-                            <a id="usernameBtn" style="cursor: pointer">' . $_SESSION['username'] . '</a>
+                            <a id="usernameBtn" href="ARater.php?rater=' . $_SESSION['username'] . '" style="cursor: pointer">' . $_SESSION['username'] . '</a>
                         </li>
                         <li>
                             <a id="logoutBtn" style="cursor: pointer">Log out</a>
@@ -456,7 +456,7 @@
         <footer>
             <div class="row">
                 <div class="col-lg-12">
-                    <p>Copyright &copy; Patrice Boulet, Qasim Ahmed, & Junyi Dai 2015</p>
+                    <p>Copyright &copy; Patrice Boulet 2015</p>
                 </div>
             </div>
         </footer>

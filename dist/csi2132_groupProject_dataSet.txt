@@ -80,7 +80,7 @@ INSERT INTO restaurant_ratings.restaurant_type(_name)
 
 
 
-INSERT INTO restaurant(_name, url)
+INSERT INTO restaurant_ratings.restaurant(_name, url)
     VALUES 
 	( 'Asian Alley', 'http://www.asianalley.ca'),
 	( 'Fraser Cafe', 'http://www.http://frasercafe.ca'),
