@@ -436,8 +436,7 @@ class DAL {
             $first_filter = true;
             
             $sql.= ")   SELECT * 
-                        FROM location_tbl
-                        WHERE ";
+                        FROM location_tbl ";
             
             if( count($global_r_filters) > 0){
                 if($first_where_clause){
