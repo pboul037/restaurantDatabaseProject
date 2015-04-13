@@ -120,7 +120,7 @@
             </div>
             <div class="col-md-3">
                 <div class="row">
-                    <div class="panel panel-default">
+                    <div class="panel panel-danger">
                       <div class="panel-heading">
                         <h3 class="panel-title">Search options</h3>
                       </div>

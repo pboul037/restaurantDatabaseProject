@@ -293,9 +293,9 @@ session_start();
                 }
             }
             
-            $temp_str .= '<div class="pull-right col-sm-3"><h5>$ ' . $menu_item->price;
+            $temp_str .= '<div class="pull-right col-sm-3"><h5 style="color:black">$ ' . $menu_item->price;
             
-            $temp_str .= '</h5></div><h5 class="col-sm-7">' . $menu_item->_name . '</br>
+            $temp_str .= '</h5></div><h5 style="color:black" class="col-sm-7">' . $menu_item->_name . '</br>
             <small>' . $menu_item->description . '</small></h5><span class="badge"></span></div></li>
             ';
         }

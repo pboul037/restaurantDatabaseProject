@@ -170,7 +170,7 @@
         </div>
         <div class="row">
         <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-            <li class="active"><a href="#ratings" data-toggle="tab"><h3 style="color:black">Ratings</h3></a></li>
+            <li class="active"><a href="#ratings" data-toggle="tab"><h3 style="color:white;">Ratings</h3></a></li>
             <li><a href="#menu" data-toggle="tab"><h3>Menu</h3></a></li>
             <div class="pull-right" style="padding-left:5px">
                 <button class="btn btn-danger pull-right" onclick="addMenuItem()">Add a menu item</button>

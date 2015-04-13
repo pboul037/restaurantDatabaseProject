@@ -228,7 +228,7 @@
             if( count($locations_list) < 1 ){
                 $location_html_item .= 
                     '<div style="text-align:center" class ="col-sm-12">
-                        <p>Sorry, no restaurant was found matching your search option(s).</p>
+                        <p style="color:white;">Sorry, no restaurant was found matching your search option(s).</p>
                     </div>';
             }
             foreach($locations_list as $location){

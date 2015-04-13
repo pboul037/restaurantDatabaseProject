@@ -1390,7 +1390,6 @@ a.bg-danger:hover {
 .page-header {
   padding-bottom: 9px;
   margin: 40px 0 20px;
-  border-bottom: 1px solid #eee;
 }
 ul,
 ol {
@@ -3898,9 +3897,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .nav > li > a > img {
   max-width: none;
 }
-.nav-tabs {
-  border-bottom: 1px solid #ddd;
-}
+
 .nav-tabs > li {
   float: left;
   margin-bottom: -1px;
@@ -3919,8 +3916,8 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .nav-tabs > li.active > a:focus {
   color: #555;
   cursor: default;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: #d9534f;
+  border: 1px solid #d9534f;
   border-bottom-color: transparent;
 }
 .nav-tabs.nav-justified {
